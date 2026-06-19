@@ -119,6 +119,7 @@ export type UnitSystem = "ml" | "oz";
 
 /** Format a quantity, converting мл→oz when the oz unit system is selected. */
 export function formatQty(amount: number | undefined, unit: string | undefined, units: UnitSystem = "ml"): string {
+  if (unit === "за смаком") return "за смаком"; // to-taste: never show a number
   if (amount == null) return unit ?? "";
   if (units === "oz" && unit === "мл") return `${Math.round((amount / OZ_ML) * 4) / 4} oz`;
   return `${fmtAmount(amount)} ${unit ?? ""}`.trim();
@@ -126,7 +127,8 @@ export function formatQty(amount: number | undefined, unit: string | undefined, 
 
 /** Format an ingredient line, optionally scaled by `factor` and converted to the unit system. */
 export function formatIngredient(i: Ingredient, factor = 1, units: UnitSystem = "ml"): string {
-  if (i.amount != null) return `${i.name} — ${formatQty(i.amount * factor, i.unit, units)}`;
+  if (i.unit === "за смаком") return `${i.name} — ${i.note ?? "за смаком"}`; // ignore amount (e.g. "0")
+  if (i.amount != null && i.amount !== 0) return `${i.name} — ${formatQty(i.amount * factor, i.unit, units)}`;
   if (i.note) return `${i.name} — ${i.note}`;
   return i.name;
 }

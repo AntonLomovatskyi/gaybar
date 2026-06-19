@@ -1,32 +1,21 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
-import { useTheme } from "@/theme/theme";
+import { Star } from "lucide-react";
 
 export function StarRating({
   value,
   onChange,
-  size = 24,
+  size = 22,
 }: {
   value: number;
-  onChange?: (v: number) => void;
+  onChange?: (n: number) => void;
   size?: number;
 }) {
-  const c = useTheme();
   return (
-    <View style={styles.row}>
+    <div className="flex gap-1">
       {[1, 2, 3, 4, 5].map((n) => (
-        <Pressable
-          key={n}
-          onPress={onChange ? () => onChange(n === value ? 0 : n) : undefined}
-          disabled={!onChange}
-          hitSlop={6}
-        >
-          <Text style={{ fontSize: size, color: n <= value ? c.color.gold : c.color.textFaint }}>
-            {n <= value ? "★" : "☆"}
-          </Text>
-        </Pressable>
+        <button key={n} type="button" onClick={() => onChange?.(n)} className="text-gold" aria-label={`${n} stars`}>
+          <Star size={size} fill={n <= value ? "currentColor" : "none"} strokeWidth={1.5} />
+        </button>
       ))}
-    </View>
+    </div>
   );
 }
-
-const styles = StyleSheet.create({ row: { flexDirection: "row", gap: 4 } });

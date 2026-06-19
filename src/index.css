@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+/* Map Tailwind color utilities (bg-bg, text-gold, border-border, …) to themeable CSS vars. */
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-alt: var(--surface-alt);
+  --color-border: var(--border);
+  --color-gold: var(--gold);
+  --color-gold-dim: var(--gold-dim);
+  --color-text: var(--text);
+  --color-text-dim: var(--text-dim);
+  --color-text-faint: var(--text-faint);
+  --color-danger: var(--danger);
+  --color-success: var(--success);
+  --font-display: "Playfair Display", ui-serif, Georgia, serif;
+}
+
+:root,
+[data-theme="dark"] {
+  --bg: #0e0e10;
+  --surface: #17171b;
+  --surface-alt: #1f1f25;
+  --border: #2c2c34;
+  --gold: #d9b25a;
+  --gold-dim: #8a6f37;
+  --text: #f3eee3;
+  --text-dim: #a8a29a;
+  --text-faint: #6e6a63;
+  --danger: #c8553d;
+  --success: #5c8a5a;
+}
+
+[data-theme="light"] {
+  --bg: #f5f1e8;
+  --surface: #ffffff;
+  --surface-alt: #ece5d6;
+  --border: #d9cfb8;
+  --gold: #9c7a2e;
+  --gold-dim: #e6d6ae;
+  --text: #1a1714;
+  --text-dim: #6b6358;
+  --text-faint: #9a9081;
+  --danger: #b23a26;
+  --success: #3f6b3d;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* hide scrollbars on horizontal chip rails */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  scrollbar-width: none;
+}

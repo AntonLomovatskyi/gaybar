@@ -1,65 +1,32 @@
-import { Image } from "expo-image";
-import { useRouter } from "expo-router";
-import { Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
-import type { Cocktail } from "@/types/cocktail";
+import { Link } from "react-router-dom";
 import { getCardImages } from "@/data/cocktails";
-import { useTheme } from "@/theme/theme";
-import { useUserStore } from "@/store/userStore";
-import { GRID_GAP, useGridColumns } from "./grid";
+import type { Cocktail } from "@/types/cocktail";
 
 export function CocktailCard({ cocktail }: { cocktail: Cocktail }) {
-  const c = useTheme();
-  const router = useRouter();
-  const { width } = useWindowDimensions();
-  const columns = useGridColumns();
-  // explicit width: list content padding (GRID_GAP each side) + per-card margins (GRID_GAP each side)
-  const cardW = Math.floor((width - GRID_GAP * 2) / columns) - GRID_GAP * 2;
-
-  const img = getCardImages(cocktail.id);
-  const isFav = useUserStore((s) => s.favourites.includes(cocktail.id));
-  const toggleFav = useUserStore((s) => s.toggleFavourite);
-  const strength = cocktail.tags.find((t) => t === "міцні" || t === "слабоалкогольні" || t === "безалкогольні");
-
+  const front = getCardImages(cocktail.id)?.front;
   return (
-    <Pressable
-      onPress={() => router.push(`/cocktail/${cocktail.id}`)}
-      style={[styles.card, { width: cardW, backgroundColor: c.color.surface, borderColor: c.color.border }]}
+    <Link
+      to={`/cocktail/${cocktail.id}`}
+      className="group block overflow-hidden rounded-lg border border-border bg-surface transition hover:border-gold"
     >
-      <View style={styles.imageWrap}>
-        {img?.front ? (
-          <Image source={img.front} style={styles.image} contentFit="cover" transition={150} />
+      <div className="aspect-[5/7] w-full overflow-hidden bg-surface-alt">
+        {front ? (
+          <img
+            src={front}
+            alt={cocktail.name}
+            loading="lazy"
+            className="h-full w-full object-cover transition group-hover:scale-105"
+          />
         ) : (
-          <View style={[styles.image, { backgroundColor: c.color.surfaceAlt }]} />
+          <div className="flex h-full w-full items-center justify-center p-2 text-center">
+            <span className="font-display text-sm leading-tight text-gold">{cocktail.name}</span>
+          </div>
         )}
-        <Pressable onPress={() => toggleFav(cocktail.id)} hitSlop={8} style={styles.heart}>
-          <Text style={{ fontSize: 18, color: isFav ? c.color.gold : c.color.text }}>{isFav ? "♥" : "♡"}</Text>
-        </Pressable>
-      </View>
-      <Text style={[styles.name, { color: c.color.text }]} numberOfLines={1}>
-        {cocktail.name}
-      </Text>
-      {strength ? (
-        <Text style={[styles.meta, { color: c.color.textDim }]} numberOfLines={1}>
-          {strength}
-        </Text>
-      ) : null}
-    </Pressable>
+      </div>
+      <div className="p-2">
+        <div className="truncate text-sm font-semibold text-text">{cocktail.name}</div>
+        <div className="truncate text-xs text-text-faint">{cocktail.tags.slice(0, 2).join(" · ")}</div>
+      </div>
+    </Link>
   );
 }
-
-const styles = StyleSheet.create({
-  card: { margin: GRID_GAP, borderRadius: 12, borderWidth: 1, padding: 6, overflow: "hidden" },
-  imageWrap: { width: "100%", aspectRatio: 0.72, borderRadius: 8, overflow: "hidden" },
-  image: { width: "100%", height: "100%" },
-  heart: {
-    position: "absolute",
-    top: 4,
-    right: 4,
-    width: 26,
-    height: 26,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  name: { marginTop: 6, fontSize: 13, fontWeight: "600" },
-  meta: { marginTop: 1, fontSize: 11 },
-});

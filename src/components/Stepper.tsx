@@ -1,10 +1,9 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
-import { useTheme } from "@/theme/theme";
+import { Minus, Plus } from "lucide-react";
 
 export function Stepper({
   value,
   onChange,
-  min = 1,
+  min = 0,
   max = 99,
 }: {
   value: number;
@@ -12,27 +11,27 @@ export function Stepper({
   min?: number;
   max?: number;
 }) {
-  const c = useTheme();
   return (
-    <View style={styles.row}>
-      <Pressable
-        onPress={() => onChange(Math.max(min, value - 1))}
-        style={[styles.btn, { borderColor: c.color.border }]}
+    <div className="flex items-center gap-3">
+      <button
+        type="button"
+        onClick={() => onChange(Math.max(min, value - 1))}
+        className="grid h-8 w-8 place-items-center rounded-full border border-border text-text disabled:opacity-40"
+        disabled={value <= min}
+        aria-label="−"
       >
-        <Text style={{ color: c.color.text, fontSize: 18 }}>−</Text>
-      </Pressable>
-      <Text style={{ color: c.color.text, minWidth: 26, textAlign: "center", fontSize: 16 }}>{value}</Text>
-      <Pressable
-        onPress={() => onChange(Math.min(max, value + 1))}
-        style={[styles.btn, { borderColor: c.color.border }]}
+        <Minus size={16} />
+      </button>
+      <span className="w-6 text-center text-text tabular-nums">{value}</span>
+      <button
+        type="button"
+        onClick={() => onChange(Math.min(max, value + 1))}
+        className="grid h-8 w-8 place-items-center rounded-full border border-border text-text disabled:opacity-40"
+        disabled={value >= max}
+        aria-label="+"
       >
-        <Text style={{ color: c.color.text, fontSize: 18 }}>＋</Text>
-      </Pressable>
-    </View>
+        <Plus size={16} />
+      </button>
+    </div>
   );
 }
-
-const styles = StyleSheet.create({
-  row: { flexDirection: "row", alignItems: "center", gap: 10 },
-  btn: { width: 34, height: 34, borderRadius: 8, borderWidth: 1, alignItems: "center", justifyContent: "center" },
-});

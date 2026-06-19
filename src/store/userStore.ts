@@ -1,9 +1,8 @@
 /**
  * On-device user state (favourites, ratings, owned bar items, shopping, history, prefs).
- * Persisted via zustand + AsyncStorage (works in Expo Go and on web). The persisted JSON is
- * the "user data" the future backend will own — keep it serializable and versioned.
+ * Persisted via zustand + localStorage. The persisted JSON is the "user data" the future
+ * backend will own — keep it serializable and versioned.
  */
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import type { Cocktail } from "@/types/cocktail";
@@ -131,7 +130,7 @@ export const useUserStore = create<UserState>()(
     {
       name: "gaybar/v1/user",
       version: 1,
-      storage: createJSONStorage(() => AsyncStorage),
+      storage: createJSONStorage(() => localStorage),
     },
   ),
 );

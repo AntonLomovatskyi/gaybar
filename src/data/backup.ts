@@ -2,10 +2,6 @@
  * Backup & restore all on-device user data (favourites, ratings, bar, shopping, history,
  * prefs, your recipes) as a JSON file. The "sync substitute" until a backend exists.
  */
-import * as DocumentPicker from "expo-document-picker";
-import * as FileSystem from "expo-file-system";
-import * as Sharing from "expo-sharing";
-import { Platform } from "react-native";
 import { useUserStore, type PersistedData } from "@/store/userStore";
 
 function snapshot(): PersistedData {
@@ -26,37 +22,38 @@ function snapshot(): PersistedData {
   };
 }
 
-export async function exportData(at: number): Promise<void> {
+/** Download the full user-data snapshot as a JSON file. */
+export function exportData(at: number): void {
   const json = JSON.stringify({ app: "gaybar", version: 1, exportedAt: at, data: snapshot() }, null, 2);
-  if (Platform.OS === "web") {
-    const g = globalThis as any;
-    const blob = new g.Blob([json], { type: "application/json" });
-    const url = g.URL.createObjectURL(blob);
-    const a = g.document.createElement("a");
-    a.href = url;
-    a.download = "gaybar-backup.json";
-    a.click();
-    g.URL.revokeObjectURL(url);
-    return;
-  }
-  const uri = (FileSystem.cacheDirectory ?? "") + "gaybar-backup.json";
-  await FileSystem.writeAsStringAsync(uri, json);
-  if (await Sharing.isAvailableAsync()) {
-    await Sharing.shareAsync(uri, { mimeType: "application/json", dialogTitle: "Резервна копія gaybar" });
-  }
+  const blob = new Blob([json], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "gaybar-backup.json";
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
-export async function importDataFromFile(): Promise<{ ok: boolean; message: string }> {
-  const res = await DocumentPicker.getDocumentAsync({ type: ["application/json", "*/*"], copyToCacheDirectory: true });
-  if (res.canceled || !res.assets?.length) return { ok: false, message: "Скасовано" };
-  try {
-    const text = await FileSystem.readAsStringAsync(res.assets[0].uri);
-    const parsed = JSON.parse(text);
-    const data = (parsed?.data ?? parsed) as Partial<PersistedData>;
-    if (!data || typeof data !== "object") return { ok: false, message: "Невірний файл" };
-    useUserStore.getState().importData(data);
-    return { ok: true, message: "Дані відновлено" };
-  } catch {
-    return { ok: false, message: "Не вдалося прочитати файл" };
-  }
+/** Open a file picker, read a backup JSON, and replace user data. */
+export function importDataFromFile(): Promise<{ ok: boolean; message: string }> {
+  return new Promise((resolve) => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "application/json,.json";
+    input.onchange = async () => {
+      const file = input.files?.[0];
+      if (!file) return resolve({ ok: false, message: "Скасовано" });
+      try {
+        const text = await file.text();
+        const parsed = JSON.parse(text);
+        const data = (parsed?.data ?? parsed) as Partial<PersistedData>;
+        if (!data || typeof data !== "object") return resolve({ ok: false, message: "Невірний файл" });
+        useUserStore.getState().importData(data);
+        resolve({ ok: true, message: "Дані відновлено" });
+      } catch {
+        resolve({ ok: false, message: "Не вдалося прочитати файл" });
+      }
+    };
+    input.click();
+  });
 }

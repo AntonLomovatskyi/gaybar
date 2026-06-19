@@ -1,35 +1,18 @@
-import { Pressable, StyleSheet, Text } from "react-native";
-import { useTheme } from "@/theme/theme";
+import clsx from "clsx";
 
-export function Chip({ label, selected, onPress }: { label: string; selected?: boolean; onPress?: () => void }) {
-  const c = useTheme();
+export function Chip({ label, selected, onClick }: { label: string; selected?: boolean; onClick?: () => void }) {
   return (
-    <Pressable
-      onPress={onPress}
-      disabled={!onPress}
-      style={[
-        styles.chip,
-        {
-          borderColor: selected ? c.color.gold : c.color.border,
-          backgroundColor: selected ? c.color.goldDim : c.color.surfaceAlt,
-        },
-      ]}
+    <button
+      type="button"
+      onClick={onClick}
+      className={clsx(
+        "shrink-0 rounded-full border px-3 py-1.5 text-sm whitespace-nowrap transition",
+        selected
+          ? "border-gold bg-gold/15 text-text"
+          : "border-border bg-surface-alt text-text-dim hover:border-gold/60",
+      )}
     >
-      <Text style={[styles.label, { color: selected ? c.color.text : c.color.textDim }]} numberOfLines={1}>
-        {label}
-      </Text>
-    </Pressable>
+      {label}
+    </button>
   );
 }
-
-const styles = StyleSheet.create({
-  chip: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 999,
-    borderWidth: 1,
-    marginRight: 8,
-    marginBottom: 8,
-  },
-  label: { fontSize: 13 },
-});
