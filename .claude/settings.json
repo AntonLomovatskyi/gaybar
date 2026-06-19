@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/antonlomovatskyi/personal-projects/gaybar/**)",
+      "Read(//tmp/**)",
+      "Read(//private/tmp/**)",
+      "Bash(sips *)",
+      "Bash(/usr/bin/sips *)",
+      "Bash(node *)",
+      "Bash(npx *)",
+      "Bash(tsx *)",
+      "Bash(pnpm *)",
+      "Bash(md5 *)",
+      "Bash(which *)",
+      "Bash(command -v *)"
+    ]
+  }
+}

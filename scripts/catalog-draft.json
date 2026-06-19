@@ -1,0 +1,2297 @@
+[
+  {
+    "raw": "Лід в кубиках",
+    "canonicalId": "ice-cubes",
+    "canonicalNameUk": "Лід в кубиках",
+    "category": "ice",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": true
+  },
+  {
+    "raw": "Лимонний сік",
+    "canonicalId": "lemon-juice",
+    "canonicalNameUk": "Лимонний сік",
+    "category": "juice",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": true
+  },
+  {
+    "raw": "Лаймовий сік",
+    "canonicalId": "lime-juice",
+    "canonicalNameUk": "Лаймовий сік",
+    "category": "juice",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Цукровий сироп",
+    "canonicalId": "simple-syrup",
+    "canonicalNameUk": "Цукровий сироп",
+    "category": "syrup",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": true
+  },
+  {
+    "raw": "Лондонський сухий джин",
+    "canonicalId": "london-dry-gin",
+    "canonicalNameUk": "Лондонський сухий джин",
+    "category": "spirit",
+    "family": "gin",
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Лід подрібнений",
+    "canonicalId": "crushed-ice",
+    "canonicalNameUk": "Лід подрібнений",
+    "category": "ice",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": true
+  },
+  {
+    "raw": "Білок перепелиного яйця",
+    "canonicalId": "quail-egg-white",
+    "canonicalNameUk": "Білок перепелиного яйця",
+    "category": "egg",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "М'ята",
+    "canonicalId": "mint",
+    "canonicalNameUk": "М'ята",
+    "category": "herb",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Білий ром",
+    "canonicalId": "white-rum",
+    "canonicalNameUk": "Білий ром",
+    "category": "spirit",
+    "family": "rum",
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Горілка",
+    "canonicalId": "vodka",
+    "canonicalNameUk": "Горілка",
+    "category": "spirit",
+    "family": "vodka",
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Апельсин",
+    "canonicalId": "orange",
+    "canonicalNameUk": "Апельсин",
+    "category": "fruit",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": true
+  },
+  {
+    "raw": "Лайм",
+    "canonicalId": "lime",
+    "canonicalNameUk": "Лайм",
+    "category": "fruit",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Червона коктейльна вишня",
+    "canonicalId": "maraschino-cherry",
+    "canonicalNameUk": "Червона коктейльна вишня",
+    "category": "garnish",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Ангостура бітер",
+    "canonicalId": "angostura-bitters",
+    "canonicalNameUk": "Ангостура бітер",
+    "category": "bitters",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Лимонна цедра",
+    "canonicalId": "lemon-peel",
+    "canonicalNameUk": "Лимонна цедра",
+    "category": "garnish",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": true
+  },
+  {
+    "raw": "Тріпл сек",
+    "canonicalId": "triple-sec",
+    "canonicalNameUk": "Тріпл сек",
+    "category": "liqueur",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Гренадін",
+    "canonicalId": "grenadine",
+    "canonicalNameUk": "Гренадін",
+    "category": "syrup",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Апельсиновий сік",
+    "canonicalId": "orange-juice",
+    "canonicalNameUk": "Апельсиновий сік",
+    "category": "juice",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Медовий сироп",
+    "canonicalId": "honey-syrup",
+    "canonicalNameUk": "Медовий сироп",
+    "category": "syrup",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Зелений базилік",
+    "canonicalId": "basil",
+    "canonicalNameUk": "Зелений базилік",
+    "category": "herb",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Ананасовий сік",
+    "canonicalId": "pineapple-juice",
+    "canonicalNameUk": "Ананасовий сік",
+    "category": "juice",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Бурбон",
+    "canonicalId": "bourbon",
+    "canonicalNameUk": "Бурбон",
+    "category": "spirit",
+    "family": "whisky",
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Содова",
+    "canonicalId": "soda-water",
+    "canonicalNameUk": "Содова",
+    "category": "mixer",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Мескаль",
+    "canonicalId": "mezcal",
+    "canonicalNameUk": "Мескаль",
+    "category": "spirit",
+    "family": "mezcal",
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Лимон",
+    "canonicalId": "lemon",
+    "canonicalNameUk": "Лимон",
+    "category": "fruit",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": true
+  },
+  {
+    "raw": "Апельсинова цедра",
+    "canonicalId": "orange-zest",
+    "canonicalNameUk": "Апельсинова цедра",
+    "category": "garnish",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Корінь імбиру",
+    "canonicalId": "ginger-root",
+    "canonicalNameUk": "Корінь імбиру",
+    "category": "spice",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Айріш крім",
+    "canonicalId": "irish-cream",
+    "canonicalNameUk": "Ірландський крем-лікер",
+    "category": "liqueur",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Лікер з квіток бузини De Kuyper",
+    "canonicalId": "elderflower-liqueur",
+    "canonicalNameUk": "Лікер із квіток бузини",
+    "category": "liqueur",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Сухий вермут",
+    "canonicalId": "dry-vermouth",
+    "canonicalNameUk": "Сухий вермут",
+    "category": "wine",
+    "family": "vermouth",
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Витриманий ром",
+    "canonicalId": "aged-rum",
+    "canonicalNameUk": "Витриманий ром",
+    "category": "spirit",
+    "family": "rum",
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Лікер тріпл сек",
+    "canonicalId": "triple-sec",
+    "canonicalNameUk": "Лікер тріпл сек",
+    "category": "liqueur",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Шотландське віскі",
+    "canonicalId": "scotch-whisky",
+    "canonicalNameUk": "Шотландське віскі",
+    "category": "spirit",
+    "family": "whisky",
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Ананас",
+    "canonicalId": "pineapple",
+    "canonicalNameUk": "Ананас",
+    "category": "fruit",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Малина",
+    "canonicalId": "raspberry",
+    "canonicalNameUk": "Малина",
+    "category": "fruit",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Золотий ром",
+    "canonicalId": "gold-rum",
+    "canonicalNameUk": "Золотий ром",
+    "category": "spirit",
+    "family": "rum",
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Яблучний сік",
+    "canonicalId": "apple-juice",
+    "canonicalNameUk": "Яблучний сік",
+    "category": "juice",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Мелена кориця",
+    "canonicalId": "ground-cinnamon",
+    "canonicalNameUk": "Мелена кориця",
+    "category": "spice",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Жовтий банановий лікер",
+    "canonicalId": "banana-liqueur",
+    "canonicalNameUk": "Банановий лікер",
+    "category": "liqueur",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Спрайт",
+    "canonicalId": "lemon-lime-soda",
+    "canonicalNameUk": "Лимонно-лаймовий газований напій",
+    "category": "mixer",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Імбирний сироп",
+    "canonicalId": "ginger-syrup",
+    "canonicalNameUk": "Імбирний сироп",
+    "category": "syrup",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Кавовий лікер",
+    "canonicalId": "coffee-liqueur",
+    "canonicalNameUk": "Кавовий лікер",
+    "category": "liqueur",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Абсент",
+    "canonicalId": "absinthe",
+    "canonicalNameUk": "Абсент",
+    "category": "spirit",
+    "family": "absinthe",
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Срібна текіла",
+    "canonicalId": "silver-tequila",
+    "canonicalNameUk": "Срібна текіла",
+    "category": "spirit",
+    "family": "tequila",
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Лимонний фреш",
+    "canonicalId": "lemon-juice",
+    "canonicalNameUk": "Лимонний сік",
+    "category": "juice",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": true
+  },
+  {
+    "raw": "Коньяк",
+    "canonicalId": "cognac",
+    "canonicalNameUk": "Коньяк",
+    "category": "spirit",
+    "family": "brandy",
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Огірок",
+    "canonicalId": "cucumber",
+    "canonicalNameUk": "Огірок",
+    "category": "fruit",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Червоний вермут",
+    "canonicalId": "sweet-red-vermouth",
+    "canonicalNameUk": "Червоний вермут",
+    "category": "wine",
+    "family": "vermouth",
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Яблуко",
+    "canonicalId": "apple",
+    "canonicalNameUk": "Яблуко",
+    "category": "fruit",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Кардамон",
+    "canonicalId": "cardamom",
+    "canonicalNameUk": "Кардамон",
+    "category": "spice",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Лікер мараскино",
+    "canonicalId": "maraschino-liqueur",
+    "canonicalNameUk": "Лікер мараскіно",
+    "category": "liqueur",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Грейпфрутовий сік",
+    "canonicalId": "grapefruit-juice",
+    "canonicalNameUk": "Грейпфрутовий сік",
+    "category": "juice",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Коктейльна вишня",
+    "canonicalId": "cocktail-cherry",
+    "canonicalNameUk": "Коктейльна вишня",
+    "category": "garnish",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Селера",
+    "canonicalId": "celery",
+    "canonicalNameUk": "Селера",
+    "category": "fruit",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Коричневий какао лікер",
+    "canonicalId": "dark-creme-de-cacao",
+    "canonicalNameUk": "Коричневий какао-лікер (crème de cacao)",
+    "category": "liqueur",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Нежирні вершки",
+    "canonicalId": "light-cream",
+    "canonicalNameUk": "Нежирні вершки",
+    "category": "dairy",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Червоний соус табаско",
+    "canonicalId": "tabasco-sauce",
+    "canonicalNameUk": "Соус табаско (червоний)",
+    "category": "mixer",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Ванільний сироп",
+    "canonicalId": "vanilla-syrup",
+    "canonicalNameUk": "Ванільний сироп",
+    "category": "syrup",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Просекко",
+    "canonicalId": "prosecco",
+    "canonicalNameUk": "Просекко",
+    "category": "wine",
+    "family": "sparkling",
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Лікер драй оранж De Kuyper",
+    "canonicalId": "dry-orange-curacao",
+    "canonicalNameUk": "Лікер драй оранж (dry orange curaçao)",
+    "category": "liqueur",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Малиновий сироп",
+    "canonicalId": "raspberry-syrup",
+    "canonicalNameUk": "Малиновий сироп",
+    "category": "syrup",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Яєчний білок",
+    "canonicalId": "egg-white",
+    "canonicalNameUk": "Яєчний білок",
+    "category": "egg",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": true
+  },
+  {
+    "raw": "Апероль",
+    "canonicalId": "aperol",
+    "canonicalNameUk": "Апероль",
+    "category": "liqueur",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Золота текіла",
+    "canonicalId": "gold-tequila",
+    "canonicalNameUk": "Золота текіла",
+    "category": "spirit",
+    "family": "tequila",
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Імбирне пиво",
+    "canonicalId": "ginger-beer",
+    "canonicalNameUk": "Імбирне пиво",
+    "category": "mixer",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Грейпфрутова цедра",
+    "canonicalId": "grapefruit-zest",
+    "canonicalNameUk": "Грейпфрутова цедра",
+    "category": "garnish",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Крижаний куб",
+    "canonicalId": "ice-cube",
+    "canonicalNameUk": "Кубик льоду",
+    "category": "ice",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": true
+  },
+  {
+    "raw": "Срібна текіла Sauza",
+    "canonicalId": "silver-tequila",
+    "canonicalNameUk": "Срібна текіла",
+    "category": "spirit",
+    "family": "tequila",
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Сіль",
+    "canonicalId": "salt",
+    "canonicalNameUk": "Сіль",
+    "category": "spice",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": true
+  },
+  {
+    "raw": "Сік журавлини",
+    "canonicalId": "cranberry-juice",
+    "canonicalNameUk": "Журавлинний сік",
+    "category": "juice",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Полуниця",
+    "canonicalId": "strawberry",
+    "canonicalNameUk": "Полуниця",
+    "category": "fruit",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Маракуя",
+    "canonicalId": "passion-fruit",
+    "canonicalNameUk": "Маракуя",
+    "category": "fruit",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Персиковий лікер",
+    "canonicalId": "peach-liqueur",
+    "canonicalNameUk": "Персиковий лікер",
+    "category": "liqueur",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Гранат",
+    "canonicalId": "pomegranate",
+    "canonicalNameUk": "Гранат",
+    "category": "fruit",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Темний ром",
+    "canonicalId": "dark-rum",
+    "canonicalNameUk": "Темний ром",
+    "category": "spirit",
+    "family": "rum",
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Абрикосовий лікер",
+    "canonicalId": "apricot-liqueur",
+    "canonicalNameUk": "Абрикосовий лікер",
+    "category": "liqueur",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Перець чилі",
+    "canonicalId": "chili-pepper",
+    "canonicalNameUk": "Перець чилі",
+    "category": "spice",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Лаймове листя",
+    "canonicalId": "kaffir-lime-leaves",
+    "canonicalNameUk": "Лаймове листя",
+    "category": "herb",
+    "family": null,
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Лимонна трава",
+    "canonicalId": "lemongrass",
+    "canonicalNameUk": "Лимонна трава",
+    "category": "herb",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Коріандр",
+    "canonicalId": "coriander",
+    "canonicalNameUk": "Коріандр",
+    "category": "herb",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Грейпфрут",
+    "canonicalId": "grapefruit",
+    "canonicalNameUk": "Грейпфрут",
+    "category": "fruit",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Манго",
+    "canonicalId": "mango",
+    "canonicalNameUk": "Манго",
+    "category": "fruit",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Томатний сік",
+    "canonicalId": "tomato-juice",
+    "canonicalNameUk": "Томатний сік",
+    "category": "juice",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Лікер амарето",
+    "canonicalId": "amaretto",
+    "canonicalNameUk": "Амаретто",
+    "category": "liqueur",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Самбука",
+    "canonicalId": "sambuca",
+    "canonicalNameUk": "Самбука",
+    "category": "liqueur",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Зелений м'ятний лікер",
+    "canonicalId": "green-creme-de-menthe",
+    "canonicalNameUk": "Зелений м'ятний лікер",
+    "category": "liqueur",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Білий винний оцет",
+    "canonicalId": "white-wine-vinegar",
+    "canonicalNameUk": "Білий винний оцет",
+    "category": "pantry",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Коньяк Roullet",
+    "canonicalId": "cognac",
+    "canonicalNameUk": "Коньяк",
+    "category": "spirit",
+    "family": "brandy",
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Лікер Galliano",
+    "canonicalId": "galliano",
+    "canonicalNameUk": "Лікер Гальяно",
+    "category": "liqueur",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Апельсиновий фреш",
+    "canonicalId": "orange-juice",
+    "canonicalNameUk": "Апельсиновий сік (фреш)",
+    "category": "juice",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Лілле блан",
+    "canonicalId": "lillet-blanc",
+    "canonicalNameUk": "Лілле Блан",
+    "category": "wine",
+    "family": "wine",
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Ананасовий фреш",
+    "canonicalId": "pineapple-juice",
+    "canonicalNameUk": "Ананасовий сік (фреш)",
+    "category": "juice",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Мелений мускатний горіх",
+    "canonicalId": "nutmeg",
+    "canonicalNameUk": "Мускатний горіх мелений",
+    "category": "spice",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Лікер мараскіно",
+    "canonicalId": "maraschino-liqueur",
+    "canonicalNameUk": "Лікер мараскіно",
+    "category": "liqueur",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Бенедиктин",
+    "canonicalId": "benedictine",
+    "canonicalNameUk": "Бенедиктин",
+    "category": "liqueur",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Цедра лимона",
+    "canonicalId": "lemon-zest",
+    "canonicalNameUk": "Цедра лимона",
+    "category": "garnish",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": true
+  },
+  {
+    "raw": "Мигдальний сироп",
+    "canonicalId": "orgeat-syrup",
+    "canonicalNameUk": "Мигдальний сироп (орґа)",
+    "category": "syrup",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Розмарин",
+    "canonicalId": "rosemary",
+    "canonicalNameUk": "Розмарин",
+    "category": "herb",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Банан",
+    "canonicalId": "banana",
+    "canonicalNameUk": "Банан",
+    "category": "fruit",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Сироп кориці",
+    "canonicalId": "cinnamon-syrup",
+    "canonicalNameUk": "Сироп кориці",
+    "category": "syrup",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Шафран",
+    "canonicalId": "saffron",
+    "canonicalNameUk": "Шафран",
+    "category": "spice",
+    "family": null,
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Ананасове листя",
+    "canonicalId": "pineapple-leaf",
+    "canonicalNameUk": "Ананасове листя",
+    "category": "garnish",
+    "family": null,
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Білий вермут",
+    "canonicalId": "dry-vermouth",
+    "canonicalNameUk": "Білий (сухий) вермут",
+    "category": "wine",
+    "family": "vermouth",
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Амаро",
+    "canonicalId": "amaro",
+    "canonicalNameUk": "Амаро",
+    "category": "liqueur",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Бодян",
+    "canonicalId": "star-anise",
+    "canonicalNameUk": "Бодян (зірчастий аніс)",
+    "category": "spice",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Чайний бітер",
+    "canonicalId": "tea-bitters",
+    "canonicalNameUk": "Чайний бітер",
+    "category": "bitters",
+    "family": null,
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Сироп агави",
+    "canonicalId": "agave-syrup",
+    "canonicalNameUk": "Сироп агави",
+    "category": "syrup",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Односолодове віскі з острова айла",
+    "canonicalId": "islay-single-malt-whisky",
+    "canonicalNameUk": "Односолодове віскі з острова Айла",
+    "category": "spirit",
+    "family": "whisky",
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Апельсиновий бітер",
+    "canonicalId": "orange-bitters",
+    "canonicalNameUk": "Апельсиновий бітер",
+    "category": "bitters",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Лікер фалернум",
+    "canonicalId": "falernum",
+    "canonicalNameUk": "Фалернум",
+    "category": "liqueur",
+    "family": null,
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Херес фіно",
+    "canonicalId": "fino-sherry",
+    "canonicalNameUk": "Херес фіно",
+    "category": "wine",
+    "family": "wine",
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Вода з квіток апельсина",
+    "canonicalId": "orange-flower-water",
+    "canonicalNameUk": "Вода з квіток апельсина",
+    "category": "pantry",
+    "family": null,
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Чебрець",
+    "canonicalId": "thyme",
+    "canonicalNameUk": "Чебрець",
+    "category": "herb",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Кориця в паличках",
+    "canonicalId": "cinnamon-stick",
+    "canonicalNameUk": "Кориця в паличках",
+    "category": "spice",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Зелений чай листовий",
+    "canonicalId": "green-tea",
+    "canonicalNameUk": "Зелений чай листовий",
+    "category": "pantry",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Карамельний сироп",
+    "canonicalId": "caramel-syrup",
+    "canonicalNameUk": "Карамельний сироп",
+    "category": "syrup",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Чорна смородина",
+    "canonicalId": "blackcurrant",
+    "canonicalNameUk": "Чорна смородина",
+    "category": "fruit",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Лікер трипл сек",
+    "canonicalId": "triple-sec",
+    "canonicalNameUk": "Лікер трипл сек",
+    "category": "liqueur",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Цитрусова горілка",
+    "canonicalId": "citrus-vodka",
+    "canonicalNameUk": "Цитрусова горілка",
+    "category": "spirit",
+    "family": "vodka",
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Просекко Martini",
+    "canonicalId": "prosecco",
+    "canonicalNameUk": "Просекко",
+    "category": "wine",
+    "family": "sparkling",
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Сироп маракуї",
+    "canonicalId": "passion-fruit-syrup",
+    "canonicalNameUk": "Сироп маракуї",
+    "category": "syrup",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Тростинний цукор в кубиках",
+    "canonicalId": "cane-sugar-cubes",
+    "canonicalNameUk": "Тростинний цукор в кубиках",
+    "category": "pantry",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": true
+  },
+  {
+    "raw": "Рожевий вермут Martini",
+    "canonicalId": "rose-vermouth",
+    "canonicalNameUk": "Рожевий вермут",
+    "category": "wine",
+    "family": "vermouth",
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Журавлина",
+    "canonicalId": "cranberry",
+    "canonicalNameUk": "Журавлина",
+    "category": "fruit",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Цукрова пудра",
+    "canonicalId": "powdered-sugar",
+    "canonicalNameUk": "Цукрова пудра",
+    "category": "pantry",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": true
+  },
+  {
+    "raw": "Кокосове пюре",
+    "canonicalId": "coconut-puree",
+    "canonicalNameUk": "Кокосове пюре",
+    "category": "fruit",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Персиковий сік",
+    "canonicalId": "peach-juice",
+    "canonicalNameUk": "Персиковий сік",
+    "category": "juice",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Мандариновий сироп",
+    "canonicalId": "tangerine-syrup",
+    "canonicalNameUk": "Мандариновий сироп",
+    "category": "syrup",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Мандарин",
+    "canonicalId": "tangerine",
+    "canonicalNameUk": "Мандарин",
+    "category": "fruit",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Ягоди",
+    "canonicalId": "mixed-berries",
+    "canonicalNameUk": "Ягоди",
+    "category": "fruit",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Червоний соус табаско та ворчестер",
+    "canonicalId": "tabasco-worcestershire-sauce",
+    "canonicalNameUk": "Соус табаско та ворчестер",
+    "category": "mixer",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Сіль та чорний перець",
+    "canonicalId": "salt-and-black-pepper",
+    "canonicalNameUk": "Сіль та чорний перець",
+    "category": "spice",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": true
+  },
+  {
+    "raw": "Полуничний сироп",
+    "canonicalId": "strawberry-syrup",
+    "canonicalNameUk": "Полуничний сироп",
+    "category": "syrup",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Динний лікер",
+    "canonicalId": "melon-liqueur",
+    "canonicalNameUk": "Динний лікер",
+    "category": "liqueur",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Мелена кава",
+    "canonicalId": "ground-coffee",
+    "canonicalNameUk": "Мелена кава",
+    "category": "pantry",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Зелений банановий лікер",
+    "canonicalId": "banana-liqueur",
+    "canonicalNameUk": "Банановий лікер",
+    "category": "liqueur",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Збиті вершки",
+    "canonicalId": "whipped-cream",
+    "canonicalNameUk": "Збиті вершки",
+    "category": "dairy",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Айріш крем",
+    "canonicalId": "irish-cream",
+    "canonicalNameUk": "Айріш крем (вершковий лікер)",
+    "category": "liqueur",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Кокосовий лікер",
+    "canonicalId": "coconut-liqueur",
+    "canonicalNameUk": "Кокосовий лікер",
+    "category": "liqueur",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Кокосова стружка",
+    "canonicalId": "shredded-coconut",
+    "canonicalNameUk": "Кокосова стружка",
+    "category": "garnish",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Грейпфрутовий лікер",
+    "canonicalId": "grapefruit-liqueur",
+    "canonicalNameUk": "Грейпфрутовий лікер",
+    "category": "liqueur",
+    "family": null,
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Біле вино десертне",
+    "canonicalId": "dessert-white-wine",
+    "canonicalNameUk": "Біле десертне вино",
+    "category": "wine",
+    "family": "wine",
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Трояндова вода",
+    "canonicalId": "rose-water",
+    "canonicalNameUk": "Трояндова вода",
+    "category": "other",
+    "family": null,
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Квіти фіалки",
+    "canonicalId": "violet-flowers",
+    "canonicalNameUk": "Квіти фіалки",
+    "category": "garnish",
+    "family": null,
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Пишо бітер",
+    "canonicalId": "peychauds-bitters",
+    "canonicalNameUk": "Бітер Peychaud's",
+    "category": "bitters",
+    "family": null,
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Вода без газу",
+    "canonicalId": "still-water",
+    "canonicalNameUk": "Вода без газу",
+    "category": "mixer",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": true
+  },
+  {
+    "raw": "Цукор в кубиках",
+    "canonicalId": "sugar-cube",
+    "canonicalNameUk": "Цукор у кубиках",
+    "category": "pantry",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": true
+  },
+  {
+    "raw": "Ром",
+    "canonicalId": "white-rum",
+    "canonicalNameUk": "Ром (світлий)",
+    "category": "spirit",
+    "family": "rum",
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Сік грейпфрута",
+    "canonicalId": "grapefruit-juice",
+    "canonicalNameUk": "Грейпфрутовий сік",
+    "category": "juice",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Світлий какао-лікер",
+    "canonicalId": "white-creme-de-cacao",
+    "canonicalNameUk": "Світлий какао-лікер (crème de cacao)",
+    "category": "liqueur",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Вершки",
+    "canonicalId": "cream",
+    "canonicalNameUk": "Вершки",
+    "category": "dairy",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Мескаль Espadin",
+    "canonicalId": "mezcal",
+    "canonicalNameUk": "Мескаль",
+    "category": "spirit",
+    "family": "mezcal",
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Сироп Фалернум",
+    "canonicalId": "falernum",
+    "canonicalNameUk": "Фалернум",
+    "category": "syrup",
+    "family": null,
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Лікер Мараскіно",
+    "canonicalId": "maraschino-liqueur",
+    "canonicalNameUk": "Лікер Мараскіно",
+    "category": "liqueur",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Лікер Yellow Chartreuse",
+    "canonicalId": "yellow-chartreuse",
+    "canonicalNameUk": "Жовтий Шартрез",
+    "category": "liqueur",
+    "family": null,
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Лікер Amaro Nonino",
+    "canonicalId": "amaro-nonino",
+    "canonicalNameUk": "Амаро Ноніно",
+    "category": "liqueur",
+    "family": null,
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Шотландський віскі",
+    "canonicalId": "scotch-whisky",
+    "canonicalNameUk": "Шотландський віскі",
+    "category": "spirit",
+    "family": "whisky",
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Односолодове віскі з острова Айла",
+    "canonicalId": "islay-single-malt-whisky",
+    "canonicalNameUk": "Односолодовий віскі Айла",
+    "category": "spirit",
+    "family": "whisky",
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Медово-імбирний сироп",
+    "canonicalId": "honey-ginger-syrup",
+    "canonicalNameUk": "Медово-імбирний сироп",
+    "category": "syrup",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Скибка імбиру",
+    "canonicalId": "ginger",
+    "canonicalNameUk": "Імбир",
+    "category": "spice",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Гілочка м'яти",
+    "canonicalId": "mint",
+    "canonicalNameUk": "М'ята",
+    "category": "herb",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Ванільна горілка",
+    "canonicalId": "vanilla-vodka",
+    "canonicalNameUk": "Ванільна горілка",
+    "category": "spirit",
+    "family": "vodka",
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Сироп з бузини",
+    "canonicalId": "elderflower-syrup",
+    "canonicalNameUk": "Сироп з бузини",
+    "category": "syrup",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Червоний перець чилі",
+    "canonicalId": "red-chili-pepper",
+    "canonicalNameUk": "Червоний перець чилі",
+    "category": "spice",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Сухий джин",
+    "canonicalId": "dry-gin",
+    "canonicalNameUk": "Сухий джин",
+    "category": "spirit",
+    "family": "gin",
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Фіалковий лікер De Kuyper",
+    "canonicalId": "creme-de-violette",
+    "canonicalNameUk": "Фіалковий лікер (Crème de Violette)",
+    "category": "liqueur",
+    "family": null,
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Бурбон або житній віскі",
+    "canonicalId": "bourbon",
+    "canonicalNameUk": "Бурбон",
+    "category": "spirit",
+    "family": "whisky",
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Лікер Кампарі",
+    "canonicalId": "campari",
+    "canonicalNameUk": "Кампарі",
+    "category": "liqueur",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Солодкий червоний вермут",
+    "canonicalId": "sweet-red-vermouth",
+    "canonicalNameUk": "Солодкий червоний вермут",
+    "category": "wine",
+    "family": "vermouth",
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Лікер White Crème de Menthe",
+    "canonicalId": "white-creme-de-menthe",
+    "canonicalNameUk": "Білий м'ятний лікер (Crème de Menthe)",
+    "category": "liqueur",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Гілочка свіжої м'яти",
+    "canonicalId": "mint",
+    "canonicalNameUk": "М'ята",
+    "category": "herb",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Трипл сек",
+    "canonicalId": "triple-sec",
+    "canonicalNameUk": "Трипл сек",
+    "category": "liqueur",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Житнє віскі",
+    "canonicalId": "rye-whiskey",
+    "canonicalNameUk": "Житнє віскі",
+    "category": "spirit",
+    "family": "whisky",
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Солодкий вермут",
+    "canonicalId": "sweet-red-vermouth",
+    "canonicalNameUk": "Солодкий червоний вермут",
+    "category": "wine",
+    "family": "vermouth",
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Бітер Peychaud's",
+    "canonicalId": "peychauds-bitters",
+    "canonicalNameUk": "Бітер Peychaud's",
+    "category": "bitters",
+    "family": null,
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Лікер Amaretto",
+    "canonicalId": "amaretto",
+    "canonicalNameUk": "Амаретто",
+    "category": "liqueur",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Тонік",
+    "canonicalId": "tonic-water",
+    "canonicalNameUk": "Тонік",
+    "category": "mixer",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Оливки",
+    "canonicalId": "olives",
+    "canonicalNameUk": "Оливки",
+    "category": "garnish",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Вишневий лікер",
+    "canonicalId": "cherry-liqueur",
+    "canonicalNameUk": "Вишневий лікер",
+    "category": "liqueur",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Морквяний сік",
+    "canonicalId": "carrot-juice",
+    "canonicalNameUk": "Морквяний сік",
+    "category": "juice",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Мелений чорний перець",
+    "canonicalId": "black-pepper",
+    "canonicalNameUk": "Мелений чорний перець",
+    "category": "spice",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": true
+  },
+  {
+    "raw": "Трюфельна олія",
+    "canonicalId": "truffle-oil",
+    "canonicalNameUk": "Трюфельна олія",
+    "category": "pantry",
+    "family": null,
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Сушений ананас",
+    "canonicalId": "dried-pineapple",
+    "canonicalNameUk": "Сушений ананас",
+    "category": "garnish",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Єгермейстер",
+    "canonicalId": "jagermeister",
+    "canonicalNameUk": "Єгермейстер",
+    "category": "liqueur",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Кокосовий сироп",
+    "canonicalId": "coconut-syrup",
+    "canonicalNameUk": "Кокосовий сироп",
+    "category": "syrup",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Шматочки ананасу",
+    "canonicalId": "pineapple",
+    "canonicalNameUk": "Ананас",
+    "category": "fruit",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Віскі",
+    "canonicalId": "whisky",
+    "canonicalNameUk": "Віскі",
+    "category": "spirit",
+    "family": "whisky",
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Бергамот бітер",
+    "canonicalId": "bergamot-bitters",
+    "canonicalNameUk": "Бергамотовий бітер",
+    "category": "bitters",
+    "family": null,
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Льодяний куб",
+    "canonicalId": "ice",
+    "canonicalNameUk": "Лід",
+    "category": "ice",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": true
+  },
+  {
+    "raw": "Домашній лавандовий джин",
+    "canonicalId": "lavender-gin",
+    "canonicalNameUk": "Лавандовий джин",
+    "category": "spirit",
+    "family": "gin",
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Лимончело",
+    "canonicalId": "limoncello",
+    "canonicalNameUk": "Лимончело",
+    "category": "liqueur",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Лікер з ягід мірта",
+    "canonicalId": "myrtle-liqueur",
+    "canonicalNameUk": "Лікер з ягід мірта",
+    "category": "liqueur",
+    "family": null,
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Сироп манго",
+    "canonicalId": "mango-syrup",
+    "canonicalNameUk": "Сироп манго",
+    "category": "syrup",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Грейпфрутовий бітер",
+    "canonicalId": "grapefruit-bitters",
+    "canonicalNameUk": "Грейпфрутовий бітер",
+    "category": "bitters",
+    "family": null,
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Грушевий бренді",
+    "canonicalId": "pear-brandy",
+    "canonicalNameUk": "Грушевий бренді",
+    "category": "spirit",
+    "family": "brandy",
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Кроп",
+    "canonicalId": "dill",
+    "canonicalNameUk": "Кріп",
+    "category": "herb",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Піско",
+    "canonicalId": "pisco",
+    "canonicalNameUk": "Піско",
+    "category": "spirit",
+    "family": "pisco",
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Дюбонне",
+    "canonicalId": "dubonnet",
+    "canonicalNameUk": "Дюбонне",
+    "category": "wine",
+    "family": "wine",
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Херес манзанілья",
+    "canonicalId": "manzanilla-sherry",
+    "canonicalNameUk": "Херес манзанілья",
+    "category": "wine",
+    "family": "wine",
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Ревеневий бітер",
+    "canonicalId": "rhubarb-bitters",
+    "canonicalNameUk": "Ревеневий бітер",
+    "category": "bitters",
+    "family": null,
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Пряний ром",
+    "canonicalId": "spiced-rum",
+    "canonicalNameUk": "Пряний ром",
+    "category": "spirit",
+    "family": "rum",
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Надміцний ром",
+    "canonicalId": "overproof-rum",
+    "canonicalNameUk": "Надміцний ром",
+    "category": "spirit",
+    "family": "rum",
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Лікер піменто драм",
+    "canonicalId": "pimento-dram",
+    "canonicalNameUk": "Лікер піменто драм",
+    "category": "liqueur",
+    "family": null,
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Пряний сироп",
+    "canonicalId": "spiced-syrup",
+    "canonicalNameUk": "Пряний сироп",
+    "category": "syrup",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Домашній цитрусовий бітер",
+    "canonicalId": "citrus-bitters",
+    "canonicalNameUk": "Домашній цитрусовий бітер",
+    "category": "bitters",
+    "family": null,
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Пішо бітер",
+    "canonicalId": "peychauds-bitters",
+    "canonicalNameUk": "Пішо бітер",
+    "category": "bitters",
+    "family": null,
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Зелений шартрез",
+    "canonicalId": "green-chartreuse",
+    "canonicalNameUk": "Зелений шартрез",
+    "category": "liqueur",
+    "family": null,
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Кальвадос",
+    "canonicalId": "calvados",
+    "canonicalNameUk": "Кальвадос",
+    "category": "spirit",
+    "family": "brandy",
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Кленовий сироп",
+    "canonicalId": "maple-syrup",
+    "canonicalNameUk": "Кленовий сироп",
+    "category": "syrup",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Портвейн тоні",
+    "canonicalId": "tawny-port",
+    "canonicalNameUk": "Портвейн тоні",
+    "category": "wine",
+    "family": "wine",
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Сушена малина",
+    "canonicalId": "dried-raspberry",
+    "canonicalNameUk": "Сушена малина",
+    "category": "fruit",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Бехерівка",
+    "canonicalId": "becherovka",
+    "canonicalNameUk": "Бехерівка",
+    "category": "liqueur",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Домашній пшеничний кордіал",
+    "canonicalId": "wheat-cordial",
+    "canonicalNameUk": "Домашній пшеничний кордіал",
+    "category": "syrup",
+    "family": null,
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Домашній сосново-медовий сироп",
+    "canonicalId": "pine-honey-syrup",
+    "canonicalNameUk": "Домашній сосново-медовий сироп",
+    "category": "syrup",
+    "family": null,
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Домашня шавлієва вода",
+    "canonicalId": "sage-water",
+    "canonicalNameUk": "Домашня шавлієва вода",
+    "category": "other",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Шавлія",
+    "canonicalId": "sage",
+    "canonicalNameUk": "Шавлія",
+    "category": "herb",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Стрега",
+    "canonicalId": "strega",
+    "canonicalNameUk": "Стрега",
+    "category": "liqueur",
+    "family": null,
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Домашній медово-імбирний сироп",
+    "canonicalId": "honey-ginger-syrup",
+    "canonicalNameUk": "Домашній медово-імбирний сироп",
+    "category": "syrup",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Мартіні біттер Martini",
+    "canonicalId": "martini-bitter",
+    "canonicalNameUk": "Мартіні біттер",
+    "category": "liqueur",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Херес олоросо",
+    "canonicalId": "oloroso-sherry",
+    "canonicalNameUk": "Херес олоросо",
+    "category": "wine",
+    "family": "wine",
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Домашня горілка з чилі",
+    "canonicalId": "chili-infused-vodka",
+    "canonicalNameUk": "Горілка, настояна на чилі",
+    "category": "spirit",
+    "family": "vodka",
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Домашній місо сироп",
+    "canonicalId": "miso-syrup",
+    "canonicalNameUk": "Сироп з місо",
+    "category": "syrup",
+    "family": null,
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Ламінарія",
+    "canonicalId": "kombu-kelp",
+    "canonicalNameUk": "Ламінарія (морська капуста)",
+    "category": "other",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Сироп троянди",
+    "canonicalId": "rose-syrup",
+    "canonicalNameUk": "Трояндовий сироп",
+    "category": "syrup",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Лаймовий сироп",
+    "canonicalId": "lime-syrup",
+    "canonicalNameUk": "Лаймовий сироп",
+    "category": "syrup",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Пелюстки троянд",
+    "canonicalId": "rose-petals",
+    "canonicalNameUk": "Пелюстки троянд",
+    "category": "garnish",
+    "family": null,
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Чинар",
+    "canonicalId": "cynar",
+    "canonicalNameUk": "Чинар (лікер на артишоках)",
+    "category": "liqueur",
+    "family": null,
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Японське віскі",
+    "canonicalId": "japanese-whisky",
+    "canonicalNameUk": "Японське віскі",
+    "category": "spirit",
+    "family": "whisky",
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Лікер квітучої вишні",
+    "canonicalId": "cherry-blossom-liqueur",
+    "canonicalNameUk": "Лікер квітучої вишні (сакура)",
+    "category": "liqueur",
+    "family": null,
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Пастіс",
+    "canonicalId": "pastis",
+    "canonicalNameUk": "Пастіс",
+    "category": "liqueur",
+    "family": null,
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Лавандовий бітер",
+    "canonicalId": "lavender-bitters",
+    "canonicalNameUk": "Лавандовий бітер",
+    "category": "bitters",
+    "family": null,
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Орхідея",
+    "canonicalId": "orchid-flower",
+    "canonicalNameUk": "Орхідея (їстівна квітка)",
+    "category": "garnish",
+    "family": null,
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Соджу",
+    "canonicalId": "soju",
+    "canonicalNameUk": "Соджу",
+    "category": "spirit",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Молоко",
+    "canonicalId": "milk",
+    "canonicalNameUk": "Молоко",
+    "category": "dairy",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": true
+  },
+  {
+    "raw": "Житнє віскі Woodford Reserve",
+    "canonicalId": "rye-whiskey",
+    "canonicalNameUk": "Житнє віскі",
+    "category": "spirit",
+    "family": "whisky",
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Домашній оршад на фісташках",
+    "canonicalId": "pistachio-orgeat",
+    "canonicalNameUk": "Оршад на фісташках",
+    "category": "syrup",
+    "family": null,
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Кефір",
+    "canonicalId": "kefir",
+    "canonicalNameUk": "Кефір",
+    "category": "dairy",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Фісташки",
+    "canonicalId": "pistachios",
+    "canonicalNameUk": "Фісташки",
+    "category": "garnish",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Домашній какао лікер на кафір-лаймі",
+    "canonicalId": "kaffir-lime-cacao-liqueur",
+    "canonicalNameUk": "Какао-лікер на кафір-лаймі",
+    "category": "liqueur",
+    "family": null,
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Сироп макадамія",
+    "canonicalId": "macadamia-syrup",
+    "canonicalNameUk": "Сироп з макадамії",
+    "category": "syrup",
+    "family": null,
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Рожевий вермут",
+    "canonicalId": "rose-vermouth",
+    "canonicalNameUk": "Рожевий вермут",
+    "category": "wine",
+    "family": "vermouth",
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Верджус",
+    "canonicalId": "verjus",
+    "canonicalNameUk": "Верджус",
+    "category": "pantry",
+    "family": null,
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Мед",
+    "canonicalId": "honey",
+    "canonicalNameUk": "Мед",
+    "category": "pantry",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": true
+  },
+  {
+    "raw": "Мелений червоний перець",
+    "canonicalId": "ground-red-pepper",
+    "canonicalNameUk": "Мелений червоний перець",
+    "category": "spice",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": true
+  },
+  {
+    "raw": "Маринована цибуля",
+    "canonicalId": "pickled-onion",
+    "canonicalNameUk": "Маринована цибуля",
+    "category": "garnish",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Домашня перцева горілка",
+    "canonicalId": "pepper-vodka",
+    "canonicalNameUk": "Перцева горілка",
+    "category": "spirit",
+    "family": "vodka",
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Базилікова тинктура",
+    "canonicalId": "basil-tincture",
+    "canonicalNameUk": "Базилікова тинктура",
+    "category": "bitters",
+    "family": null,
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Пюре маракуї",
+    "canonicalId": "passion-fruit-puree",
+    "canonicalNameUk": "Пюре маракуї",
+    "category": "fruit",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Пюре манго",
+    "canonicalId": "mango-puree",
+    "canonicalNameUk": "Пюре манго",
+    "category": "fruit",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Стручковий перець солодкий",
+    "canonicalId": "sweet-bell-pepper",
+    "canonicalNameUk": "Солодкий стручковий перець",
+    "category": "fruit",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Ананасовий сироп",
+    "canonicalId": "pineapple-syrup",
+    "canonicalNameUk": "Ананасовий сироп",
+    "category": "syrup",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Односолодовий віскі хайленд The Macallan",
+    "canonicalId": "single-malt-highland-whisky",
+    "canonicalNameUk": "Односолодовий віскі (хайленд)",
+    "category": "spirit",
+    "family": "whisky",
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Бамбукове вугілля подрібнене",
+    "canonicalId": "activated-bamboo-charcoal",
+    "canonicalNameUk": "Бамбукове вугілля подрібнене",
+    "category": "pantry",
+    "family": null,
+    "availability": "rare",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Сир маскарпоне",
+    "canonicalId": "mascarpone",
+    "canonicalNameUk": "Сир маскарпоне",
+    "category": "dairy",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Пюре з лохини",
+    "canonicalId": "blueberry-puree",
+    "canonicalNameUk": "Пюре з лохини",
+    "category": "fruit",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  }
+]

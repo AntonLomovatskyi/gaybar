@@ -1,0 +1,137 @@
+/**
+ * On-device user state (favourites, ratings, owned bar items, shopping, history, prefs).
+ * Persisted via zustand + AsyncStorage (works in Expo Go and on web). The persisted JSON is
+ * the "user data" the future backend will own — keep it serializable and versioned.
+ */
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
+import type { Cocktail } from "@/types/cocktail";
+
+export interface PrepEntry {
+  cocktailId: string;
+  at: number; // epoch ms
+}
+
+export interface UserState {
+  favourites: string[]; // cocktail ids
+  ratings: Record<string, number>; // id -> 1..5
+  ownedIngredients: string[]; // free-text names for now (canonical ids later)
+  ownedTools: string[];
+  shopping: Record<string, number>; // cocktailId -> servings
+  history: PrepEntry[];
+  prefs: { likedTags: string[]; dislikedTags: string[]; strength?: number };
+  /** User-created recipes, merged into the catalog at runtime. */
+  userRecipes: Cocktail[];
+  /** When true, owning a generic ingredient satisfies a recipe's specific variant (substitutes). */
+  flexibleMatching: boolean;
+  language: "uk" | "en";
+  units: "ml" | "oz";
+  theme: "dark" | "light";
+
+  setLanguage: (l: "uk" | "en") => void;
+  setUnits: (u: "ml" | "oz") => void;
+  setTheme: (t: "dark" | "light") => void;
+  setFlexibleMatching: (v: boolean) => void;
+  toggleFavourite: (id: string) => void;
+  setRating: (id: string, stars: number) => void;
+  addOwnedIngredient: (name: string) => void;
+  removeOwnedIngredient: (name: string) => void;
+  toggleOwnedTool: (name: string) => void;
+  setShoppingServings: (id: string, servings: number) => void;
+  clearShopping: () => void;
+  logPreparation: (id: string, at: number) => void;
+  setPrefs: (p: Partial<UserState["prefs"]>) => void;
+  clearHistory: () => void;
+  clearFavourites: () => void;
+  addUserRecipe: (c: Cocktail) => void;
+  removeUserRecipe: (id: string) => void;
+  importData: (d: Partial<PersistedData>) => void;
+}
+
+/** The user-data fields that are exported/imported (backup & restore). */
+export type PersistedData = Pick<
+  UserState,
+  | "favourites"
+  | "ratings"
+  | "ownedIngredients"
+  | "ownedTools"
+  | "shopping"
+  | "history"
+  | "prefs"
+  | "userRecipes"
+  | "flexibleMatching"
+  | "language"
+  | "units"
+  | "theme"
+>;
+
+export const useUserStore = create<UserState>()(
+  persist(
+    (set) => ({
+      favourites: [],
+      ratings: {},
+      ownedIngredients: [],
+      ownedTools: [],
+      shopping: {},
+      history: [],
+      prefs: { likedTags: [], dislikedTags: [] },
+      userRecipes: [],
+      flexibleMatching: true,
+      language: "uk",
+      units: "ml",
+      theme: "dark",
+
+      setLanguage: (l) => set({ language: l }),
+      setUnits: (u) => set({ units: u }),
+      setTheme: (t) => set({ theme: t }),
+      setFlexibleMatching: (v) => set({ flexibleMatching: v }),
+      toggleFavourite: (id) =>
+        set((s) => ({
+          favourites: s.favourites.includes(id) ? s.favourites.filter((x) => x !== id) : [...s.favourites, id],
+        })),
+      setRating: (id, stars) => set((s) => ({ ratings: { ...s.ratings, [id]: stars } })),
+      addOwnedIngredient: (name) =>
+        set((s) => (s.ownedIngredients.includes(name) ? s : { ownedIngredients: [...s.ownedIngredients, name] })),
+      removeOwnedIngredient: (name) => set((s) => ({ ownedIngredients: s.ownedIngredients.filter((x) => x !== name) })),
+      toggleOwnedTool: (name) =>
+        set((s) => ({
+          ownedTools: s.ownedTools.includes(name) ? s.ownedTools.filter((x) => x !== name) : [...s.ownedTools, name],
+        })),
+      setShoppingServings: (id, servings) =>
+        set((s) => {
+          const next = { ...s.shopping };
+          if (servings <= 0) delete next[id];
+          else next[id] = servings;
+          return { shopping: next };
+        }),
+      clearShopping: () => set({ shopping: {} }),
+      logPreparation: (id, at) => set((s) => ({ history: [{ cocktailId: id, at }, ...s.history].slice(0, 500) })),
+      setPrefs: (p) => set((s) => ({ prefs: { ...s.prefs, ...p } })),
+      clearHistory: () => set({ history: [] }),
+      clearFavourites: () => set({ favourites: [] }),
+      addUserRecipe: (c) => set((s) => ({ userRecipes: [...s.userRecipes.filter((x) => x.id !== c.id), c] })),
+      removeUserRecipe: (id) => set((s) => ({ userRecipes: s.userRecipes.filter((x) => x.id !== id) })),
+      importData: (d) =>
+        set((s) => ({
+          favourites: d.favourites ?? s.favourites,
+          ratings: d.ratings ?? s.ratings,
+          ownedIngredients: d.ownedIngredients ?? s.ownedIngredients,
+          ownedTools: d.ownedTools ?? s.ownedTools,
+          shopping: d.shopping ?? s.shopping,
+          history: d.history ?? s.history,
+          prefs: d.prefs ?? s.prefs,
+          userRecipes: d.userRecipes ?? s.userRecipes,
+          flexibleMatching: d.flexibleMatching ?? s.flexibleMatching,
+          language: d.language ?? s.language,
+          units: d.units ?? s.units,
+          theme: d.theme ?? s.theme,
+        })),
+    }),
+    {
+      name: "gaybar/v1/user",
+      version: 1,
+      storage: createJSONStorage(() => AsyncStorage),
+    },
+  ),
+);

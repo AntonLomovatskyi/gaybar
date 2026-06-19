@@ -1,0 +1,59 @@
+{
+  "id": "naked-and-famous",
+  "cardNumber": 56,
+  "name": "Naked And Famous",
+  "nameEn": "naked-and-famous",
+  "tags": [
+    "міцні",
+    "трав'яні",
+    "цитрусові"
+  ],
+  "ingredients": [
+    {
+      "name": "Мескаль",
+      "amount": 25,
+      "unit": "мл"
+    },
+    {
+      "name": "Лікер Yellow Chartreuse",
+      "amount": 25,
+      "unit": "мл"
+    },
+    {
+      "name": "Апероль",
+      "amount": 25,
+      "unit": "мл"
+    },
+    {
+      "name": "Лаймовий сік",
+      "amount": 25,
+      "unit": "мл"
+    },
+    {
+      "name": "Лід в кубиках",
+      "amount": 200,
+      "unit": "г"
+    }
+  ],
+  "tools": [
+    "Коктейльний келих",
+    "Шейкер",
+    "Стрейнер",
+    "Джигер",
+    "Прес для цитрусових"
+  ],
+  "steps": [
+    "Наповни шейкер льодом.",
+    "Налий в шейкер всі інгредієнти і збий.",
+    "Перелий через стрейнер в охолоджений коктейльний келих."
+  ],
+  "glass": "Коктейльний келих",
+  "images": {
+    "front": "front.webp",
+    "back": "back.webp"
+  },
+  "source": {
+    "front": "IMG_3178.HEIC",
+    "back": "IMG_3179.HEIC"
+  }
+}
