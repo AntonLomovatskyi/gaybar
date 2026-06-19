@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import clsx from "clsx";
 import { Chip } from "@/components/Chip";
+import { ToolIcon } from "@/components/ToolIcon";
 import { availabilityOf, type Availability } from "@/data/catalog/availability";
 import { TOOL_BY_ID } from "@/data/catalog/tools";
 import { useAllCocktails } from "@/data/useCocktails";
@@ -135,14 +136,25 @@ export default function Bar() {
       <section className="mt-6">
         <h2 className="text-gold font-bold">{t.bar.tools}</h2>
         <div className="mt-3 flex flex-wrap gap-2">
-          {TOOLS.map((tl) => (
-            <Chip
-              key={tl.id}
-              label={tl.nameUk}
-              selected={ownedTools.includes(tl.nameUk)}
-              onClick={() => toggleOwnedTool(tl.nameUk)}
-            />
-          ))}
+          {TOOLS.map((tl) => {
+            const owned = ownedTools.includes(tl.nameUk);
+            return (
+              <button
+                key={tl.id}
+                type="button"
+                onClick={() => toggleOwnedTool(tl.nameUk)}
+                className={clsx(
+                  "flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm transition",
+                  owned
+                    ? "border-gold bg-gold/15 text-text"
+                    : "border-border bg-surface-alt text-text-dim hover:border-gold/60",
+                )}
+              >
+                <ToolIcon id={tl.id} size={18} className={owned ? "text-gold" : "text-text-faint"} />
+                {tl.nameUk}
+              </button>
+            );
+          })}
         </div>
       </section>
 

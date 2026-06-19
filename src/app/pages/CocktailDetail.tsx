@@ -1,10 +1,12 @@
 import { Heart, Pencil, Play, ShoppingCart, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import clsx from "clsx";
 import { Chip } from "@/components/Chip";
 import { StarRating } from "@/components/StarRating";
 import { Stepper } from "@/components/Stepper";
+import { ToolIcon } from "@/components/ToolIcon";
+import { toolInfo } from "@/data/catalog/tools";
 import { getCardImages } from "@/data/cocktails";
 import { useCocktailById } from "@/data/useCocktails";
 import { formatIngredient } from "@/domain/cocktails";
@@ -118,9 +120,19 @@ export default function CocktailDetail() {
         <section className="mt-6">
           <h2 className="text-gold font-bold">{t.recipe.tools}</h2>
           <div className="mt-3 flex flex-wrap gap-2">
-            {cocktail.tools.map((tool, idx) => (
-              <Chip key={`${tool}-${idx}`} label={tool} />
-            ))}
+            {cocktail.tools.map((tool, idx) => {
+              const info = toolInfo(tool);
+              return (
+                <Link
+                  key={`${tool}-${idx}`}
+                  to={`/tool/${info.id}`}
+                  className="flex items-center gap-2 rounded-full border border-border bg-surface-alt px-3 py-1.5 text-sm text-text-dim transition hover:border-gold/60 hover:text-text"
+                >
+                  <ToolIcon id={info.id} size={18} className="text-gold" />
+                  {tool}
+                </Link>
+              );
+            })}
           </div>
         </section>
       )}

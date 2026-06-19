@@ -24,6 +24,8 @@ export default function SetPlan() {
   const items = usePartyStore((s) => s.items);
   const bumpServings = usePartyStore((s) => s.bumpServings);
   const ownedIngredients = useUserStore((s) => s.ownedIngredients);
+  const shoppingCart = useUserStore((s) => s.shopping);
+  const setShoppingServings = useUserStore((s) => s.setShoppingServings);
 
   const availLabel: Record<Availability, string> = {
     common: t.sets.availLocal,
@@ -42,6 +44,11 @@ export default function SetPlan() {
   );
 
   const totalDrinks = useMemo(() => planned.reduce((sum, p) => sum + p.item.servings, 0), [planned]);
+
+  const addAllToShopping = () => {
+    for (const { item } of planned) setShoppingServings(item.id, (shoppingCart[item.id] ?? 0) + item.servings);
+    nav("/shopping");
+  };
 
   const shopping = useMemo(() => {
     const selections: ShoppingSelection[] = planned.map((p) => ({ cocktail: p.cocktail, servings: p.item.servings }));
@@ -130,8 +137,15 @@ export default function SetPlan() {
       </div>
 
       <button
+        onClick={addAllToShopping}
+        className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-gold px-4 py-3 text-center font-bold text-gold"
+      >
+        <ShoppingCart size={18} /> Додати все в покупки
+      </button>
+
+      <button
         onClick={() => nav("/set/make")}
-        className="mt-6 block w-full rounded-xl bg-gold px-4 py-3 text-center font-bold text-bg"
+        className="mt-2 block w-full rounded-xl bg-gold px-4 py-3 text-center font-bold text-bg"
       >
         {t.sets.start}
       </button>
