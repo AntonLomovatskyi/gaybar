@@ -109,8 +109,8 @@
   },
   {
     "raw": "Червона коктейльна вишня",
-    "canonicalId": "maraschino-cherry",
-    "canonicalNameUk": "Червона коктейльна вишня",
+    "canonicalId": "cocktail-cherry",
+    "canonicalNameUk": "Коктейльна вишня",
     "category": "garnish",
     "family": null,
     "availability": "specialty",
@@ -127,7 +127,7 @@
   },
   {
     "raw": "Лимонна цедра",
-    "canonicalId": "lemon-peel",
+    "canonicalId": "lemon-zest",
     "canonicalNameUk": "Лимонна цедра",
     "category": "garnish",
     "family": null,
@@ -236,7 +236,7 @@
   {
     "raw": "Корінь імбиру",
     "canonicalId": "ginger-root",
-    "canonicalNameUk": "Корінь імбиру",
+    "canonicalNameUk": "Імбир",
     "category": "spice",
     "family": null,
     "availability": "common",
@@ -281,7 +281,7 @@
   {
     "raw": "Лікер тріпл сек",
     "canonicalId": "triple-sec",
-    "canonicalNameUk": "Лікер тріпл сек",
+    "canonicalNameUk": "Тріпл сек",
     "category": "liqueur",
     "family": null,
     "availability": "specialty",
@@ -425,7 +425,7 @@
   {
     "raw": "Червоний вермут",
     "canonicalId": "sweet-red-vermouth",
-    "canonicalNameUk": "Червоний вермут",
+    "canonicalNameUk": "Солодкий червоний вермут",
     "category": "wine",
     "family": "vermouth",
     "availability": "specialty",
@@ -507,7 +507,7 @@
     "raw": "Червоний соус табаско",
     "canonicalId": "tabasco-sauce",
     "canonicalNameUk": "Соус табаско (червоний)",
-    "category": "mixer",
+    "category": "pantry",
     "family": null,
     "availability": "specialty",
     "isPantryStaple": false
@@ -595,8 +595,8 @@
   },
   {
     "raw": "Крижаний куб",
-    "canonicalId": "ice-cube",
-    "canonicalNameUk": "Кубик льоду",
+    "canonicalId": "ice-cubes",
+    "canonicalNameUk": "Лід в кубиках",
     "category": "ice",
     "family": null,
     "availability": "common",
@@ -803,7 +803,7 @@
   {
     "raw": "Апельсиновий фреш",
     "canonicalId": "orange-juice",
-    "canonicalNameUk": "Апельсиновий сік (фреш)",
+    "canonicalNameUk": "Апельсиновий сік",
     "category": "juice",
     "family": null,
     "availability": "common",
@@ -821,7 +821,7 @@
   {
     "raw": "Ананасовий фреш",
     "canonicalId": "pineapple-juice",
-    "canonicalNameUk": "Ананасовий сік (фреш)",
+    "canonicalNameUk": "Ананасовий сік",
     "category": "juice",
     "family": null,
     "availability": "common",
@@ -857,7 +857,7 @@
   {
     "raw": "Цедра лимона",
     "canonicalId": "lemon-zest",
-    "canonicalNameUk": "Цедра лимона",
+    "canonicalNameUk": "Лимонна цедра",
     "category": "garnish",
     "family": null,
     "availability": "common",
@@ -920,7 +920,7 @@
   {
     "raw": "Білий вермут",
     "canonicalId": "dry-vermouth",
-    "canonicalNameUk": "Білий (сухий) вермут",
+    "canonicalNameUk": "Сухий вермут",
     "category": "wine",
     "family": "vermouth",
     "availability": "specialty",
@@ -983,7 +983,7 @@
   {
     "raw": "Лікер фалернум",
     "canonicalId": "falernum",
-    "canonicalNameUk": "Фалернум",
+    "canonicalNameUk": "Фалернум (лікер)",
     "category": "liqueur",
     "family": null,
     "availability": "rare",
@@ -1055,7 +1055,7 @@
   {
     "raw": "Лікер трипл сек",
     "canonicalId": "triple-sec",
-    "canonicalNameUk": "Лікер трипл сек",
+    "canonicalNameUk": "Тріпл сек",
     "category": "liqueur",
     "family": null,
     "availability": "specialty",
@@ -1173,7 +1173,7 @@
     "raw": "Червоний соус табаско та ворчестер",
     "canonicalId": "tabasco-worcestershire-sauce",
     "canonicalNameUk": "Соус табаско та ворчестер",
-    "category": "mixer",
+    "category": "pantry",
     "family": null,
     "availability": "specialty",
     "isPantryStaple": false
@@ -1235,7 +1235,7 @@
   {
     "raw": "Айріш крем",
     "canonicalId": "irish-cream",
-    "canonicalNameUk": "Айріш крем (вершковий лікер)",
+    "canonicalNameUk": "Ірландський крем-лікер",
     "category": "liqueur",
     "family": null,
     "availability": "common",
@@ -1325,7 +1325,7 @@
   {
     "raw": "Ром",
     "canonicalId": "white-rum",
-    "canonicalNameUk": "Ром (світлий)",
+    "canonicalNameUk": "Білий ром",
     "category": "spirit",
     "family": "rum",
     "availability": "common",
@@ -1369,8 +1369,8 @@
   },
   {
     "raw": "Сироп Фалернум",
-    "canonicalId": "falernum",
-    "canonicalNameUk": "Фалернум",
+    "canonicalId": "falernum-syrup",
+    "canonicalNameUk": "Сироп фалернум",
     "category": "syrup",
     "family": null,
     "availability": "rare",
@@ -1379,7 +1379,7 @@
   {
     "raw": "Лікер Мараскіно",
     "canonicalId": "maraschino-liqueur",
-    "canonicalNameUk": "Лікер Мараскіно",
+    "canonicalNameUk": "Лікер мараскіно",
     "category": "liqueur",
     "family": null,
     "availability": "specialty",
@@ -1406,7 +1406,7 @@
   {
     "raw": "Шотландський віскі",
     "canonicalId": "scotch-whisky",
-    "canonicalNameUk": "Шотландський віскі",
+    "canonicalNameUk": "Шотландське віскі",
     "category": "spirit",
     "family": "whisky",
     "availability": "common",
@@ -1415,7 +1415,7 @@
   {
     "raw": "Односолодове віскі з острова Айла",
     "canonicalId": "islay-single-malt-whisky",
-    "canonicalNameUk": "Односолодовий віскі Айла",
+    "canonicalNameUk": "Односолодове віскі з острова Айла",
     "category": "spirit",
     "family": "whisky",
     "availability": "specialty",
@@ -1432,7 +1432,7 @@
   },
   {
     "raw": "Скибка імбиру",
-    "canonicalId": "ginger",
+    "canonicalId": "ginger-root",
     "canonicalNameUk": "Імбир",
     "category": "spice",
     "family": null,
@@ -1468,8 +1468,8 @@
   },
   {
     "raw": "Червоний перець чилі",
-    "canonicalId": "red-chili-pepper",
-    "canonicalNameUk": "Червоний перець чилі",
+    "canonicalId": "chili-pepper",
+    "canonicalNameUk": "Перець чилі",
     "category": "spice",
     "family": null,
     "availability": "common",
@@ -1541,7 +1541,7 @@
   {
     "raw": "Трипл сек",
     "canonicalId": "triple-sec",
-    "canonicalNameUk": "Трипл сек",
+    "canonicalNameUk": "Тріпл сек",
     "category": "liqueur",
     "family": null,
     "availability": "specialty",
@@ -1693,8 +1693,8 @@
   },
   {
     "raw": "Льодяний куб",
-    "canonicalId": "ice",
-    "canonicalNameUk": "Лід",
+    "canonicalId": "ice-cubes",
+    "canonicalNameUk": "Лід в кубиках",
     "category": "ice",
     "family": null,
     "availability": "common",
@@ -1847,7 +1847,7 @@
   {
     "raw": "Пішо бітер",
     "canonicalId": "peychauds-bitters",
-    "canonicalNameUk": "Пішо бітер",
+    "canonicalNameUk": "Бітер Peychaud's",
     "category": "bitters",
     "family": null,
     "availability": "rare",
@@ -1955,7 +1955,7 @@
   {
     "raw": "Домашній медово-імбирний сироп",
     "canonicalId": "honey-ginger-syrup",
-    "canonicalNameUk": "Домашній медово-імбирний сироп",
+    "canonicalNameUk": "Медово-імбирний сироп",
     "category": "syrup",
     "family": null,
     "availability": "common",

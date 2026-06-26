@@ -36,3 +36,46 @@ export function availabilityOf(name: string): Availability {
 export function isPantryStaple(name: string): boolean {
   return refOf(name)?.isPantryStaple ?? false;
 }
+
+/** Categories we treat as "alcohol" — the only ingredients that gate what you can make. */
+export const ALCOHOLIC_CATEGORIES = new Set(["spirit", "liqueur", "wine", "bitters"]);
+/** Families that imply alcohol when a name isn't in the catalog (heuristic fallback). */
+const ALCOHOLIC_FAMILIES = new Set([
+  "vodka",
+  "gin",
+  "rum",
+  "tequila",
+  "whisky",
+  "mezcal",
+  "pisco",
+  "brandy",
+  "cachaca",
+  "vermouth",
+  "wine",
+  "sparkling",
+]);
+
+/** Catalog category for a raw name, or null if unknown. */
+export function categoryOf(name: string): string | null {
+  return refOf(name)?.category ?? null;
+}
+
+/** Canonical display name (folds variants); falls back to the raw name. */
+export function canonicalNameOf(name: string): string {
+  return refOf(name)?.nameUk ?? name;
+}
+
+/** True if this ingredient is alcoholic (spirit/liqueur/wine/bitters) — the bar-essential set. */
+export function isAlcoholic(name: string): boolean {
+  const cat = categoryOf(name);
+  if (cat) return ALCOHOLIC_CATEGORIES.has(cat);
+  const fam = familyOf(name);
+  return fam != null && ALCOHOLIC_FAMILIES.has(fam);
+}
+
+/** Every distinct alcoholic canonical ingredient (for the bar picker + setup stepper). */
+export function alcoholicCanonicals(): CanonicalIngredient[] {
+  return Object.values(CANONICAL)
+    .filter((c) => ALCOHOLIC_CATEGORIES.has(c.category))
+    .sort((a, b) => a.nameUk.localeCompare(b.nameUk, "uk"));
+}

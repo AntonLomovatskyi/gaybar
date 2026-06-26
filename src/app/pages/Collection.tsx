@@ -19,13 +19,17 @@ export default function Collection() {
   const nav = useNavigate();
   const all = useAllCocktails();
   const [query, setQuery] = useState("");
-  const { tags, sort, setTags, setSort } = useFilterStore();
+  const { tags, glasses, sort, setTags, setSort } = useFilterStore();
   const favourites = useUserStore((s) => s.favourites);
   const ratings = useUserStore((s) => s.ratings);
   const prefs = useUserStore((s) => s.prefs);
 
-  const list = useMemo(() => sortBy(applyFilters(all, { tags, query }), sort), [all, tags, query, sort]);
-  const isHome = !query.trim() && tags.length === 0;
+  const list = useMemo(
+    () => sortBy(applyFilters(all, { tags, glasses, query }), sort),
+    [all, tags, glasses, query, sort],
+  );
+  const filterCount = tags.length + glasses.length;
+  const isHome = !query.trim() && filterCount === 0;
   const cotd = useMemo(() => pickSurprise(all, Math.floor(Date.now() / 86400000)), [all]);
   const recs = useMemo(
     () => recommendForYou(all, { favourites, ratings, likedTags: prefs.likedTags, dislikedTags: prefs.dislikedTags }),
@@ -58,11 +62,11 @@ export default function Collection() {
           onClick={() => nav("/filters")}
           className={clsx(
             "flex items-center gap-1 rounded-full border px-3 py-1.5 text-sm",
-            tags.length ? "border-gold text-gold" : "border-border text-text-dim",
+            filterCount ? "border-gold text-gold" : "border-border text-text-dim",
           )}
         >
           <SlidersHorizontal size={15} /> {t.common.filters}
-          {tags.length ? ` (${tags.length})` : ""}
+          {filterCount ? ` (${filterCount})` : ""}
         </button>
         <button
           onClick={cycleSort}

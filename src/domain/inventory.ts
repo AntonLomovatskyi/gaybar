@@ -9,7 +9,7 @@
  * curated canonical dictionary later without changing this file's callers.
  */
 import type { Cocktail, Ingredient } from "@/types/cocktail";
-import { canonicalIdOf, familyOf } from "@/data/catalog/ingredients";
+import { canonicalIdOf, familyOf, isAlcoholic } from "@/data/catalog/ingredients";
 import { toolInfo } from "@/data/catalog/tools";
 import { normalize } from "./text";
 
@@ -19,6 +19,15 @@ export function isIgnorable(i: Ingredient): boolean {
   if (n.includes("лід")) return true; // ice — assume always available
   if (i.note && /бажанн|смаком/.test(i.note)) return true; // "за бажанням" / "за смаком"
   return false;
+}
+
+/**
+ * Only ALCOHOL gates what you can make. Ice, juices, syrups, fruit, garnish, soda, sugar etc.
+ * are assumed always on-hand — you never miss a cocktail for lacking lime juice or ice.
+ */
+export function isEssential(i: Ingredient): boolean {
+  if (isIgnorable(i)) return false;
+  return isAlcoholic(i.name);
 }
 
 export type MatchTier = "exact" | "substitute" | "missing";
@@ -57,7 +66,7 @@ export function whatCanIMake(cocktails: Cocktail[], owned: string[], flexible = 
   const makeable: MakeResult[] = [];
   const almost: MakeResult[] = [];
   for (const c of cocktails) {
-    const required = c.ingredients.filter((i) => !isIgnorable(i));
+    const required = c.ingredients.filter(isEssential);
     const missing: Ingredient[] = [];
     const substitutions: Substitution[] = [];
     for (const ing of required) {
@@ -91,7 +100,7 @@ export interface PurchaseSuggestion {
 export function suggestPurchases(cocktails: Cocktail[], owned: string[], flexible = true): PurchaseSuggestion[] {
   const byId = new Map<string, PurchaseSuggestion>();
   for (const c of cocktails) {
-    const required = c.ingredients.filter((i) => !isIgnorable(i));
+    const required = c.ingredients.filter(isEssential);
     const missing = required.filter((i) => classifyIngredient(i, owned, flexible).tier === "missing");
     if (missing.length !== 1) continue; // exactly one ingredient away
     const ing = missing[0];

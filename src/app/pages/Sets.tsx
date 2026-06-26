@@ -10,6 +10,7 @@ import { composeParty, MIN_PEOPLE, planFromSet } from "@/domain/party";
 import { useT } from "@/i18n";
 import type { CocktailTag } from "@/types/cocktail";
 import { usePartyStore } from "@/store/partyStore";
+import { useUserStore } from "@/store/userStore";
 
 export default function Sets() {
   const t = useT();
@@ -18,6 +19,7 @@ export default function Sets() {
   const config = usePartyStore((s) => s.config);
   const setConfig = usePartyStore((s) => s.setConfig);
   const setPlan = usePartyStore((s) => s.setPlan);
+  const ownedIngredients = useUserStore((s) => s.ownedIngredients);
 
   const [moods, setMoods] = useState<string[]>([]);
 
@@ -30,7 +32,7 @@ export default function Sets() {
 
   const generate = () => {
     const moodTags: CocktailTag[] = selectedMoods.flatMap((m) => m.tags);
-    const items = composeParty(all, config, moodTags);
+    const items = composeParty(all, config, moodTags, ownedIngredients);
     const title = selectedMoods.length ? selectedMoods.map((m) => m.labelUk).join(", ") : "Згенерований сет";
     setPlan(
       items.map((i) => ({ id: i.cocktail.id, servings: i.servings })),
@@ -93,6 +95,29 @@ export default function Sets() {
               }
             >
               {config.localOnly && <Check size={11} strokeWidth={3} />}
+            </span>
+          </span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setConfig({ useMyBar: !config.useMyBar })}
+          className="flex w-full items-center justify-between py-1.5 text-left"
+        >
+          <span className="text-text">З мого бару</span>
+          <span
+            className={
+              "relative h-6 w-11 shrink-0 rounded-full border transition " +
+              (config.useMyBar ? "border-gold bg-gold/30" : "border-border bg-surface-alt")
+            }
+          >
+            <span
+              className={
+                "absolute top-0.5 grid h-4 w-4 place-items-center rounded-full transition-all " +
+                (config.useMyBar ? "left-[22px] bg-gold text-bg" : "left-0.5 bg-text-faint")
+              }
+            >
+              {config.useMyBar && <Check size={11} strokeWidth={3} />}
             </span>
           </span>
         </button>

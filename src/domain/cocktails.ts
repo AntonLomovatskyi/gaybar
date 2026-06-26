@@ -5,6 +5,7 @@
 import type { Cocktail, CocktailTag, Ingredient } from "@/types/cocktail";
 import { TAG_TO_GROUP, strengthOf, type TagGroupKey } from "@/data/catalog/taxonomy";
 import { familyOf } from "@/data/catalog/ingredients";
+import { toolInfo } from "@/data/catalog/tools";
 import { compareUk, normalize } from "./text";
 
 /** Map an ingredient base family to the matching base tag. */
@@ -30,9 +31,19 @@ export function baseSpiritOf(c: Cocktail): CocktailTag | null {
   return null;
 }
 
+/** Canonical glass for a cocktail (from its `glass` field, else its first glass-type tool). */
+export function glassOf(c: Cocktail): { id: string; nameUk: string } | null {
+  const raw = c.glass ?? c.tools.find((tl) => toolInfo(tl).kind === "glass");
+  if (!raw) return null;
+  const info = toolInfo(raw);
+  return info.kind === "glass" ? { id: info.id, nameUk: info.nameUk } : null;
+}
+
 export interface CocktailFilter {
   /** Selected tags. AND across axes (strength/taste/base/…), OR within an axis. */
   tags?: CocktailTag[];
+  /** Selected canonical glass ids (OR within the glass axis). */
+  glasses?: string[];
   /** Free-text query over name / nameEn / cardNumber / ingredient names. */
   query?: string;
 }
@@ -54,6 +65,13 @@ export function search(cocktails: Cocktail[], query: string): Cocktail[] {
 export function applyFilters(cocktails: Cocktail[], filter: CocktailFilter): Cocktail[] {
   let out = cocktails;
   if (filter.query) out = search(out, filter.query);
+  if (filter.glasses && filter.glasses.length) {
+    const wanted = new Set(filter.glasses);
+    out = out.filter((c) => {
+      const g = glassOf(c);
+      return g ? wanted.has(g.id) : false;
+    });
+  }
   if (filter.tags && filter.tags.length) {
     // group selected tags by axis
     const byAxis = new Map<TagGroupKey, Set<string>>();
