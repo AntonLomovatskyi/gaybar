@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { Chip } from "@/components/Chip";
 import { exportData, importDataFromFile } from "@/data/backup";
 import { TAG_GROUPS } from "@/data/catalog/taxonomy";
+import { firebaseEnabled } from "@/lib/firebase";
+import { pullNow, pushNow, signInWithGoogle, signOutNow, useAuthStore } from "@/lib/sync";
 import { useUserStore } from "@/store/userStore";
 
 function Seg<T extends string>({
@@ -41,6 +43,79 @@ function Card({ title, children }: { title: string; children: React.ReactNode })
       <div className="mb-3 font-bold text-gold">{title}</div>
       {children}
     </div>
+  );
+}
+
+function SyncCard() {
+  const user = useAuthStore((s) => s.user);
+  const status = useAuthStore((s) => s.status);
+  const statusLabel =
+    status === "syncing"
+      ? "Синхронізація…"
+      : status === "saved"
+        ? "Збережено в хмарі ✓"
+        : status === "error"
+          ? "Помилка синхронізації"
+          : "";
+
+  if (!firebaseEnabled) {
+    return (
+      <Card title="Синхронізація">
+        <div className="text-sm text-text-dim">
+          Хмарна синхронізація ще не налаштована. Дані зберігаються лише на цьому пристрої — або користуйся резервною
+          копією нижче.
+        </div>
+      </Card>
+    );
+  }
+
+  return (
+    <Card title="Синхронізація">
+      {user ? (
+        <div className="flex flex-col gap-3">
+          <div className="text-sm text-text">
+            Увійшов як <span className="text-gold">{user.displayName ?? user.email}</span>
+          </div>
+          {statusLabel && <div className="text-xs text-text-faint">{statusLabel}</div>}
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => pushNow()}
+              className="flex-1 rounded-xl border border-border bg-surface-alt px-4 py-3 text-text"
+            >
+              Зберегти в хмару
+            </button>
+            <button
+              type="button"
+              onClick={() => pullNow()}
+              className="flex-1 rounded-xl border border-border bg-surface-alt px-4 py-3 text-text"
+            >
+              Завантажити
+            </button>
+          </div>
+          <button
+            type="button"
+            onClick={() => signOutNow()}
+            className="rounded-xl border border-border bg-surface-alt px-4 py-3 text-danger"
+          >
+            Вийти
+          </button>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-3">
+          <div className="text-sm text-text-dim">
+            Увійди, щоб синхронізувати бар, обране та рецепти між телефоном і ПК.
+          </div>
+          <button
+            type="button"
+            onClick={() => signInWithGoogle()}
+            className="rounded-xl bg-gold px-4 py-3 text-center font-bold text-bg"
+          >
+            Увійти через Google
+          </button>
+        </div>
+      )}
+    </Card>
   );
 }
 
@@ -102,6 +177,8 @@ export default function Settings() {
         </button>
         <div className="mt-3 text-sm text-text-faint">Доступність інгредієнтів: Чернівці 📍</div>
       </Card>
+
+      <SyncCard />
 
       <Card title="Вигляд та мова">
         <div className="flex flex-col gap-3">

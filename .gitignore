@@ -1,5 +1,8 @@
 .work/
 node_modules/
+.env
+.env.local
+.env.*.local
 .expo/
 dist/
 web-build/

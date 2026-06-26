@@ -4,7 +4,7 @@
  */
 import { useUserStore, type PersistedData } from "@/store/userStore";
 
-function snapshot(): PersistedData {
+export function getSnapshot(): PersistedData {
   const s = useUserStore.getState();
   return {
     favourites: s.favourites,
@@ -24,7 +24,7 @@ function snapshot(): PersistedData {
 
 /** Download the full user-data snapshot as a JSON file. */
 export function exportData(at: number): void {
-  const json = JSON.stringify({ app: "gaybar", version: 1, exportedAt: at, data: snapshot() }, null, 2);
+  const json = JSON.stringify({ app: "gaybar", version: 1, exportedAt: at, data: getSnapshot() }, null, 2);
   const blob = new Blob([json], { type: "application/json" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
