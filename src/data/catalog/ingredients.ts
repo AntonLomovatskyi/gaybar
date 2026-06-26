@@ -80,9 +80,15 @@ export function alcoholicCanonicals(): CanonicalIngredient[] {
     .sort((a, b) => a.nameUk.localeCompare(b.nameUk, "uk"));
 }
 
-/** Always-on-hand: ice + anything flagged a pantry staple. Never gates "can I make". */
+/** Always-on-hand: ice, garnishes, + anything flagged a pantry staple. Never gates "can I make". */
 function isAssumed(c: CanonicalIngredient): boolean {
-  return c.category === "ice" || c.isPantryStaple;
+  return c.category === "ice" || c.category === "garnish" || c.isPantryStaple;
+}
+
+/** True if this ingredient is assumed always available (so it never blocks a recipe). */
+export function isAssumedAvailable(name: string): boolean {
+  const r = refOf(name);
+  return r ? isAssumed(r) : false;
 }
 
 /** Fresh / perishable non-alcohol worth tracking (fruit, herbs, spices, dairy, eggs, special juices/syrups). */

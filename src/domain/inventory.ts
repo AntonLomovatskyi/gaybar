@@ -9,7 +9,7 @@
  * curated canonical dictionary later without changing this file's callers.
  */
 import type { Cocktail, Ingredient } from "@/types/cocktail";
-import { canonicalIdOf, familyOf, isAlcoholic, isPantryStaple } from "@/data/catalog/ingredients";
+import { canonicalIdOf, familyOf, isAlcoholic, isAssumedAvailable } from "@/data/catalog/ingredients";
 import { toolInfo } from "@/data/catalog/tools";
 import { normalize } from "./text";
 
@@ -29,7 +29,7 @@ export function isIgnorable(i: Ingredient): boolean {
 export function isEssential(i: Ingredient): boolean {
   if (isIgnorable(i)) return false;
   if (isAlcoholic(i.name)) return true;
-  return !isPantryStaple(i.name);
+  return !isAssumedAvailable(i.name); // pantry staples, ice & garnishes never block
 }
 
 export type MatchTier = "exact" | "substitute" | "missing";
