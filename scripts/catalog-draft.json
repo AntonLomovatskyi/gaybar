@@ -15,7 +15,7 @@
     "category": "juice",
     "family": null,
     "availability": "common",
-    "isPantryStaple": true
+    "isPantryStaple": false
   },
   {
     "raw": "Лаймовий сік",
@@ -96,7 +96,7 @@
     "category": "fruit",
     "family": null,
     "availability": "common",
-    "isPantryStaple": true
+    "isPantryStaple": false
   },
   {
     "raw": "Лайм",
@@ -132,7 +132,7 @@
     "category": "garnish",
     "family": null,
     "availability": "common",
-    "isPantryStaple": true
+    "isPantryStaple": false
   },
   {
     "raw": "Тріпл сек",
@@ -204,7 +204,7 @@
     "category": "mixer",
     "family": null,
     "availability": "common",
-    "isPantryStaple": false
+    "isPantryStaple": true
   },
   {
     "raw": "Мескаль",
@@ -222,7 +222,7 @@
     "category": "fruit",
     "family": null,
     "availability": "common",
-    "isPantryStaple": true
+    "isPantryStaple": false
   },
   {
     "raw": "Апельсинова цедра",
@@ -402,7 +402,7 @@
     "category": "juice",
     "family": null,
     "availability": "common",
-    "isPantryStaple": true
+    "isPantryStaple": false
   },
   {
     "raw": "Коньяк",
@@ -555,7 +555,7 @@
     "category": "egg",
     "family": null,
     "availability": "common",
-    "isPantryStaple": true
+    "isPantryStaple": false
   },
   {
     "raw": "Апероль",
@@ -861,7 +861,7 @@
     "category": "garnish",
     "family": null,
     "availability": "common",
-    "isPantryStaple": true
+    "isPantryStaple": false
   },
   {
     "raw": "Мигдальний сироп",
@@ -1590,7 +1590,7 @@
     "category": "mixer",
     "family": null,
     "availability": "common",
-    "isPantryStaple": false
+    "isPantryStaple": true
   },
   {
     "raw": "Оливки",
@@ -2103,7 +2103,7 @@
     "category": "dairy",
     "family": null,
     "availability": "common",
-    "isPantryStaple": true
+    "isPantryStaple": false
   },
   {
     "raw": "Житнє віскі Woodford Reserve",
@@ -2409,7 +2409,7 @@
     "category": "syrup",
     "family": null,
     "availability": "common",
-    "isPantryStaple": true
+    "isPantryStaple": false
   },
   {
     "raw": "Кола",
@@ -2427,7 +2427,7 @@
     "category": "juice",
     "family": null,
     "availability": "common",
-    "isPantryStaple": true
+    "isPantryStaple": false
   },
   {
     "raw": "Кокосовий ром",

@@ -24,7 +24,7 @@ export const CANONICAL: Record<string, CanonicalIngredient> = {
     category: "juice",
     family: null,
     availability: "common",
-    isPantryStaple: true,
+    isPantryStaple: false,
   },
   "lime-juice": {
     id: "lime-juice",
@@ -96,7 +96,7 @@ export const CANONICAL: Record<string, CanonicalIngredient> = {
     category: "fruit",
     family: null,
     availability: "common",
-    isPantryStaple: true,
+    isPantryStaple: false,
   },
   lime: {
     id: "lime",
@@ -128,7 +128,7 @@ export const CANONICAL: Record<string, CanonicalIngredient> = {
     category: "garnish",
     family: null,
     availability: "common",
-    isPantryStaple: true,
+    isPantryStaple: false,
   },
   "triple-sec": {
     id: "triple-sec",
@@ -192,7 +192,7 @@ export const CANONICAL: Record<string, CanonicalIngredient> = {
     category: "mixer",
     family: null,
     availability: "common",
-    isPantryStaple: false,
+    isPantryStaple: true,
   },
   mezcal: {
     id: "mezcal",
@@ -208,7 +208,7 @@ export const CANONICAL: Record<string, CanonicalIngredient> = {
     category: "fruit",
     family: null,
     availability: "common",
-    isPantryStaple: true,
+    isPantryStaple: false,
   },
   "orange-zest": {
     id: "orange-zest",
@@ -480,7 +480,7 @@ export const CANONICAL: Record<string, CanonicalIngredient> = {
     category: "egg",
     family: null,
     availability: "common",
-    isPantryStaple: true,
+    isPantryStaple: false,
   },
   aperol: {
     id: "aperol",
@@ -1176,7 +1176,7 @@ export const CANONICAL: Record<string, CanonicalIngredient> = {
     category: "mixer",
     family: null,
     availability: "common",
-    isPantryStaple: false,
+    isPantryStaple: true,
   },
   olives: {
     id: "olives",
@@ -1600,7 +1600,7 @@ export const CANONICAL: Record<string, CanonicalIngredient> = {
     category: "dairy",
     family: null,
     availability: "common",
-    isPantryStaple: true,
+    isPantryStaple: false,
   },
   "pistachio-orgeat": {
     id: "pistachio-orgeat",

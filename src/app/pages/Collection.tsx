@@ -1,4 +1,4 @@
-import { ArrowDownUp, Shuffle, SlidersHorizontal } from "lucide-react";
+import { ArrowDownUp, GlassWater, Shuffle, SlidersHorizontal } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
@@ -7,6 +7,7 @@ import { CocktailCard } from "@/components/CocktailCard";
 import { MOODS, type Mood } from "@/data/catalog/moods";
 import { useAllCocktails } from "@/data/useCocktails";
 import { applyFilters, pickSurprise, sortBy, type SortMode } from "@/domain/cocktails";
+import { whatCanIMake } from "@/domain/inventory";
 import { recommendForYou } from "@/domain/recommend";
 import { useT } from "@/i18n";
 import { useFilterStore } from "@/store/filterStore";
@@ -23,13 +24,20 @@ export default function Collection() {
   const favourites = useUserStore((s) => s.favourites);
   const ratings = useUserStore((s) => s.ratings);
   const prefs = useUserStore((s) => s.prefs);
+  const ownedIngredients = useUserStore((s) => s.ownedIngredients);
+  const flexibleMatching = useUserStore((s) => s.flexibleMatching);
+  const [onlyMakeable, setOnlyMakeable] = useState(false);
 
-  const list = useMemo(
-    () => sortBy(applyFilters(all, { tags, glasses, query }), sort),
-    [all, tags, glasses, query, sort],
+  const makeableIds = useMemo(
+    () => new Set(whatCanIMake(all, ownedIngredients, flexibleMatching).makeable.map((m) => m.cocktail.id)),
+    [all, ownedIngredients, flexibleMatching],
   );
+  const list = useMemo(() => {
+    const base = applyFilters(all, { tags, glasses, query });
+    return sortBy(onlyMakeable ? base.filter((c) => makeableIds.has(c.id)) : base, sort);
+  }, [all, tags, glasses, query, sort, onlyMakeable, makeableIds]);
   const filterCount = tags.length + glasses.length;
-  const isHome = !query.trim() && filterCount === 0;
+  const isHome = !query.trim() && filterCount === 0 && !onlyMakeable;
   const cotd = useMemo(() => pickSurprise(all, Math.floor(Date.now() / 86400000)), [all]);
   const recs = useMemo(
     () => recommendForYou(all, { favourites, ratings, likedTags: prefs.likedTags, dislikedTags: prefs.dislikedTags }),
@@ -57,7 +65,16 @@ export default function Collection() {
         />
       </div>
 
-      <div className="flex gap-2 px-4 pt-3">
+      <div className="flex flex-wrap gap-2 px-4 pt-3">
+        <button
+          onClick={() => setOnlyMakeable((v) => !v)}
+          className={clsx(
+            "flex items-center gap-1 rounded-full border px-3 py-1.5 text-sm",
+            onlyMakeable ? "border-gold bg-gold/15 text-gold" : "border-border text-text-dim",
+          )}
+        >
+          <GlassWater size={15} /> Можу зараз
+        </button>
         <button
           onClick={() => nav("/filters")}
           className={clsx(

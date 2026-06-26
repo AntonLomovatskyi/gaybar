@@ -9,7 +9,7 @@
  * curated canonical dictionary later without changing this file's callers.
  */
 import type { Cocktail, Ingredient } from "@/types/cocktail";
-import { canonicalIdOf, familyOf, isAlcoholic } from "@/data/catalog/ingredients";
+import { canonicalIdOf, familyOf, isAlcoholic, isPantryStaple } from "@/data/catalog/ingredients";
 import { toolInfo } from "@/data/catalog/tools";
 import { normalize } from "./text";
 
@@ -22,12 +22,14 @@ export function isIgnorable(i: Ingredient): boolean {
 }
 
 /**
- * Only ALCOHOL gates what you can make. Ice, juices, syrups, fruit, garnish, soda, sugar etc.
- * are assumed always on-hand — you never miss a cocktail for lacking lime juice or ice.
+ * What gates "can I make it": alcohol AND fresh/perishable ingredients (fruit, berries, herbs,
+ * spices, dairy, eggs, special juices/syrups). Only true pantry staples — ice, water, sugar,
+ * simple syrup, salt, common citrus juice, cola, milk, honey — are assumed always on-hand.
  */
 export function isEssential(i: Ingredient): boolean {
   if (isIgnorable(i)) return false;
-  return isAlcoholic(i.name);
+  if (isAlcoholic(i.name)) return true;
+  return !isPantryStaple(i.name);
 }
 
 export type MatchTier = "exact" | "substitute" | "missing";

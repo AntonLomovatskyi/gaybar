@@ -1,11 +1,11 @@
-import { Plus, Sparkles, Wrench, X } from "lucide-react";
+import { Plus, Wrench, X } from "lucide-react";
 import { useMemo, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import clsx from "clsx";
 import { CocktailCard } from "@/components/CocktailCard";
-import { EssentialsSetup } from "@/components/EssentialsSetup";
+import { EssentialsSetup, type SetupKind } from "@/components/EssentialsSetup";
 import { ToolIcon } from "@/components/ToolIcon";
-import { alcoholicCanonicals, availabilityOf, type Availability } from "@/data/catalog/ingredients";
+import { availabilityOf, categoryGroupOf, trackableCanonicals, type Availability } from "@/data/catalog/ingredients";
 import { TOOL_BY_ID } from "@/data/catalog/tools";
 import { useAllCocktails } from "@/data/useCocktails";
 import { hasAllTools, suggestPurchases, whatCanIMake, type MakeResult } from "@/domain/inventory";
@@ -13,14 +13,25 @@ import { normalize } from "@/domain/text";
 import { useT } from "@/i18n";
 import { useUserStore } from "@/store/userStore";
 
-const TIER_COLOR: Record<Availability, string> = {
-  common: "#5C8A5A",
-  specialty: "#D9B25A",
-  rare: "#C8553D",
-};
-
+const TIER_COLOR: Record<Availability, string> = { common: "#5C8A5A", specialty: "#D9B25A", rare: "#C8553D" };
 const TOOLS = Object.values(TOOL_BY_ID).filter((tl) => tl.kind === "tool");
-const ALCOHOL = alcoholicCanonicals();
+const TRACKABLE = trackableCanonicals();
+const GROUP_ORDER = [
+  "Алкоголь",
+  "Лікери",
+  "Вино та вермут",
+  "Бітери",
+  "Пиво",
+  "Фрукти та ягоди",
+  "Трави",
+  "Спеції",
+  "Молочне та яйця",
+  "Соки",
+  "Сиропи",
+  "Прикраси",
+  "Напої",
+  "Інше",
+];
 
 function MakeCard({ r, showMissing }: { r: MakeResult; showMissing?: boolean }) {
   const t = useT();
@@ -55,14 +66,23 @@ export default function Bar() {
   const [draft, setDraft] = useState("");
   const [onlyMyTools, setOnlyMyTools] = useState(false);
   const [showTools, setShowTools] = useState(false);
-  const [setup, setSetup] = useState(false);
+  const [setup, setSetup] = useState<SetupKind | null>(null);
 
   const suggestions = useMemo(() => {
     const q = normalize(draft);
     if (q.length < 1) return [];
     const ownedSet = new Set(ownedIngredients.map(normalize));
-    return ALCOHOL.filter((c) => normalize(c.nameUk).includes(q) && !ownedSet.has(normalize(c.nameUk))).slice(0, 8);
+    return TRACKABLE.filter((c) => normalize(c.nameUk).includes(q) && !ownedSet.has(normalize(c.nameUk))).slice(0, 8);
   }, [draft, ownedIngredients]);
+
+  const ownedGroups = useMemo(() => {
+    const m = new Map<string, string[]>();
+    for (const name of ownedIngredients) {
+      const g = categoryGroupOf(name);
+      (m.get(g) ?? m.set(g, []).get(g)!).push(name);
+    }
+    return [...m.entries()].sort((a, b) => GROUP_ORDER.indexOf(a[0]) - GROUP_ORDER.indexOf(b[0]));
+  }, [ownedIngredients]);
 
   const { makeable, almost } = useMemo(
     () => whatCanIMake(all, ownedIngredients, flexibleMatching),
@@ -81,38 +101,29 @@ export default function Bar() {
     [all, ownedIngredients, flexibleMatching],
   );
 
-  if (setup) return <EssentialsSetup onClose={() => setSetup(false)} />;
+  if (setup) return <EssentialsSetup kind={setup} onClose={() => setSetup(null)} />;
 
   return (
     <div className="px-4 py-4">
-      {/* Alcohol in bar */}
-      <div className="flex items-center justify-between">
-        <h2 className="font-bold text-gold">Алкоголь у барі</h2>
-        <button
-          onClick={() => setSetup(true)}
-          className="flex items-center gap-1.5 rounded-full border border-gold px-3 py-1.5 text-sm text-gold"
-        >
-          <Sparkles size={15} /> Налаштувати
-        </button>
-      </div>
+      <h2 className="font-bold text-gold">Мій бар</h2>
       <p className="mt-1 text-xs text-text-faint">
-        Рахуємо лише алкоголь — лід, соки, фрукти й сиропи вважаємо за наявні.
+        Познач алкоголь і свіже (фрукти, трави, соки). Базове — лід, цукор, вода, сіль — вважаємо за наявне.
       </p>
 
-      {ownedIngredients.length > 0 && (
-        <div className="mt-3 flex flex-wrap gap-1.5">
-          {ownedIngredients.map((name) => (
-            <button
-              key={name}
-              onClick={() => removeOwnedIngredient(name)}
-              className="flex items-center gap-1 rounded-full border border-gold bg-gold/15 px-2.5 py-1 text-xs text-text"
-            >
-              {name}
-              <X size={12} className="text-text-dim" />
-            </button>
-          ))}
-        </div>
-      )}
+      <div className="mt-3 flex gap-2">
+        <button
+          onClick={() => setSetup("alcohol")}
+          className="flex-1 rounded-xl border border-gold px-3 py-2.5 text-sm font-bold text-gold"
+        >
+          🍸 Алкоголь
+        </button>
+        <button
+          onClick={() => setSetup("fresh")}
+          className="flex-1 rounded-xl border border-gold px-3 py-2.5 text-sm font-bold text-gold"
+        >
+          🍓 Свіже
+        </button>
+      </div>
 
       <div className="relative mt-3">
         <input
@@ -145,11 +156,40 @@ export default function Bar() {
               >
                 <Plus size={15} className="text-gold" />
                 {c.nameUk}
+                <span className="ml-auto text-xs text-text-faint">{categoryGroupOf(c.nameUk)}</span>
               </button>
             ))}
           </div>
         )}
       </div>
+
+      {/* Owned, grouped (no chips) */}
+      {ownedIngredients.length > 0 && (
+        <div className="mt-4 space-y-3">
+          {ownedGroups.map(([g, items]) => (
+            <div key={g}>
+              <div className="mb-1 text-xs font-bold text-text-faint">{g}</div>
+              <div className="overflow-hidden rounded-xl border border-border bg-surface">
+                {items.map((name, i) => (
+                  <div
+                    key={name}
+                    className={"flex items-center justify-between px-3 py-2" + (i > 0 ? " border-t border-border" : "")}
+                  >
+                    <span className="text-sm text-text">{name}</span>
+                    <button
+                      onClick={() => removeOwnedIngredient(name)}
+                      className="text-text-faint hover:text-danger"
+                      aria-label="Прибрати"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Tools (collapsible) */}
       <button
@@ -201,12 +241,20 @@ export default function Bar() {
       {ownedIngredients.length === 0 ? (
         <div className="mt-8 rounded-xl border border-border bg-surface p-6 text-center text-text-dim">
           {t.bar.empty}
-          <button
-            onClick={() => setSetup(true)}
-            className="mt-3 block w-full rounded-xl bg-gold px-4 py-3 font-bold text-bg"
-          >
-            Налаштувати бар
-          </button>
+          <div className="mt-3 flex gap-2">
+            <button
+              onClick={() => setSetup("alcohol")}
+              className="flex-1 rounded-xl bg-gold px-4 py-3 font-bold text-bg"
+            >
+              🍸 Алкоголь
+            </button>
+            <button
+              onClick={() => setSetup("fresh")}
+              className="flex-1 rounded-xl border border-gold px-4 py-3 font-bold text-gold"
+            >
+              🍓 Свіже
+            </button>
+          </div>
         </div>
       ) : (
         <>
@@ -238,7 +286,6 @@ export default function Bar() {
         </>
       )}
 
-      {/* Buy-to-unlock */}
       {purchases.length > 0 && (
         <section className="mt-7">
           <h2 className="font-bold text-gold">Що купити, щоб відкрити більше</h2>

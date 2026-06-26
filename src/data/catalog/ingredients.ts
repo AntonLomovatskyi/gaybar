@@ -79,3 +79,46 @@ export function alcoholicCanonicals(): CanonicalIngredient[] {
     .filter((c) => ALCOHOLIC_CATEGORIES.has(c.category))
     .sort((a, b) => a.nameUk.localeCompare(b.nameUk, "uk"));
 }
+
+/** Always-on-hand: ice + anything flagged a pantry staple. Never gates "can I make". */
+function isAssumed(c: CanonicalIngredient): boolean {
+  return c.category === "ice" || c.isPantryStaple;
+}
+
+/** Fresh / perishable non-alcohol worth tracking (fruit, herbs, spices, dairy, eggs, special juices/syrups). */
+export function freshCanonicals(): CanonicalIngredient[] {
+  return Object.values(CANONICAL)
+    .filter((c) => !ALCOHOLIC_CATEGORIES.has(c.category) && !isAssumed(c))
+    .sort((a, b) => a.nameUk.localeCompare(b.nameUk, "uk"));
+}
+
+/** Everything worth tracking in the bar = alcohol + fresh (excludes pantry staples). */
+export function trackableCanonicals(): CanonicalIngredient[] {
+  return Object.values(CANONICAL)
+    .filter((c) => ALCOHOLIC_CATEGORIES.has(c.category) || !isAssumed(c))
+    .sort((a, b) => a.nameUk.localeCompare(b.nameUk, "uk"));
+}
+
+/** Display group for an owned ingredient (for the grouped bar list). */
+const CATEGORY_GROUP: Record<string, string> = {
+  spirit: "Алкоголь",
+  liqueur: "Лікери",
+  wine: "Вино та вермут",
+  bitters: "Бітери",
+  beer: "Пиво",
+  fruit: "Фрукти та ягоди",
+  herb: "Трави",
+  spice: "Спеції",
+  dairy: "Молочне та яйця",
+  egg: "Молочне та яйця",
+  juice: "Соки",
+  syrup: "Сиропи",
+  garnish: "Прикраси",
+  mixer: "Напої",
+  pantry: "Інше",
+  other: "Інше",
+  ice: "Інше",
+};
+export function categoryGroupOf(name: string): string {
+  return CATEGORY_GROUP[categoryOf(name) ?? "other"] ?? "Інше";
+}

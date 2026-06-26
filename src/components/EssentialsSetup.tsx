@@ -1,7 +1,9 @@
 import { Check } from "lucide-react";
 import { useMemo, useState } from "react";
-import { alcoholicCanonicals, type CanonicalIngredient } from "@/data/catalog/ingredients";
+import { alcoholicCanonicals, freshCanonicals, type CanonicalIngredient } from "@/data/catalog/ingredients";
 import { useUserStore } from "@/store/userStore";
+
+export type SetupKind = "alcohol" | "fresh";
 
 interface Group {
   key: string;
@@ -18,42 +20,68 @@ const SPIRIT_FAMILIES: { family: string; label: string }[] = [
   { family: "brandy", label: "Бренді та коньяк" },
 ];
 
-function buildGroups(): Group[] {
+const FRESH_GROUPS: { cats: string[]; label: string }[] = [
+  { cats: ["fruit"], label: "Фрукти та ягоди" },
+  { cats: ["herb"], label: "Трави" },
+  { cats: ["spice"], label: "Спеції" },
+  { cats: ["dairy", "egg"], label: "Молочне та яйця" },
+  { cats: ["juice"], label: "Соки" },
+  { cats: ["syrup"], label: "Сиропи" },
+  { cats: ["garnish"], label: "Прикраси" },
+  { cats: ["mixer"], label: "Напої" },
+  { cats: ["other", "pantry"], label: "Інше" },
+];
+
+function alcoholGroups(): Group[] {
   const all = alcoholicCanonicals();
   const groups: Group[] = [];
-  const usedFamilies = new Set(SPIRIT_FAMILIES.map((s) => s.family));
-
+  const used = new Set(SPIRIT_FAMILIES.map((s) => s.family));
   for (const { family, label } of SPIRIT_FAMILIES) {
     const items = all.filter((c) => c.category === "spirit" && c.family === family);
     if (items.length) groups.push({ key: family, label, items });
   }
-  const otherSpirits = all.filter((c) => c.category === "spirit" && (!c.family || !usedFamilies.has(c.family)));
-  if (otherSpirits.length) groups.push({ key: "other-spirit", label: "Інші міцні", items: otherSpirits });
-
-  const liqueurs = all.filter((c) => c.category === "liqueur");
-  if (liqueurs.length) groups.push({ key: "liqueur", label: "Лікери", items: liqueurs });
-  const wines = all.filter((c) => c.category === "wine");
-  if (wines.length) groups.push({ key: "wine", label: "Вермут та вино", items: wines });
-  const bitters = all.filter((c) => c.category === "bitters");
-  if (bitters.length) groups.push({ key: "bitters", label: "Бітери", items: bitters });
+  const other = all.filter((c) => c.category === "spirit" && (!c.family || !used.has(c.family)));
+  if (other.length) groups.push({ key: "other-spirit", label: "Інші міцні", items: other });
+  for (const [cat, label] of [
+    ["liqueur", "Лікери"],
+    ["wine", "Вермут та вино"],
+    ["beer", "Пиво"],
+    ["bitters", "Бітери"],
+  ] as const) {
+    const items = all.filter((c) => c.category === cat);
+    if (items.length) groups.push({ key: cat, label, items });
+  }
   return groups;
 }
 
-export function EssentialsSetup({ onClose }: { onClose: () => void }) {
+function freshGroups(): Group[] {
+  const all = freshCanonicals();
+  const groups: Group[] = [];
+  for (const g of FRESH_GROUPS) {
+    const items = all.filter((c) => g.cats.includes(c.category));
+    if (items.length) groups.push({ key: g.label, label: g.label, items });
+  }
+  return groups;
+}
+
+export function EssentialsSetup({ kind, onClose }: { kind: SetupKind; onClose: () => void }) {
   const owned = useUserStore((s) => s.ownedIngredients);
   const add = useUserStore((s) => s.addOwnedIngredient);
   const remove = useUserStore((s) => s.removeOwnedIngredient);
-  const groups = useMemo(buildGroups, []);
+  const groups = useMemo(() => (kind === "alcohol" ? alcoholGroups() : freshGroups()), [kind]);
   const [step, setStep] = useState(0);
 
+  const title = kind === "alcohol" ? "🍸 Алкоголь" : "🍓 Свіже та інше";
   const group = groups[step];
   const isLast = step === groups.length - 1;
   const ownedSet = new Set(owned);
 
+  if (!group) return <div className="px-6 py-16 text-center text-text-dim">Нема що додати</div>;
+
   return (
     <div className="px-4 py-4">
       <div className="flex items-center justify-between">
-        <h1 className="font-display text-xl text-text">Налаштувати бар</h1>
+        <h1 className="font-display text-xl text-text">{title}</h1>
         <button onClick={onClose} className="text-sm text-text-dim hover:text-gold">
           Закрити
         </button>
