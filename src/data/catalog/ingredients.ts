@@ -38,7 +38,7 @@ export function isPantryStaple(name: string): boolean {
 }
 
 /** Categories we treat as "alcohol" — the only ingredients that gate what you can make. */
-export const ALCOHOLIC_CATEGORIES = new Set(["spirit", "liqueur", "wine", "bitters"]);
+export const ALCOHOLIC_CATEGORIES = new Set(["spirit", "liqueur", "wine", "bitters", "beer"]);
 /** Families that imply alcohol when a name isn't in the catalog (heuristic fallback). */
 const ALCOHOLIC_FAMILIES = new Set([
   "vodka",

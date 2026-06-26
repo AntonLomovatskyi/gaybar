@@ -1,3 +1,4 @@
+import { Check } from "lucide-react";
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Stepper } from "@/components/Stepper";
@@ -13,6 +14,9 @@ export default function Shopping() {
   const shopping = useUserStore((s) => s.shopping);
   const setShoppingServings = useUserStore((s) => s.setShoppingServings);
   const ownedIngredients = useUserStore((s) => s.ownedIngredients);
+  const bought = useUserStore((s) => s.boughtIngredients);
+  const toggleBought = useUserStore((s) => s.toggleBought);
+  const clearBought = useUserStore((s) => s.clearBought);
   const units = useUserStore((s) => s.units);
 
   const selected = useMemo(
@@ -20,10 +24,18 @@ export default function Shopping() {
     [all, shopping],
   );
 
+  // buildShoppingList already subtracts what's in your bar, so the list is only what you still need.
   const lines = useMemo(() => {
     const selections: ShoppingSelection[] = selected.map((c) => ({ cocktail: c, servings: shopping[c.id] ?? 0 }));
     return buildShoppingList(selections, ownedIngredients);
   }, [selected, shopping, ownedIngredients]);
+
+  const boughtSet = useMemo(() => new Set(bought), [bought]);
+  const sortedLines = useMemo(
+    () => [...lines].sort((a, b) => (boughtSet.has(a.name) ? 1 : 0) - (boughtSet.has(b.name) ? 1 : 0)),
+    [lines, boughtSet],
+  );
+  const boughtCount = lines.filter((l) => boughtSet.has(l.name)).length;
 
   if (selected.length === 0) {
     return <div className="px-6 py-16 text-center text-text-dim">{t.shopping.empty}</div>;
@@ -45,24 +57,49 @@ export default function Shopping() {
         ))}
       </div>
 
-      <div className="mt-7 mb-2 text-sm font-bold text-gold">{t.shopping.needed}</div>
+      <div className="mt-7 mb-2 flex items-center justify-between">
+        <span className="text-sm font-bold text-gold">
+          {t.shopping.needed} ({lines.length})
+        </span>
+        {boughtCount > 0 && (
+          <button onClick={clearBought} className="text-xs text-text-faint hover:text-gold">
+            Скинути куплене ({boughtCount})
+          </button>
+        )}
+      </div>
+
       <div className="rounded-xl border border-border bg-surface">
-        {lines.length === 0 ? (
+        {sortedLines.length === 0 ? (
           <div className="p-4 text-center text-text-dim">{t.common.none}</div>
         ) : (
-          lines.map((line, i) => (
-            <div
-              key={line.name}
-              className={
-                "flex items-baseline justify-between gap-3 px-4 py-3" + (i > 0 ? " border-t border-border" : "")
-              }
-            >
-              <span className="min-w-0 flex-1 text-text">{line.name}</span>
-              <span className="shrink-0 text-text-dim tabular-nums">
-                {line.mixedUnits ? "—" : formatQty(line.amount, line.unit, units)}
-              </span>
-            </div>
-          ))
+          sortedLines.map((line, i) => {
+            const isBought = boughtSet.has(line.name);
+            return (
+              <button
+                key={line.name}
+                type="button"
+                onClick={() => toggleBought(line.name)}
+                className={
+                  "flex w-full items-center gap-3 px-4 py-3 text-left" + (i > 0 ? " border-t border-border" : "")
+                }
+              >
+                <span
+                  className={
+                    "grid h-5 w-5 shrink-0 place-items-center rounded border " +
+                    (isBought ? "border-gold bg-gold text-bg" : "border-border")
+                  }
+                >
+                  {isBought && <Check size={13} strokeWidth={3} />}
+                </span>
+                <span className={"min-w-0 flex-1 " + (isBought ? "text-text-faint line-through" : "text-text")}>
+                  {line.name}
+                </span>
+                <span className={"shrink-0 tabular-nums " + (isBought ? "text-text-faint" : "text-text-dim")}>
+                  {line.mixedUnits ? "—" : formatQty(line.amount, line.unit, units)}
+                </span>
+              </button>
+            );
+          })
         )}
       </div>
     </div>

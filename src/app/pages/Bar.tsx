@@ -34,7 +34,7 @@ function MakeCard({ r, showMissing }: { r: MakeResult; showMissing?: boolean }) 
       )}
       {!showMissing && r.substitutions.length > 0 && (
         <div className="mt-1 px-0.5 text-[11px] leading-tight text-text-faint">
-          заміни: {r.substitutions.map((s) => s.have).join(", ")}
+          заміна: {r.substitutions.map((s) => `${s.required.name} → ${s.have}`).join(", ")}
         </div>
       )}
     </div>

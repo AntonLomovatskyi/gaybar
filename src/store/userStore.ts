@@ -18,6 +18,7 @@ export interface UserState {
   ownedIngredients: string[]; // free-text names for now (canonical ids later)
   ownedTools: string[];
   shopping: Record<string, number>; // cocktailId -> servings
+  boughtIngredients: string[]; // shopping-list lines ticked off as bought
   history: PrepEntry[];
   prefs: { likedTags: string[]; dislikedTags: string[]; strength?: number };
   /** User-created recipes, merged into the catalog at runtime. */
@@ -39,6 +40,8 @@ export interface UserState {
   toggleOwnedTool: (name: string) => void;
   setShoppingServings: (id: string, servings: number) => void;
   clearShopping: () => void;
+  toggleBought: (name: string) => void;
+  clearBought: () => void;
   logPreparation: (id: string, at: number) => void;
   setPrefs: (p: Partial<UserState["prefs"]>) => void;
   clearHistory: () => void;
@@ -56,6 +59,7 @@ export type PersistedData = Pick<
   | "ownedIngredients"
   | "ownedTools"
   | "shopping"
+  | "boughtIngredients"
   | "history"
   | "prefs"
   | "userRecipes"
@@ -73,6 +77,7 @@ export const useUserStore = create<UserState>()(
       ownedIngredients: [],
       ownedTools: [],
       shopping: {},
+      boughtIngredients: [],
       history: [],
       prefs: { likedTags: [], dislikedTags: [] },
       userRecipes: [],
@@ -105,6 +110,13 @@ export const useUserStore = create<UserState>()(
           return { shopping: next };
         }),
       clearShopping: () => set({ shopping: {} }),
+      toggleBought: (name) =>
+        set((s) => ({
+          boughtIngredients: s.boughtIngredients.includes(name)
+            ? s.boughtIngredients.filter((x) => x !== name)
+            : [...s.boughtIngredients, name],
+        })),
+      clearBought: () => set({ boughtIngredients: [] }),
       logPreparation: (id, at) => set((s) => ({ history: [{ cocktailId: id, at }, ...s.history].slice(0, 500) })),
       setPrefs: (p) => set((s) => ({ prefs: { ...s.prefs, ...p } })),
       clearHistory: () => set({ history: [] }),
@@ -118,6 +130,7 @@ export const useUserStore = create<UserState>()(
           ownedIngredients: d.ownedIngredients ?? s.ownedIngredients,
           ownedTools: d.ownedTools ?? s.ownedTools,
           shopping: d.shopping ?? s.shopping,
+          boughtIngredients: d.boughtIngredients ?? s.boughtIngredients,
           history: d.history ?? s.history,
           prefs: d.prefs ?? s.prefs,
           userRecipes: d.userRecipes ?? s.userRecipes,

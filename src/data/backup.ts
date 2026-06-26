@@ -12,6 +12,7 @@ export function getSnapshot(): PersistedData {
     ownedIngredients: s.ownedIngredients,
     ownedTools: s.ownedTools,
     shopping: s.shopping,
+    boughtIngredients: s.boughtIngredients,
     history: s.history,
     prefs: s.prefs,
     userRecipes: s.userRecipes,

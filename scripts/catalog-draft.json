@@ -2293,5 +2293,149 @@
     "family": null,
     "availability": "specialty",
     "isPantryStaple": false
+  },
+  {
+    "raw": "Джин",
+    "canonicalId": "gin",
+    "canonicalNameUk": "Джин",
+    "category": "spirit",
+    "family": "gin",
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Текіла",
+    "canonicalId": "tequila",
+    "canonicalNameUk": "Текіла",
+    "category": "spirit",
+    "family": "tequila",
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Бренді",
+    "canonicalId": "brandy",
+    "canonicalNameUk": "Бренді",
+    "category": "spirit",
+    "family": "brandy",
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Шампанське",
+    "canonicalId": "champagne",
+    "canonicalNameUk": "Шампанське",
+    "category": "wine",
+    "family": "sparkling",
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Червоне вино",
+    "canonicalId": "red-wine",
+    "canonicalNameUk": "Червоне вино",
+    "category": "wine",
+    "family": "wine",
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Біле вино",
+    "canonicalId": "white-wine",
+    "canonicalNameUk": "Біле вино",
+    "category": "wine",
+    "family": "wine",
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Світле пиво (лагер)",
+    "canonicalId": "lager",
+    "canonicalNameUk": "Світле пиво (лагер)",
+    "category": "beer",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Блю Кюрасао",
+    "canonicalId": "blue-curacao",
+    "canonicalNameUk": "Блю Кюрасао",
+    "category": "liqueur",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Полуничний лікер",
+    "canonicalId": "strawberry-liqueur",
+    "canonicalNameUk": "Полуничний лікер",
+    "category": "liqueur",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Лімончело",
+    "canonicalId": "limoncello",
+    "canonicalNameUk": "Лимончело",
+    "category": "liqueur",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Крем-де-какао",
+    "canonicalId": "dark-creme-de-cacao",
+    "canonicalNameUk": "Коричневий какао лікер",
+    "category": "liqueur",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Кампарі",
+    "canonicalId": "campari",
+    "canonicalNameUk": "Кампарі",
+    "category": "liqueur",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Гренадин",
+    "canonicalId": "grenadine",
+    "canonicalNameUk": "Гренадін",
+    "category": "syrup",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": true
+  },
+  {
+    "raw": "Кола",
+    "canonicalId": "cola",
+    "canonicalNameUk": "Кола",
+    "category": "mixer",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": true
+  },
+  {
+    "raw": "Сік лайма",
+    "canonicalId": "lime-juice",
+    "canonicalNameUk": "Лаймовий сік",
+    "category": "juice",
+    "family": null,
+    "availability": "common",
+    "isPantryStaple": true
+  },
+  {
+    "raw": "Кокосовий ром",
+    "canonicalId": "coconut-rum",
+    "canonicalNameUk": "Кокосовий ром",
+    "category": "liqueur",
+    "family": "rum",
+    "availability": "specialty",
+    "isPantryStaple": false
   }
 ]
