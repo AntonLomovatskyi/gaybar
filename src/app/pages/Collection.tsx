@@ -6,14 +6,19 @@ import { Chip } from "@/components/Chip";
 import { CocktailCard } from "@/components/CocktailCard";
 import { MOODS, type Mood } from "@/data/catalog/moods";
 import { useAllCocktails } from "@/data/useCocktails";
-import { applyFilters, pickSurprise, sortBy, type SortMode } from "@/domain/cocktails";
+import { applyFilters, pickSurprise, sortBy, strengthBucket, type SortMode } from "@/domain/cocktails";
 import { whatCanIMake } from "@/domain/inventory";
 import { recommendForYou } from "@/domain/recommend";
 import { useT } from "@/i18n";
-import { useFilterStore } from "@/store/filterStore";
+import { useFilterStore, type StrengthFilter } from "@/store/filterStore";
 import { useUserStore } from "@/store/userStore";
 
 const SORTS: SortMode[] = ["card", "name", "strength", "ingredients", "rating"];
+const STRENGTH_CHIPS: { key: Exclude<StrengthFilter, "all" | "medium">; label: string }[] = [
+  { key: "light", label: "🪶 Легкі" },
+  { key: "strong", label: "🔥 Міцні" },
+  { key: "zero", label: "0%" },
+];
 const easyCount = (c: { ingredients: { name: string }[] }) =>
   c.ingredients.filter((i) => !i.name.toLowerCase().includes("лід")).length;
 
@@ -28,17 +33,20 @@ export default function Collection() {
     query,
     onlyMakeable,
     onlyEasy,
+    strength,
     setTags,
     setSort,
     setQuery,
     setOnlyMakeable,
     setOnlyEasy,
+    setStrength,
   } = useFilterStore();
   const favourites = useUserStore((s) => s.favourites);
   const ratings = useUserStore((s) => s.ratings);
   const prefs = useUserStore((s) => s.prefs);
   const ownedIngredients = useUserStore((s) => s.ownedIngredients);
   const flexibleMatching = useUserStore((s) => s.flexibleMatching);
+  const recentlyViewed = useUserStore((s) => s.recentlyViewed);
 
   const makeableIds = useMemo(
     () => new Set(whatCanIMake(all, ownedIngredients, flexibleMatching).makeable.map((m) => m.cocktail.id)),
@@ -48,10 +56,15 @@ export default function Collection() {
     let base = applyFilters(all, { tags, glasses, query });
     if (onlyMakeable) base = base.filter((c) => makeableIds.has(c.id));
     if (onlyEasy) base = base.filter((c) => easyCount(c) <= 3);
+    if (strength !== "all") base = base.filter((c) => strengthBucket(c) === strength);
     return sortBy(base, sort, ratings);
-  }, [all, tags, glasses, query, sort, onlyMakeable, onlyEasy, makeableIds, ratings]);
+  }, [all, tags, glasses, query, sort, onlyMakeable, onlyEasy, strength, makeableIds, ratings]);
   const filterCount = tags.length + glasses.length;
-  const isHome = !query.trim() && filterCount === 0 && !onlyMakeable && !onlyEasy;
+  const isHome = !query.trim() && filterCount === 0 && !onlyMakeable && !onlyEasy && strength === "all";
+  const recent = useMemo(
+    () => recentlyViewed.map((id) => all.find((c) => c.id === id)).filter((c): c is NonNullable<typeof c> => !!c),
+    [recentlyViewed, all],
+  );
   // Cocktail of the day prefers ones you can make now (falls back to the whole catalog).
   const cotd = useMemo(() => {
     const makeablePool = all.filter((c) => makeableIds.has(c.id));
@@ -105,6 +118,18 @@ export default function Collection() {
         >
           ⚡ Прості
         </button>
+        {STRENGTH_CHIPS.map((sc) => (
+          <button
+            key={sc.key}
+            onClick={() => setStrength(strength === sc.key ? "all" : sc.key)}
+            className={clsx(
+              "rounded-full border px-3 py-1.5 text-sm",
+              strength === sc.key ? "border-gold bg-gold/15 text-gold" : "border-border text-text-dim",
+            )}
+          >
+            {sc.label}
+          </button>
+        ))}
         <button
           onClick={() => nav("/filters")}
           className={clsx(
@@ -151,6 +176,19 @@ export default function Collection() {
           <div className="px-4 text-sm font-bold text-gold">✨ {t.home.forYou}</div>
           <div className="no-scrollbar mt-2 flex gap-2 overflow-x-auto px-4">
             {recs.slice(0, 12).map((r) => (
+              <div key={r.id} className="w-28 shrink-0">
+                <CocktailCard cocktail={r} />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {isHome && recent.length > 0 && (
+        <div className="mt-4">
+          <div className="px-4 text-sm font-bold text-gold">🕘 Нещодавно переглянуті</div>
+          <div className="no-scrollbar mt-2 flex gap-2 overflow-x-auto px-4">
+            {recent.map((r) => (
               <div key={r.id} className="w-28 shrink-0">
                 <CocktailCard cocktail={r} />
               </div>

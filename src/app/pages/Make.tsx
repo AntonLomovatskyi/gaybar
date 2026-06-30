@@ -2,6 +2,7 @@ import { ArrowLeft, ArrowRight, Check, PartyPopper } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Stepper } from "@/components/Stepper";
+import { StepTimer, stepTimerSeconds } from "@/components/StepTimer";
 import { useCocktailById } from "@/data/useCocktails";
 import { formatIngredient, stepProgress } from "@/domain/cocktails";
 import { useT } from "@/i18n";
@@ -101,6 +102,7 @@ export default function Make() {
   // Step view
   const progress = stepProgress(total, index);
   const isLast = index === total - 1;
+  const timerSec = stepTimerSeconds(cocktail.steps[index]);
 
   return (
     <div className="flex min-h-[60vh] flex-col px-4 py-4">
@@ -114,8 +116,9 @@ export default function Make() {
         {t.stepper.step} {progress.current} {t.stepper.of} {progress.total}
       </div>
 
-      <div className="flex flex-1 items-center py-6">
+      <div className="flex flex-1 flex-col justify-center py-6">
         <p className="text-2xl leading-relaxed text-text">{cocktail.steps[index]}</p>
+        {timerSec !== null && <StepTimer key={index} seconds={timerSec} />}
       </div>
 
       {/* Always-visible amounts so you know how much to pour */}

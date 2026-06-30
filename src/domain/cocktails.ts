@@ -38,6 +38,16 @@ export function estimateStrength(c: Cocktail): Strength {
   };
 }
 
+export type StrengthBucket = "zero" | "light" | "medium" | "strong";
+/** Coarse strength bucket for quick filtering (uses the same ABV estimate as the badge). */
+export function strengthBucket(c: Cocktail): StrengthBucket {
+  const abv = estimateStrength(c).abv;
+  if (abv < 1) return "zero";
+  if (abv < 14) return "light";
+  if (abv < 24) return "medium";
+  return "strong";
+}
+
 /** Map an ingredient base family to the matching base tag. */
 const FAMILY_TO_BASE: Record<string, CocktailTag> = {
   vodka: "на горілці",

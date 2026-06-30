@@ -1,7 +1,10 @@
 /** Ephemeral discovery filter state (selected tags + sort). Not persisted. */
 import { create } from "zustand";
 import type { CocktailTag } from "@/types/cocktail";
-import type { SortMode } from "@/domain/cocktails";
+import type { SortMode, StrengthBucket } from "@/domain/cocktails";
+
+/** "all" = no strength filter; otherwise restrict to one bucket. */
+export type StrengthFilter = "all" | StrengthBucket;
 
 interface FilterState {
   tags: CocktailTag[];
@@ -10,6 +13,7 @@ interface FilterState {
   query: string;
   onlyMakeable: boolean;
   onlyEasy: boolean;
+  strength: StrengthFilter;
   toggleTag: (t: CocktailTag) => void;
   setTags: (t: CocktailTag[]) => void;
   toggleGlass: (id: string) => void;
@@ -17,6 +21,7 @@ interface FilterState {
   setQuery: (q: string) => void;
   setOnlyMakeable: (v: boolean) => void;
   setOnlyEasy: (v: boolean) => void;
+  setStrength: (v: StrengthFilter) => void;
   clear: () => void;
 }
 
@@ -27,6 +32,7 @@ export const useFilterStore = create<FilterState>((set) => ({
   query: "",
   onlyMakeable: false,
   onlyEasy: false,
+  strength: "all",
   toggleTag: (t) => set((s) => ({ tags: s.tags.includes(t) ? s.tags.filter((x) => x !== t) : [...s.tags, t] })),
   setTags: (t) => set({ tags: t }),
   toggleGlass: (id) =>
@@ -35,5 +41,6 @@ export const useFilterStore = create<FilterState>((set) => ({
   setQuery: (q) => set({ query: q }),
   setOnlyMakeable: (v) => set({ onlyMakeable: v }),
   setOnlyEasy: (v) => set({ onlyEasy: v }),
+  setStrength: (v) => set({ strength: v }),
   clear: () => set({ tags: [], glasses: [] }),
 }));

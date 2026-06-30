@@ -1,5 +1,5 @@
-import { ExternalLink, Heart, Pencil, Play, Share2, ShoppingCart, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { Check, ExternalLink, Heart, Pencil, Play, Share2, ShoppingCart, Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import clsx from "clsx";
 import { Chip } from "@/components/Chip";
@@ -26,6 +26,7 @@ export default function CocktailDetail() {
 
   const [servings, setServings] = useState(1);
   const [showCard, setShowCard] = useState(false);
+  const [justLogged, setJustLogged] = useState(false);
 
   const units = useUserStore((s) => s.units);
   const favourites = useUserStore((s) => s.favourites);
@@ -40,6 +41,12 @@ export default function CocktailDetail() {
   const setNote = useUserStore((s) => s.setNote);
   const setShoppingServings = useUserStore((s) => s.setShoppingServings);
   const removeUserRecipe = useUserStore((s) => s.removeUserRecipe);
+  const logPreparation = useUserStore((s) => s.logPreparation);
+  const pushRecentlyViewed = useUserStore((s) => s.pushRecentlyViewed);
+
+  useEffect(() => {
+    if (id) pushRecentlyViewed(id);
+  }, [id, pushRecentlyViewed]);
 
   if (!id || !cocktail) {
     return <div className="px-6 py-16 text-center text-text-dim">Коктейль не знайдено</div>;
@@ -136,6 +143,19 @@ export default function CocktailDetail() {
       >
         <ShoppingCart size={18} /> {t.recipe.addToShopping}
         {shopping[id] ? ` (${shopping[id]})` : ""}
+      </button>
+
+      <button
+        onClick={() => {
+          logPreparation(id, Date.now());
+          setJustLogged(true);
+        }}
+        className={clsx(
+          "mt-2 flex w-full items-center justify-center gap-2 rounded-xl border px-4 py-3 text-center font-bold",
+          justLogged ? "border-gold bg-gold/15 text-gold" : "border-border bg-surface text-text",
+        )}
+      >
+        <Check size={18} /> {justLogged ? "Записано ✓" : "Я зробив"}
       </button>
 
       <section className="mt-6">

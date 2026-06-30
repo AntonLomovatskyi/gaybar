@@ -21,6 +21,7 @@ export interface UserState {
   shopping: Record<string, number>; // cocktailId -> servings
   boughtIngredients: string[]; // shopping-list lines ticked off as bought
   history: PrepEntry[];
+  recentlyViewed: string[]; // cocktail ids, most-recent first (local only)
   prefs: { likedTags: string[]; dislikedTags: string[]; strength?: number };
   /** User-created recipes, merged into the catalog at runtime. */
   userRecipes: Cocktail[];
@@ -45,6 +46,7 @@ export interface UserState {
   toggleBought: (name: string) => void;
   clearBought: () => void;
   logPreparation: (id: string, at: number) => void;
+  pushRecentlyViewed: (id: string) => void;
   setPrefs: (p: Partial<UserState["prefs"]>) => void;
   clearHistory: () => void;
   clearFavourites: () => void;
@@ -83,6 +85,7 @@ export const useUserStore = create<UserState>()(
       shopping: {},
       boughtIngredients: [],
       history: [],
+      recentlyViewed: [],
       prefs: { likedTags: [], dislikedTags: [] },
       userRecipes: [],
       flexibleMatching: true,
@@ -129,6 +132,8 @@ export const useUserStore = create<UserState>()(
         })),
       clearBought: () => set({ boughtIngredients: [] }),
       logPreparation: (id, at) => set((s) => ({ history: [{ cocktailId: id, at }, ...s.history].slice(0, 500) })),
+      pushRecentlyViewed: (id) =>
+        set((s) => ({ recentlyViewed: [id, ...s.recentlyViewed.filter((x) => x !== id)].slice(0, 12) })),
       setPrefs: (p) => set((s) => ({ prefs: { ...s.prefs, ...p } })),
       clearHistory: () => set({ history: [] }),
       clearFavourites: () => set({ favourites: [] }),
