@@ -1,9 +1,10 @@
 /**
- * Build a shopping list from chosen cocktails scaled by serving count, minus what's owned.
- * Pure logic. Aggregates by (normalized name + unit); upgrades to canonical ids with the
- * dictionary later.
+ * Build a shopping list from chosen cocktails scaled by serving count, split into what you
+ * already have (owned bar items + assumed pantry staples) vs what you still need to buy.
+ * Matching is canonical (owning Куантро covers a recipe's Тріпл сек). Pure logic.
  */
 import type { Cocktail } from "@/types/cocktail";
+import { canonicalIdOf, isAssumedAvailable } from "@/data/catalog/ingredients";
 import { normalize } from "./text";
 
 export interface ShoppingSelection {
@@ -19,17 +20,32 @@ export interface ShoppingLine {
   fromCocktails: string[]; // cocktail names that need it
 }
 
-export function buildShoppingList(selections: ShoppingSelection[], ownedNames: string[] = []): ShoppingLine[] {
-  const owned = new Set(ownedNames.map(normalize));
-  const map = new Map<string, ShoppingLine & { _units: Set<string> }>();
+export interface ShoppingSplit {
+  need: ShoppingLine[]; // not in your bar / pantry — buy these
+  have: ShoppingLine[]; // already on hand (owned or assumed pantry)
+}
+
+type Acc = ShoppingLine & { _units: Set<string>; have: boolean };
+
+export function splitShoppingList(selections: ShoppingSelection[], ownedNames: string[] = []): ShoppingSplit {
+  const owned = new Set(ownedNames.map(canonicalIdOf));
+  const map = new Map<string, Acc>();
 
   for (const { cocktail, servings } of selections) {
     for (const ing of cocktail.ingredients) {
-      const key = normalize(ing.name);
-      if (!key || owned.has(key)) continue;
+      if (!normalize(ing.name)) continue;
+      const key = canonicalIdOf(ing.name);
       let line = map.get(key);
       if (!line) {
-        line = { name: ing.name, amount: 0, unit: ing.unit, mixedUnits: false, fromCocktails: [], _units: new Set() };
+        line = {
+          name: ing.name,
+          amount: 0,
+          unit: ing.unit,
+          mixedUnits: false,
+          fromCocktails: [],
+          _units: new Set(),
+          have: owned.has(key) || isAssumedAvailable(ing.name),
+        };
         map.set(key, line);
       }
       if (!line.fromCocktails.includes(cocktail.name)) line.fromCocktails.push(cocktail.name);
@@ -38,7 +54,7 @@ export function buildShoppingList(selections: ShoppingSelection[], ownedNames: s
     }
   }
 
-  return [...map.values()].map((l) => {
+  const finalize = (l: Acc): ShoppingLine => {
     const units = [...l._units];
     const mixedUnits = units.length > 1;
     return {
@@ -48,5 +64,16 @@ export function buildShoppingList(selections: ShoppingSelection[], ownedNames: s
       mixedUnits,
       fromCocktails: l.fromCocktails,
     };
-  });
+  };
+
+  const all = [...map.values()];
+  return {
+    need: all.filter((l) => !l.have).map(finalize),
+    have: all.filter((l) => l.have).map(finalize),
+  };
+}
+
+/** Just the ingredients you still need to buy. */
+export function buildShoppingList(selections: ShoppingSelection[], ownedNames: string[] = []): ShoppingLine[] {
+  return splitShoppingList(selections, ownedNames).need;
 }

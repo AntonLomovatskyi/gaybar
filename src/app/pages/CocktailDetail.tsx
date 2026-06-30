@@ -79,8 +79,8 @@ export default function CocktailDetail() {
       <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
         {strength.abv > 0 && (
           <span className="text-text-dim">
-            <span className="font-bold text-gold">≈ {strength.abv}%</span> · {strength.tier} · {strength.standardDrinks}{" "}
-            порц.
+            <span className="font-bold text-gold">≈ {strength.abv}%</span> · {strength.tier} ·{" "}
+            {Math.round(strength.alcoholMl * 0.789)} г алкоголю
           </span>
         )}
         {cocktail.glass && (

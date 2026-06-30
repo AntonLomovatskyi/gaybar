@@ -3,6 +3,7 @@ import { useMemo, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import clsx from "clsx";
 import { CocktailCard } from "@/components/CocktailCard";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { EssentialsSetup, type SetupKind } from "@/components/EssentialsSetup";
 import { ToolIcon } from "@/components/ToolIcon";
 import { availabilityOf, categoryGroupOf, trackableCanonicals, type Availability } from "@/data/catalog/ingredients";
@@ -67,6 +68,7 @@ export default function Bar() {
   const [onlyMyTools, setOnlyMyTools] = useState(false);
   const [showTools, setShowTools] = useState(false);
   const [setup, setSetup] = useState<SetupKind | null>(null);
+  const [confirmRemove, setConfirmRemove] = useState<string | null>(null);
 
   const suggestions = useMemo(() => {
     const q = normalize(draft);
@@ -177,7 +179,7 @@ export default function Bar() {
                   >
                     <span className="text-sm text-text">{name}</span>
                     <button
-                      onClick={() => removeOwnedIngredient(name)}
+                      onClick={() => setConfirmRemove(name)}
                       className="text-text-faint hover:text-danger"
                       aria-label="Прибрати"
                     >
@@ -310,6 +312,16 @@ export default function Bar() {
           </div>
         </section>
       )}
+
+      <ConfirmDialog
+        open={confirmRemove !== null}
+        title={`Прибрати «${confirmRemove}» з бару?`}
+        onConfirm={() => {
+          if (confirmRemove) removeOwnedIngredient(confirmRemove);
+          setConfirmRemove(null);
+        }}
+        onCancel={() => setConfirmRemove(null)}
+      />
     </div>
   );
 }

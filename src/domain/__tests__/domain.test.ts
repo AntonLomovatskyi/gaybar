@@ -147,6 +147,7 @@ describe("party", () => {
       drinksPerPerson: 2,
       localOnly: false,
       useMyBar: false,
+      everyoneTries: true,
     });
     expect(items).toHaveLength(2);
   });

@@ -1,11 +1,11 @@
 import { useEffect, useMemo } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { Share2, ShoppingCart } from "lucide-react";
+import { Check, Share2, ShoppingCart } from "lucide-react";
 import clsx from "clsx";
 import { Stepper } from "@/components/Stepper";
 import { cocktailAvailability, type Availability } from "@/data/catalog/availability";
 import { useAllCocktails } from "@/data/useCocktails";
-import { buildShoppingList, type ShoppingSelection } from "@/domain/shopping";
+import { splitShoppingList, type ShoppingSelection } from "@/domain/shopping";
 import { useT } from "@/i18n";
 import { decodePlan, encodePlan, shareLink } from "@/lib/share";
 import { usePartyStore } from "@/store/partyStore";
@@ -66,7 +66,7 @@ export default function SetPlan() {
 
   const shopping = useMemo(() => {
     const selections: ShoppingSelection[] = planned.map((p) => ({ cocktail: p.cocktail, servings: p.item.servings }));
-    return buildShoppingList(selections, ownedIngredients);
+    return splitShoppingList(selections, ownedIngredients);
   }, [planned, ownedIngredients]);
 
   if (planned.length === 0) {
@@ -133,11 +133,13 @@ export default function SetPlan() {
         <div className="flex items-center gap-2 text-sm font-bold text-gold">
           <ShoppingCart size={16} /> {t.sets.shoppingFor}
         </div>
-        {shopping.length === 0 ? (
-          <div className="mt-2 text-sm text-text-dim">{t.common.none}</div>
+
+        <div className="mt-3 text-xs font-bold text-text-faint">Купити ({shopping.need.length})</div>
+        {shopping.need.length === 0 ? (
+          <div className="mt-1 text-sm text-text-dim">Усе є 🎉</div>
         ) : (
-          <ul className="mt-3 flex flex-col gap-2">
-            {shopping.map((line) => (
+          <ul className="mt-2 flex flex-col gap-2">
+            {shopping.need.map((line) => (
               <li
                 key={line.name}
                 className="flex items-baseline justify-between gap-3 border-b border-border pb-2 last:border-0 last:pb-0"
@@ -158,6 +160,22 @@ export default function SetPlan() {
               </li>
             ))}
           </ul>
+        )}
+
+        {shopping.have.length > 0 && (
+          <>
+            <div className="mt-4 text-xs font-bold text-text-faint">Вже є ({shopping.have.length})</div>
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {shopping.have.map((line) => (
+                <span
+                  key={line.name}
+                  className="inline-flex items-center gap-1 rounded-full border border-border bg-surface-alt px-2.5 py-1 text-xs text-text-dim"
+                >
+                  <Check size={12} className="text-success" /> {line.name}
+                </span>
+              ))}
+            </div>
+          </>
         )}
       </div>
 

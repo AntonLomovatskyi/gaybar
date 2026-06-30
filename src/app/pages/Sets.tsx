@@ -23,7 +23,9 @@ export default function Sets() {
 
   const [moods, setMoods] = useState<string[]>([]);
 
-  const total = config.people * config.drinksPerPerson;
+  const total = config.everyoneTries
+    ? config.varieties * Math.max(config.people, MIN_PEOPLE)
+    : config.people * config.drinksPerPerson;
 
   const toggleMood = (key: string) =>
     setMoods((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]));
@@ -66,20 +68,50 @@ export default function Sets() {
           <span className="text-text">{t.sets.varieties}</span>
           <Stepper value={config.varieties} onChange={(v) => setConfig({ varieties: v })} min={1} max={12} />
         </div>
-        <div className="flex items-center justify-between py-1.5">
-          <span className="text-text">{t.sets.drinksPerPerson}</span>
-          <Stepper
-            value={config.drinksPerPerson}
-            onChange={(v) => setConfig({ drinksPerPerson: v })}
-            min={1}
-            max={10}
-          />
-        </div>
+        {!config.everyoneTries && (
+          <div className="flex items-center justify-between py-1.5">
+            <span className="text-text">{t.sets.drinksPerPerson}</span>
+            <Stepper
+              value={config.drinksPerPerson}
+              onChange={(v) => setConfig({ drinksPerPerson: v })}
+              min={1}
+              max={10}
+            />
+          </div>
+        )}
+
+        <button
+          type="button"
+          onClick={() => setConfig({ everyoneTries: !config.everyoneTries })}
+          className="mt-1 flex w-full items-start justify-between gap-3 py-1.5 text-left"
+        >
+          <span className="min-w-0">
+            <span className="block text-text">Кожен куштує кожен</span>
+            <span className="block text-xs text-text-faint">
+              По {Math.max(config.people, MIN_PEOPLE)} порції кожного
+            </span>
+          </span>
+          <span
+            className={
+              "mt-0.5 relative h-6 w-11 shrink-0 rounded-full border transition " +
+              (config.everyoneTries ? "border-gold bg-gold/30" : "border-border bg-surface-alt")
+            }
+          >
+            <span
+              className={
+                "absolute top-0.5 grid h-4 w-4 place-items-center rounded-full transition-all " +
+                (config.everyoneTries ? "left-[22px] bg-gold text-bg" : "left-0.5 bg-text-faint")
+              }
+            >
+              {config.everyoneTries && <Check size={11} strokeWidth={3} />}
+            </span>
+          </span>
+        </button>
 
         <button
           type="button"
           onClick={() => setConfig({ localOnly: !config.localOnly })}
-          className="mt-1 flex w-full items-center justify-between py-1.5 text-left"
+          className="flex w-full items-center justify-between py-1.5 text-left"
         >
           <span className="text-text">{t.sets.localOnly}</span>
           <span
