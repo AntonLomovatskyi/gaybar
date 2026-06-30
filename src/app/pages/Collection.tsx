@@ -1,5 +1,5 @@
 import { ArrowDownUp, GlassWater, Shuffle, SlidersHorizontal } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import { Chip } from "@/components/Chip";
@@ -21,15 +21,24 @@ export default function Collection() {
   const t = useT();
   const nav = useNavigate();
   const all = useAllCocktails();
-  const [query, setQuery] = useState("");
-  const { tags, glasses, sort, setTags, setSort } = useFilterStore();
+  const {
+    tags,
+    glasses,
+    sort,
+    query,
+    onlyMakeable,
+    onlyEasy,
+    setTags,
+    setSort,
+    setQuery,
+    setOnlyMakeable,
+    setOnlyEasy,
+  } = useFilterStore();
   const favourites = useUserStore((s) => s.favourites);
   const ratings = useUserStore((s) => s.ratings);
   const prefs = useUserStore((s) => s.prefs);
   const ownedIngredients = useUserStore((s) => s.ownedIngredients);
   const flexibleMatching = useUserStore((s) => s.flexibleMatching);
-  const [onlyMakeable, setOnlyMakeable] = useState(false);
-  const [onlyEasy, setOnlyEasy] = useState(false);
 
   const makeableIds = useMemo(
     () => new Set(whatCanIMake(all, ownedIngredients, flexibleMatching).makeable.map((m) => m.cocktail.id)),
@@ -79,7 +88,7 @@ export default function Collection() {
 
       <div className="flex flex-wrap gap-2 px-4 pt-3">
         <button
-          onClick={() => setOnlyMakeable((v) => !v)}
+          onClick={() => setOnlyMakeable(!onlyMakeable)}
           className={clsx(
             "flex items-center gap-1 rounded-full border px-3 py-1.5 text-sm",
             onlyMakeable ? "border-gold bg-gold/15 text-gold" : "border-border text-text-dim",
@@ -88,7 +97,7 @@ export default function Collection() {
           <GlassWater size={15} /> Можу зараз
         </button>
         <button
-          onClick={() => setOnlyEasy((v) => !v)}
+          onClick={() => setOnlyEasy(!onlyEasy)}
           className={clsx(
             "flex items-center gap-1 rounded-full border px-3 py-1.5 text-sm",
             onlyEasy ? "border-gold bg-gold/15 text-gold" : "border-border text-text-dim",

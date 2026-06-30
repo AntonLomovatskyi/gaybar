@@ -10,6 +10,7 @@ import { toolInfo } from "@/data/catalog/tools";
 import { getCardImages } from "@/data/cocktails";
 import { useCocktailById } from "@/data/useCocktails";
 import { estimateStrength, formatIngredient } from "@/domain/cocktails";
+import { classifyIngredient } from "@/domain/inventory";
 import { useT } from "@/i18n";
 import { shareLink } from "@/lib/share";
 import { useUserStore } from "@/store/userStore";
@@ -29,6 +30,8 @@ export default function CocktailDetail() {
   const shopping = useUserStore((s) => s.shopping);
   const userRecipes = useUserStore((s) => s.userRecipes);
   const notes = useUserStore((s) => s.notes);
+  const ownedIngredients = useUserStore((s) => s.ownedIngredients);
+  const flexibleMatching = useUserStore((s) => s.flexibleMatching);
   const toggleFavourite = useUserStore((s) => s.toggleFavourite);
   const setRating = useUserStore((s) => s.setRating);
   const setNote = useUserStore((s) => s.setNote);
@@ -79,8 +82,7 @@ export default function CocktailDetail() {
       <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
         {strength.abv > 0 && (
           <span className="text-text-dim">
-            <span className="font-bold text-gold">≈ {strength.abv}%</span> · {strength.tier} ·{" "}
-            {Math.round(strength.alcoholMl * 0.789)} г алкоголю
+            <span className="font-bold text-gold">≈ {strength.abv}%</span> · {strength.tier}
           </span>
         )}
         {cocktail.glass && (
@@ -131,11 +133,20 @@ export default function CocktailDetail() {
           </div>
         </div>
         <ul className="mt-3 space-y-2">
-          {cocktail.ingredients.map((ing, idx) => (
-            <li key={`${ing.name}-${idx}`} className="rounded-xl border border-border bg-surface p-3 text-sm text-text">
-              {formatIngredient(ing, servings, units)}
-            </li>
-          ))}
+          {cocktail.ingredients.map((ing, idx) => {
+            const m = classifyIngredient(ing, ownedIngredients, flexibleMatching);
+            return (
+              <li key={`${ing.name}-${idx}`} className="rounded-xl border border-border bg-surface p-3 text-sm">
+                <div className="flex items-baseline justify-between gap-2">
+                  <span className="text-text">{formatIngredient(ing, servings, units)}</span>
+                  {m.tier === "exact" && <span className="shrink-0 text-xs text-success">✓ є</span>}
+                </div>
+                {m.tier === "substitute" && m.have && (
+                  <div className="mt-0.5 text-xs text-gold">🔄 заміна: твій {m.have}</div>
+                )}
+              </li>
+            );
+          })}
         </ul>
       </section>
 
