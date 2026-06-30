@@ -9,8 +9,16 @@ import {
   search,
   sortBy,
   stepProgress,
+  strengthBucket,
 } from "@/domain/cocktails";
-import { classifyIngredient, hasAllTools, isIgnorable, suggestPurchases, whatCanIMake } from "@/domain/inventory";
+import {
+  classifyIngredient,
+  hasAllTools,
+  isIgnorable,
+  smartShoppingPlan,
+  suggestPurchases,
+  whatCanIMake,
+} from "@/domain/inventory";
 import { recommendForYou } from "@/domain/recommend";
 import { buildShoppingList } from "@/domain/shopping";
 import { composeParty, distributeServings } from "@/domain/party";
@@ -123,6 +131,25 @@ describe("inventory matching", () => {
     const c = mk("x", ["міцні"], [ml("Джин", 60)], { tools: ["Шейкер", "Рокс"] });
     expect(hasAllTools(c, ["Шейкер"])).toBe(true); // Рокс is glass -> ignored
     expect(hasAllTools(c, [])).toBe(false);
+  });
+  it("smartShoppingPlan sequences purchases, accounting for earlier steps", () => {
+    const all = [
+      mk("daiquiri2", ["міцні"], [ml("Білий ром", 60), ml("Лаймовий сік", 30), ml("Цукровий сироп", 15)]),
+      mk("mojito", ["міцні"], [ml("Білий ром", 50), ml("Лаймовий сік", 30)]),
+      mk("navy", ["міцні"], [ml("Білий ром", 40), ml("Джин", 20)]), // 2-away until rum is bought
+    ];
+    const plan = smartShoppingPlan(all, ["Лаймовий сік", "Цукровий сироп"], true, 3);
+    expect(plan[0].name).toBe("Білий ром"); // unlocks the two 1-away cocktails first (+2)
+    expect(plan[0].cocktails.length).toBe(2);
+    expect(plan.map((p) => p.name)).toContain("Джин"); // navy becomes 1-away only after step 1
+    expect(plan.reduce((n, p) => n + p.cocktails.length, 0)).toBe(3);
+  });
+});
+
+describe("cocktails.strengthBucket", () => {
+  it("buckets by estimated ABV", () => {
+    expect(strengthBucket(mk("juice", [], [ml("Апельсиновий сік", 150)]))).toBe("zero");
+    expect(strengthBucket(martini)).toBe("strong"); // spirit-forward, low dilution
   });
 });
 

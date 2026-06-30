@@ -10,6 +10,8 @@ import type { Cocktail } from "@/types/cocktail";
 export interface PrepEntry {
   cocktailId: string;
   at: number; // epoch ms
+  note?: string; // tasting-journal note for this specific make
+  rating?: number; // 1..5 stars for this specific make
 }
 
 export interface UserState {
@@ -46,6 +48,8 @@ export interface UserState {
   toggleBought: (name: string) => void;
   clearBought: () => void;
   logPreparation: (id: string, at: number) => void;
+  setPrepNote: (at: number, note: string) => void;
+  setPrepRating: (at: number, rating: number) => void;
   pushRecentlyViewed: (id: string) => void;
   setPrefs: (p: Partial<UserState["prefs"]>) => void;
   clearHistory: () => void;
@@ -132,6 +136,12 @@ export const useUserStore = create<UserState>()(
         })),
       clearBought: () => set({ boughtIngredients: [] }),
       logPreparation: (id, at) => set((s) => ({ history: [{ cocktailId: id, at }, ...s.history].slice(0, 500) })),
+      setPrepNote: (at, note) =>
+        set((s) => ({
+          history: s.history.map((e) => (e.at === at ? { ...e, note: note.trim() || undefined } : e)),
+        })),
+      setPrepRating: (at, rating) =>
+        set((s) => ({ history: s.history.map((e) => (e.at === at ? { ...e, rating } : e)) })),
       pushRecentlyViewed: (id) =>
         set((s) => ({ recentlyViewed: [id, ...s.recentlyViewed.filter((x) => x !== id)].slice(0, 12) })),
       setPrefs: (p) => set((s) => ({ prefs: { ...s.prefs, ...p } })),

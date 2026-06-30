@@ -12,6 +12,7 @@ import RecipeNew from "./pages/RecipeNew";
 import SetMake from "./pages/SetMake";
 import SetPlan from "./pages/SetPlan";
 import Sets from "./pages/Sets";
+import Quiz from "./pages/Quiz";
 import Settings from "./pages/Settings";
 import Shopping from "./pages/Shopping";
 import Stats from "./pages/Stats";
@@ -36,6 +37,7 @@ export const router = createBrowserRouter(
         { path: "tool/:id", element: <ToolDetail /> },
         { path: "ingredient/:id", element: <IngredientDetail /> },
         { path: "stats", element: <Stats /> },
+        { path: "quiz", element: <Quiz /> },
         { path: "history", element: <History /> },
         { path: "settings", element: <Settings /> },
         { path: "recipe/new", element: <RecipeNew /> },

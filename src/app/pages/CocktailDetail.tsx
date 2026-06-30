@@ -35,6 +35,7 @@ export default function CocktailDetail() {
   const userRecipes = useUserStore((s) => s.userRecipes);
   const notes = useUserStore((s) => s.notes);
   const ownedIngredients = useUserStore((s) => s.ownedIngredients);
+  const ownedTools = useUserStore((s) => s.ownedTools);
   const flexibleMatching = useUserStore((s) => s.flexibleMatching);
   const toggleFavourite = useUserStore((s) => s.toggleFavourite);
   const setRating = useUserStore((s) => s.setRating);
@@ -58,6 +59,14 @@ export default function CocktailDetail() {
   const strength = estimateStrength(cocktail);
   const similar = similarCocktails(cocktail, all, 12);
   const googleUrl = `https://www.google.com/search?q=${encodeURIComponent(`${cocktail.name} коктейль рецепт`)}`;
+  const hasTools = ownedTools.length > 0;
+  const ownedToolIds = new Set(ownedTools.map((tl) => toolInfo(tl).id));
+  const missingTools = hasTools
+    ? cocktail.tools.filter((tl) => {
+        const info = toolInfo(tl);
+        return info.kind === "tool" && !ownedToolIds.has(info.id);
+      })
+    : [];
 
   return (
     <div className="px-4 py-4">
@@ -192,18 +201,28 @@ export default function CocktailDetail() {
           <div className="mt-3 flex flex-wrap gap-2">
             {cocktail.tools.map((tool, idx) => {
               const info = toolInfo(tool);
+              const owned = info.kind === "glass" || ownedToolIds.has(info.id);
               return (
                 <Link
                   key={`${tool}-${idx}`}
                   to={`/tool/${info.id}`}
-                  className="flex items-center gap-2 rounded-full border border-border bg-surface-alt px-3 py-1.5 text-sm text-text-dim transition hover:border-gold/60 hover:text-text"
+                  className={clsx(
+                    "flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm transition",
+                    hasTools && info.kind === "tool" && !owned
+                      ? "border-danger/50 text-danger"
+                      : "border-border bg-surface-alt text-text-dim hover:border-gold/60 hover:text-text",
+                  )}
                 >
                   <ToolIcon id={info.id} size={18} className="text-gold" />
                   {tool}
+                  {hasTools && info.kind === "tool" && owned && <Check size={14} className="text-success" />}
                 </Link>
               );
             })}
           </div>
+          {missingTools.length > 0 && (
+            <p className="mt-2 text-xs text-danger">Бракує інструментів: {missingTools.join(", ")}</p>
+          )}
         </section>
       )}
 

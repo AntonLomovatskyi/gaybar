@@ -117,6 +117,28 @@ export function suggestPurchases(cocktails: Cocktail[], owned: string[], flexibl
   return [...byId.values()].sort((a, b) => b.cocktails.length - a.cocktails.length);
 }
 
+/**
+ * A greedy shopping plan: each step is the single ingredient that unlocks the most cocktails
+ * GIVEN the previous steps are already bought. Buying step 1 turns some 2-away cocktails into
+ * 1-away, so step 2 accounts for that — the steps are a sequence, not independent picks.
+ */
+export function smartShoppingPlan(
+  cocktails: Cocktail[],
+  owned: string[],
+  flexible = true,
+  maxSteps = 5,
+): PurchaseSuggestion[] {
+  const plan: PurchaseSuggestion[] = [];
+  const current = [...owned];
+  for (let i = 0; i < maxSteps; i++) {
+    const best = suggestPurchases(cocktails, current, flexible)[0];
+    if (!best || best.cocktails.length === 0) break;
+    plan.push(best);
+    current.push(best.name);
+  }
+  return plan;
+}
+
 /** True if every (non-glass) tool a cocktail needs is in the owned set (by canonical tool id). */
 export function hasAllTools(cocktail: Cocktail, ownedTools: string[]): boolean {
   const ownedIds = new Set(ownedTools.map((t) => toolInfo(t).id));

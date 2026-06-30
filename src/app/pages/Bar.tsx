@@ -9,7 +9,7 @@ import { ToolIcon } from "@/components/ToolIcon";
 import { canonicalIdOf, categoryGroupOf, trackableCanonicals } from "@/data/catalog/ingredients";
 import { TOOL_BY_ID } from "@/data/catalog/tools";
 import { useAllCocktails } from "@/data/useCocktails";
-import { hasAllTools, suggestPurchases, whatCanIMake, type MakeResult } from "@/domain/inventory";
+import { hasAllTools, smartShoppingPlan, whatCanIMake, type MakeResult } from "@/domain/inventory";
 import { normalize } from "@/domain/text";
 import { useT } from "@/i18n";
 import { useUserStore } from "@/store/userStore";
@@ -97,10 +97,11 @@ export default function Bar() {
     () => (onlyMyTools ? almost.filter((m) => hasAllTools(m.cocktail, ownedTools)) : almost),
     [almost, onlyMyTools, ownedTools],
   );
-  const purchases = useMemo(
-    () => suggestPurchases(all, ownedIngredients, flexibleMatching).slice(0, 8),
+  const plan = useMemo(
+    () => smartShoppingPlan(all, ownedIngredients, flexibleMatching, 5),
     [all, ownedIngredients, flexibleMatching],
   );
+  const planTotal = plan.reduce((n, p) => n + p.cocktails.length, 0);
 
   if (setup) return <EssentialsSetup kind={setup} onClose={() => setSetup(null)} />;
 
@@ -289,22 +290,35 @@ export default function Bar() {
         </>
       )}
 
-      {purchases.length > 0 && (
+      {plan.length > 0 && (
         <section className="mt-7">
-          <h2 className="font-bold text-gold">Що купити, щоб відкрити більше</h2>
+          <h2 className="font-bold text-gold">Розумний план покупок</h2>
+          <p className="mt-1 text-xs text-text-faint">
+            Купуй у такому порядку — кожен крок відкриває найбільше нового.
+          </p>
           <div className="mt-3 space-y-2">
-            {purchases.map((p) => (
+            {plan.map((p, i) => (
               <div
                 key={p.canonicalId}
-                className="flex items-center justify-between rounded-xl border border-border bg-surface p-4"
+                className="flex items-center gap-3 rounded-xl border border-border bg-surface p-4"
               >
-                <span className="text-text">{p.name}</span>
+                <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-gold/15 text-sm font-bold text-gold">
+                  {i + 1}
+                </span>
+                <Link to={`/ingredient/${p.canonicalId}`} className="flex-1 text-text hover:text-gold">
+                  {p.name}
+                </Link>
                 <span className="shrink-0 rounded-full bg-gold/15 px-2.5 py-1 text-sm font-bold text-gold">
                   +{p.cocktails.length}
                 </span>
               </div>
             ))}
           </div>
+          {plan.length > 1 && (
+            <p className="mt-2 text-xs text-text-faint">
+              Разом ці {plan.length} відкриють {planTotal} нових коктейлів.
+            </p>
+          )}
         </section>
       )}
 

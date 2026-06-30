@@ -246,10 +246,16 @@ export default function Settings() {
             <span>📊 Статистика</span>
           </Link>
           <Link
+            to="/quiz"
+            className="flex items-center justify-between rounded-xl border border-border bg-surface-alt px-4 py-3 text-text"
+          >
+            <span>🎯 Вікторина</span>
+          </Link>
+          <Link
             to="/history"
             className="flex items-center justify-between rounded-xl border border-border bg-surface-alt px-4 py-3 text-text"
           >
-            <span>🕘 Історія приготувань</span>
+            <span>📓 Журнал дегустацій</span>
             <span className="text-text-faint">{history.length}</span>
           </Link>
           <Link to="/recipe/new" className="rounded-xl border border-border bg-surface-alt px-4 py-3 text-text">
