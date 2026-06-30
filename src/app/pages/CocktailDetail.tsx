@@ -1,15 +1,17 @@
-import { Heart, Pencil, Play, Share2, ShoppingCart, Trash2 } from "lucide-react";
+import { ExternalLink, Heart, Pencil, Play, Share2, ShoppingCart, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import clsx from "clsx";
 import { Chip } from "@/components/Chip";
+import { CocktailCard } from "@/components/CocktailCard";
 import { StarRating } from "@/components/StarRating";
 import { Stepper } from "@/components/Stepper";
 import { ToolIcon } from "@/components/ToolIcon";
+import { canonicalIdOf } from "@/data/catalog/ingredients";
 import { toolInfo } from "@/data/catalog/tools";
 import { getCardImages } from "@/data/cocktails";
-import { useCocktailById } from "@/data/useCocktails";
-import { estimateStrength, formatIngredient } from "@/domain/cocktails";
+import { useAllCocktails, useCocktailById } from "@/data/useCocktails";
+import { estimateStrength, formatIngredient, similarCocktails } from "@/domain/cocktails";
 import { classifyIngredient } from "@/domain/inventory";
 import { useT } from "@/i18n";
 import { shareLink } from "@/lib/share";
@@ -20,6 +22,7 @@ export default function CocktailDetail() {
   const nav = useNavigate();
   const { id } = useParams();
   const cocktail = useCocktailById(id);
+  const all = useAllCocktails();
 
   const [servings, setServings] = useState(1);
   const [showCard, setShowCard] = useState(false);
@@ -46,6 +49,8 @@ export default function CocktailDetail() {
   const isFav = favourites.includes(id);
   const isUserRecipe = userRecipes.some((r) => r.id === id);
   const strength = estimateStrength(cocktail);
+  const similar = similarCocktails(cocktail, all, 12);
+  const googleUrl = `https://www.google.com/search?q=${encodeURIComponent(`${cocktail.name} коктейль рецепт`)}`;
 
   return (
     <div className="px-4 py-4">
@@ -91,6 +96,15 @@ export default function CocktailDetail() {
           </span>
         )}
       </div>
+
+      <a
+        href={googleUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mt-2 inline-flex items-center gap-1.5 text-sm text-text-dim hover:text-gold"
+      >
+        <ExternalLink size={14} /> Шукати в Google
+      </a>
 
       <div className="mt-4 flex items-center gap-3">
         <button
@@ -138,7 +152,9 @@ export default function CocktailDetail() {
             return (
               <li key={`${ing.name}-${idx}`} className="rounded-xl border border-border bg-surface p-3 text-sm">
                 <div className="flex items-baseline justify-between gap-2">
-                  <span className="text-text">{formatIngredient(ing, servings, units)}</span>
+                  <Link to={`/ingredient/${canonicalIdOf(ing.name)}`} className="text-text hover:text-gold">
+                    {formatIngredient(ing, servings, units)}
+                  </Link>
                   {m.tier === "exact" && <span className="shrink-0 text-xs text-success">✓ є</span>}
                 </div>
                 {m.tier === "substitute" && m.have && (
@@ -184,6 +200,19 @@ export default function CocktailDetail() {
               </li>
             ))}
           </ol>
+        </section>
+      )}
+
+      {similar.length > 0 && (
+        <section className="mt-6">
+          <h2 className="text-gold font-bold">Схожі коктейлі</h2>
+          <div className="no-scrollbar mt-3 flex gap-2 overflow-x-auto">
+            {similar.map((c) => (
+              <div key={c.id} className="w-28 shrink-0">
+                <CocktailCard cocktail={c} />
+              </div>
+            ))}
+          </div>
         </section>
       )}
 

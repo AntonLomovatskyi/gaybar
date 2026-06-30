@@ -213,6 +213,23 @@ export function sortBy(cocktails: Cocktail[], mode: SortMode, ratings: Record<st
   }
 }
 
+/** Cocktails most like `target` — shared flavour tags, with the same base spirit weighted up. */
+export function similarCocktails(target: Cocktail, all: Cocktail[], n = 8): Cocktail[] {
+  const want = new Set<string>(target.tags);
+  const base = baseSpiritOf(target);
+  return all
+    .filter((c) => c.id !== target.id)
+    .map((c) => {
+      let score = c.tags.filter((t) => want.has(t)).length;
+      if (base && baseSpiritOf(c) === base) score += 2;
+      return { c, score };
+    })
+    .filter((x) => x.score > 0)
+    .sort((a, b) => b.score - a.score || compareUk(a.c.name, b.c.name))
+    .slice(0, n)
+    .map((x) => x.c);
+}
+
 export function recommendByMood(cocktails: Cocktail[], moodTags: CocktailTag[]): Cocktail[] {
   const want = new Set<string>(moodTags);
   return cocktails

@@ -130,6 +130,19 @@ const ABV_BY_ID: Record<string, number> = {
   "sweet-sherry": 17,
   "ginger-wine": 14,
 };
+/** Canonical ingredient by its id (for the ingredient detail page). */
+export function canonicalById(id: string): CanonicalIngredient | undefined {
+  return CANONICAL[id];
+}
+
+/** Other canonical ingredients in the same family (interchangeable substitutes). */
+export function familyMembers(family: string | null, excludeId?: string): CanonicalIngredient[] {
+  if (!family) return [];
+  return Object.values(CANONICAL)
+    .filter((c) => c.family === family && c.id !== excludeId)
+    .sort((a, b) => a.nameUk.localeCompare(b.nameUk, "uk"));
+}
+
 /** Estimated ABV % for a single ingredient name (0 for non-alcohol). */
 export function abvOf(name: string): number {
   const r = refOf(name);

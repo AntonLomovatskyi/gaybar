@@ -1,9 +1,8 @@
 /**
- * Party planning — pure logic. Compose a set of N varieties for a number of people and
- * drinks-per-person, ranked so Chernivtsi-available cocktails come first.
+ * Party planning — pure logic. Compose a set of N varieties for a number of people, preferring
+ * cocktails you can make from your bar, with even servings.
  */
 import type { Cocktail, CocktailTag } from "@/types/cocktail";
-import { cocktailAvailability } from "@/data/catalog/availability";
 import { recommendByMood } from "./cocktails";
 import { whatCanIMake } from "./inventory";
 
@@ -11,7 +10,6 @@ export interface PartyConfig {
   people: number;
   varieties: number; // number of different cocktails
   drinksPerPerson: number;
-  localOnly: boolean; // exclude cocktails needing rare (non-local) ingredients
   useMyBar: boolean; // prefer cocktails makeable from the ingredients you already own
   everyoneTries: boolean; // make enough of EACH variety for everyone to try it
 }
@@ -26,7 +24,6 @@ export const DEFAULT_PARTY_CONFIG: PartyConfig = {
   people: 2,
   varieties: 3,
   drinksPerPerson: 2,
-  localOnly: false,
   useMyBar: false,
   everyoneTries: true,
 };
@@ -58,11 +55,8 @@ export function composeParty(
   moodTags: CocktailTag[] = [],
   owned: string[] = [],
 ): PartyItem[] {
-  let candidates = moodTags.length ? recommendByMood(pool, moodTags) : [...pool];
-  if (candidates.length < config.varieties) candidates = [...pool];
-  candidates.sort((a, b) => cocktailAvailability(a).score - cocktailAvailability(b).score);
-  let chosen = config.localOnly ? candidates.filter((c) => cocktailAvailability(c).tier !== "rare") : candidates;
-  if (chosen.length < config.varieties) chosen = candidates;
+  const candidates = moodTags.length ? recommendByMood(pool, moodTags) : [...pool];
+  let chosen = candidates.length >= config.varieties ? candidates : [...pool];
   // Prioritize cocktails you can make from your bar. Always soft-prefer them; when "useMyBar"
   // is on, restrict to only-makeable (unless that leaves too few to fill the set).
   if (owned.length) {

@@ -6,7 +6,7 @@ import { CocktailCard } from "@/components/CocktailCard";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { EssentialsSetup, type SetupKind } from "@/components/EssentialsSetup";
 import { ToolIcon } from "@/components/ToolIcon";
-import { availabilityOf, categoryGroupOf, trackableCanonicals, type Availability } from "@/data/catalog/ingredients";
+import { canonicalIdOf, categoryGroupOf, trackableCanonicals } from "@/data/catalog/ingredients";
 import { TOOL_BY_ID } from "@/data/catalog/tools";
 import { useAllCocktails } from "@/data/useCocktails";
 import { hasAllTools, suggestPurchases, whatCanIMake, type MakeResult } from "@/domain/inventory";
@@ -14,7 +14,6 @@ import { normalize } from "@/domain/text";
 import { useT } from "@/i18n";
 import { useUserStore } from "@/store/userStore";
 
-const TIER_COLOR: Record<Availability, string> = { common: "#5C8A5A", specialty: "#D9B25A", rare: "#C8553D" };
 const TOOLS = Object.values(TOOL_BY_ID).filter((tl) => tl.kind === "tool");
 const TRACKABLE = trackableCanonicals();
 const GROUP_ORDER = [
@@ -177,7 +176,9 @@ export default function Bar() {
                     key={name}
                     className={"flex items-center justify-between px-3 py-2" + (i > 0 ? " border-t border-border" : "")}
                   >
-                    <span className="text-sm text-text">{name}</span>
+                    <Link to={`/ingredient/${canonicalIdOf(name)}`} className="text-sm text-text hover:text-gold">
+                      {name}
+                    </Link>
                     <button
                       onClick={() => setConfirmRemove(name)}
                       className="text-text-faint hover:text-danger"
@@ -297,13 +298,7 @@ export default function Bar() {
                 key={p.canonicalId}
                 className="flex items-center justify-between rounded-xl border border-border bg-surface p-4"
               >
-                <span className="flex items-center gap-2 text-text">
-                  <span
-                    className="inline-block h-2.5 w-2.5 shrink-0 rounded-full"
-                    style={{ backgroundColor: TIER_COLOR[availabilityOf(p.name)] }}
-                  />
-                  {p.name}
-                </span>
+                <span className="text-text">{p.name}</span>
                 <span className="shrink-0 rounded-full bg-gold/15 px-2.5 py-1 text-sm font-bold text-gold">
                   +{p.cocktails.length}
                 </span>

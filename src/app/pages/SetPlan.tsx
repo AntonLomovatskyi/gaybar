@@ -1,21 +1,13 @@
 import { useEffect, useMemo } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Check, Share2, ShoppingCart } from "lucide-react";
-import clsx from "clsx";
 import { Stepper } from "@/components/Stepper";
-import { cocktailAvailability, type Availability } from "@/data/catalog/availability";
 import { useAllCocktails } from "@/data/useCocktails";
 import { splitShoppingList, type ShoppingSelection } from "@/domain/shopping";
 import { useT } from "@/i18n";
 import { decodePlan, encodePlan, shareLink } from "@/lib/share";
 import { usePartyStore } from "@/store/partyStore";
 import { useUserStore } from "@/store/userStore";
-
-const AVAIL_STYLE: Record<Availability, string> = {
-  common: "border-success text-success",
-  specialty: "border-gold text-gold",
-  rare: "border-danger text-danger",
-};
 
 export default function SetPlan() {
   const t = useT();
@@ -39,12 +31,6 @@ export default function SetPlan() {
   const sharePlan = () => {
     const url = `${window.location.origin}${import.meta.env.BASE_URL}set/plan?s=${encodeURIComponent(encodePlan(items))}`;
     shareLink(title || "Сет коктейлів", url);
-  };
-
-  const availLabel: Record<Availability, string> = {
-    common: t.sets.availLocal,
-    specialty: t.sets.availSpecialty,
-    rare: t.sets.availRare,
   };
 
   const planned = useMemo(
@@ -97,36 +83,23 @@ export default function SetPlan() {
       </div>
 
       <div className="mt-4 flex flex-col gap-2">
-        {planned.map(({ item, cocktail }) => {
-          const avail = cocktailAvailability(cocktail);
-          return (
-            <div key={item.id} className="rounded-xl border border-border bg-surface p-4">
-              <div className="flex items-start justify-between gap-3">
-                <Link to={`/cocktail/${cocktail.id}`} className="min-w-0 flex-1">
-                  <div className="truncate text-base text-text">{cocktail.name}</div>
-                  <div className="mt-1">
-                    <span
-                      className={clsx(
-                        "inline-block rounded-full border px-2 py-0.5 text-[11px]",
-                        AVAIL_STYLE[avail.tier],
-                      )}
-                    >
-                      {availLabel[avail.tier]}
-                    </span>
-                  </div>
-                </Link>
-                <div className="shrink-0">
-                  <Stepper
-                    value={item.servings}
-                    onChange={(v) => bumpServings(item.id, v - item.servings)}
-                    min={1}
-                    max={99}
-                  />
-                </div>
+        {planned.map(({ item, cocktail }) => (
+          <div key={item.id} className="rounded-xl border border-border bg-surface p-4">
+            <div className="flex items-center justify-between gap-3">
+              <Link to={`/cocktail/${cocktail.id}`} className="min-w-0 flex-1 truncate text-base text-text">
+                {cocktail.name}
+              </Link>
+              <div className="shrink-0">
+                <Stepper
+                  value={item.servings}
+                  onChange={(v) => bumpServings(item.id, v - item.servings)}
+                  min={1}
+                  max={99}
+                />
               </div>
             </div>
-          );
-        })}
+          </div>
+        ))}
       </div>
 
       <div className="mt-6 rounded-xl border border-border bg-surface p-4">

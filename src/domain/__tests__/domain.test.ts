@@ -145,7 +145,6 @@ describe("party", () => {
       people: 2,
       varieties: 2,
       drinksPerPerson: 2,
-      localOnly: false,
       useMyBar: false,
       everyoneTries: true,
     });

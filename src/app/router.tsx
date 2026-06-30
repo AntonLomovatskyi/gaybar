@@ -6,6 +6,7 @@ import Collection from "./pages/Collection";
 import Favourites from "./pages/Favourites";
 import Filters from "./pages/Filters";
 import History from "./pages/History";
+import IngredientDetail from "./pages/IngredientDetail";
 import Make from "./pages/Make";
 import RecipeNew from "./pages/RecipeNew";
 import SetMake from "./pages/SetMake";
@@ -13,6 +14,7 @@ import SetPlan from "./pages/SetPlan";
 import Sets from "./pages/Sets";
 import Settings from "./pages/Settings";
 import Shopping from "./pages/Shopping";
+import Stats from "./pages/Stats";
 import ToolDetail from "./pages/ToolDetail";
 
 const basename = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -32,6 +34,8 @@ export const router = createBrowserRouter(
         { path: "shopping", element: <Shopping /> },
         { path: "favourites", element: <Favourites /> },
         { path: "tool/:id", element: <ToolDetail /> },
+        { path: "ingredient/:id", element: <IngredientDetail /> },
+        { path: "stats", element: <Stats /> },
         { path: "history", element: <History /> },
         { path: "settings", element: <Settings /> },
         { path: "recipe/new", element: <RecipeNew /> },

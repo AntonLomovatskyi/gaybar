@@ -175,7 +175,6 @@ export default function Settings() {
             <div className={clsx("h-4 w-4 rounded-full transition", flexibleMatching ? "bg-gold" : "bg-text-faint")} />
           </div>
         </button>
-        <div className="mt-3 text-sm text-text-faint">Доступність інгредієнтів: Чернівці 📍</div>
       </Card>
 
       <SyncCard />
@@ -240,6 +239,12 @@ export default function Settings() {
 
       <Card title="Розділи">
         <div className="flex flex-col gap-2">
+          <Link
+            to="/stats"
+            className="flex items-center justify-between rounded-xl border border-border bg-surface-alt px-4 py-3 text-text"
+          >
+            <span>📊 Статистика</span>
+          </Link>
           <Link
             to="/history"
             className="flex items-center justify-between rounded-xl border border-border bg-surface-alt px-4 py-3 text-text"

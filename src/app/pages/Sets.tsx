@@ -110,29 +110,6 @@ export default function Sets() {
 
         <button
           type="button"
-          onClick={() => setConfig({ localOnly: !config.localOnly })}
-          className="flex w-full items-center justify-between py-1.5 text-left"
-        >
-          <span className="text-text">{t.sets.localOnly}</span>
-          <span
-            className={
-              "relative h-6 w-11 shrink-0 rounded-full border transition " +
-              (config.localOnly ? "border-gold bg-gold/30" : "border-border bg-surface-alt")
-            }
-          >
-            <span
-              className={
-                "absolute top-0.5 grid h-4 w-4 place-items-center rounded-full transition-all " +
-                (config.localOnly ? "left-[22px] bg-gold text-bg" : "left-0.5 bg-text-faint")
-              }
-            >
-              {config.localOnly && <Check size={11} strokeWidth={3} />}
-            </span>
-          </span>
-        </button>
-
-        <button
-          type="button"
           onClick={() => setConfig({ useMyBar: !config.useMyBar })}
           className="flex w-full items-center justify-between py-1.5 text-left"
         >
