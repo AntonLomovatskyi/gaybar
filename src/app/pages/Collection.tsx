@@ -38,7 +38,12 @@ export default function Collection() {
   }, [all, tags, glasses, query, sort, onlyMakeable, makeableIds]);
   const filterCount = tags.length + glasses.length;
   const isHome = !query.trim() && filterCount === 0 && !onlyMakeable;
-  const cotd = useMemo(() => pickSurprise(all, Math.floor(Date.now() / 86400000)), [all]);
+  // Cocktail of the day prefers ones you can make now (falls back to the whole catalog).
+  const cotd = useMemo(() => {
+    const makeablePool = all.filter((c) => makeableIds.has(c.id));
+    const pool = makeablePool.length >= 5 ? makeablePool : all;
+    return pickSurprise(pool, Math.floor(Date.now() / 86400000));
+  }, [all, makeableIds]);
   const recs = useMemo(
     () => recommendForYou(all, { favourites, ratings, likedTags: prefs.likedTags, dislikedTags: prefs.dislikedTags }),
     [all, favourites, ratings, prefs],

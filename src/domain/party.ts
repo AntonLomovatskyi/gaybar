@@ -49,12 +49,13 @@ export function composeParty(
   candidates.sort((a, b) => cocktailAvailability(a).score - cocktailAvailability(b).score);
   let chosen = config.localOnly ? candidates.filter((c) => cocktailAvailability(c).tier !== "rare") : candidates;
   if (chosen.length < config.varieties) chosen = candidates;
-  // Prefer cocktails you can already make from your bar (stable: keeps availability order within each group).
-  if (config.useMyBar && owned.length) {
+  // Prioritize cocktails you can make from your bar. Always soft-prefer them; when "useMyBar"
+  // is on, restrict to only-makeable (unless that leaves too few to fill the set).
+  if (owned.length) {
     const makeable = new Set(whatCanIMake(chosen, owned, true).makeable.map((m) => m.cocktail.id));
     const yes = chosen.filter((c) => makeable.has(c.id));
     const no = chosen.filter((c) => !makeable.has(c.id));
-    chosen = [...yes, ...no];
+    chosen = config.useMyBar && yes.length >= config.varieties ? yes : [...yes, ...no];
   }
   const picks = chosen.slice(0, Math.max(1, config.varieties));
   const total = Math.max(picks.length, config.people * config.drinksPerPerson);

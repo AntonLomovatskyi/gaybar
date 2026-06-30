@@ -107,11 +107,26 @@ export default function Make() {
         {t.stepper.step} {progress.current} {t.stepper.of} {progress.total}
       </div>
 
-      <div className="flex flex-1 items-center py-8">
+      <div className="flex flex-1 items-center py-6">
         <p className="text-2xl leading-relaxed text-text">{cocktail.steps[index]}</p>
       </div>
 
-      <div className="mt-auto flex gap-3">
+      {/* Always-visible amounts so you know how much to pour */}
+      <div className="mb-3 rounded-xl border border-border bg-surface p-3">
+        <div className="mb-1.5 text-xs font-bold text-gold">{t.recipe.ingredients}</div>
+        <div className="flex flex-col gap-1">
+          {cocktail.ingredients.map((ing, i) => (
+            <div key={i} className="flex items-baseline justify-between gap-3 text-sm">
+              <span className="text-text">{ing.name}</span>
+              <span className="shrink-0 tabular-nums text-text-dim">
+                {formatIngredient(ing, 1, units).split(" — ")[1] ?? ""}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="flex gap-3">
         <button
           onClick={() => setIndex((i) => i - 1)}
           className="flex items-center justify-center gap-1.5 rounded-xl border border-border px-4 py-3 text-text-dim"

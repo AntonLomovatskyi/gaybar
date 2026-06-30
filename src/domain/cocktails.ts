@@ -50,6 +50,72 @@ export interface CocktailFilter {
 
 export type SortMode = "card" | "name" | "strength" | "ingredients";
 
+/** Common English ingredient/spirit words → Ukrainian (normalized) so latin queries match. */
+const EN_TO_UK: Record<string, string> = {
+  cola: "кола",
+  lime: "лайм",
+  lemon: "лимон",
+  mint: "мята",
+  rum: "ром",
+  gin: "джин",
+  vodka: "горілка",
+  whiskey: "віскі",
+  whisky: "віскі",
+  bourbon: "бурбон",
+  scotch: "віскі",
+  tequila: "текіла",
+  mezcal: "мескаль",
+  brandy: "бренді",
+  cognac: "коньяк",
+  pisco: "піско",
+  orange: "апельсин",
+  pineapple: "ананас",
+  grapefruit: "грейпфрут",
+  cranberry: "журавлин",
+  strawberry: "полуниц",
+  raspberry: "малин",
+  blackberry: "ожин",
+  coffee: "кав",
+  espresso: "еспресо",
+  cream: "вершк",
+  milk: "молок",
+  egg: "яйц",
+  honey: "мед",
+  ginger: "імбир",
+  sugar: "цукор",
+  syrup: "сироп",
+  soda: "содова",
+  tonic: "тонік",
+  champagne: "шампанське",
+  prosecco: "просекко",
+  wine: "вино",
+  vermouth: "вермут",
+  campari: "кампарі",
+  aperol: "апероль",
+  cointreau: "куантро",
+  curacao: "кюрасао",
+  absinthe: "абсент",
+  amaretto: "амаретто",
+  midori: "мідорі",
+  basil: "базилік",
+  cucumber: "огірок",
+  apple: "яблуко",
+  peach: "персик",
+  mango: "манго",
+  banana: "банан",
+  coconut: "кокос",
+  chocolate: "шоколад",
+  cinnamon: "кориц",
+  passion: "маракуя",
+  lychee: "лічі",
+  grappa: "граппа",
+  angostura: "ангостур",
+  bitters: "бітер",
+  salt: "сіль",
+  grenadine: "гренадин",
+  melon: "дин",
+};
+
 export function search(cocktails: Cocktail[], query: string): Cocktail[] {
   const q = normalize(query);
   if (!q) return cocktails;
@@ -58,7 +124,7 @@ export function search(cocktails: Cocktail[], query: string): Cocktail[] {
     const hay = normalize(
       [c.name, c.nameEn ?? "", String(c.cardNumber), ...c.ingredients.map((i) => i.name), ...c.tags].join(" "),
     );
-    return terms.every((t) => hay.includes(t));
+    return terms.every((t) => hay.includes(t) || (EN_TO_UK[t] !== undefined && hay.includes(EN_TO_UK[t])));
   });
 }
 
