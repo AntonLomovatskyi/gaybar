@@ -1,12 +1,13 @@
-import { useMemo } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { ShoppingCart } from "lucide-react";
+import { useEffect, useMemo } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Share2, ShoppingCart } from "lucide-react";
 import clsx from "clsx";
 import { Stepper } from "@/components/Stepper";
 import { cocktailAvailability, type Availability } from "@/data/catalog/availability";
 import { useAllCocktails } from "@/data/useCocktails";
 import { buildShoppingList, type ShoppingSelection } from "@/domain/shopping";
 import { useT } from "@/i18n";
+import { decodePlan, encodePlan, shareLink } from "@/lib/share";
 import { usePartyStore } from "@/store/partyStore";
 import { useUserStore } from "@/store/userStore";
 
@@ -23,9 +24,22 @@ export default function SetPlan() {
   const title = usePartyStore((s) => s.title);
   const items = usePartyStore((s) => s.items);
   const bumpServings = usePartyStore((s) => s.bumpServings);
+  const setPlan = usePartyStore((s) => s.setPlan);
   const ownedIngredients = useUserStore((s) => s.ownedIngredients);
   const shoppingCart = useUserStore((s) => s.shopping);
   const setShoppingServings = useUserStore((s) => s.setShoppingServings);
+  const [params] = useSearchParams();
+
+  // Load a shared plan from the URL (?s=id:qty,…) when there's no active plan.
+  useEffect(() => {
+    const s = params.get("s");
+    if (s && items.length === 0) setPlan(decodePlan(s), "Спільний сет");
+  }, [params, items.length, setPlan]);
+
+  const sharePlan = () => {
+    const url = `${window.location.origin}${import.meta.env.BASE_URL}set/plan?s=${encodeURIComponent(encodePlan(items))}`;
+    shareLink(title || "Сет коктейлів", url);
+  };
 
   const availLabel: Record<Availability, string> = {
     common: t.sets.availLocal,
@@ -65,8 +79,19 @@ export default function SetPlan() {
 
   return (
     <div className="px-4 py-4">
-      <h1 className="font-display text-2xl text-text">{t.sets.plan}</h1>
-      {title && <div className="mt-0.5 text-sm text-gold">{title}</div>}
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <h1 className="font-display text-2xl text-text">{t.sets.plan}</h1>
+          {title && <div className="mt-0.5 text-sm text-gold">{title}</div>}
+        </div>
+        <button
+          onClick={sharePlan}
+          aria-label="Поділитися"
+          className="mt-1 grid h-9 w-9 shrink-0 place-items-center rounded-full border border-border text-text-dim hover:text-gold"
+        >
+          <Share2 size={17} />
+        </button>
+      </div>
       <div className="mt-1 text-xs text-text-faint">
         {t.sets.total}: {totalDrinks}
       </div>

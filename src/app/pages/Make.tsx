@@ -1,6 +1,7 @@
 import { ArrowLeft, ArrowRight, Check, PartyPopper } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { Stepper } from "@/components/Stepper";
 import { useCocktailById } from "@/data/useCocktails";
 import { formatIngredient, stepProgress } from "@/domain/cocktails";
 import { useT } from "@/i18n";
@@ -16,6 +17,7 @@ export default function Make() {
 
   // -1 = mise en place, 0..n-1 = steps, n = finished
   const [index, setIndex] = useState(-1);
+  const [servings, setServings] = useState(1);
   const loggedRef = useRef(false);
 
   const total = cocktail?.steps.length ?? 0;
@@ -39,12 +41,17 @@ export default function Make() {
         <h1 className="font-display text-2xl text-text">{cocktail.name}</h1>
         <p className="mt-1 text-sm text-text-faint">Підготуй усе перед тим, як почати</p>
 
-        <div className="mt-5 rounded-xl border border-border bg-surface p-4">
+        <div className="mt-5 flex items-center justify-between rounded-xl border border-border bg-surface px-4 py-3">
+          <span className="text-text">Порцій</span>
+          <Stepper value={servings} onChange={setServings} min={1} max={20} />
+        </div>
+
+        <div className="mt-3 rounded-xl border border-border bg-surface p-4">
           <div className="text-sm font-bold text-gold">{t.recipe.ingredients}</div>
           <ul className="mt-2 space-y-1.5">
             {cocktail.ingredients.map((ing, i) => (
               <li key={i} className="text-base text-text">
-                {formatIngredient(ing, 1, units)}
+                {formatIngredient(ing, servings, units)}
               </li>
             ))}
           </ul>
@@ -113,13 +120,18 @@ export default function Make() {
 
       {/* Always-visible amounts so you know how much to pour */}
       <div className="mb-3 rounded-xl border border-border bg-surface p-3">
-        <div className="mb-1.5 text-xs font-bold text-gold">{t.recipe.ingredients}</div>
+        <div className="mb-1.5 flex items-center justify-between">
+          <span className="text-xs font-bold text-gold">
+            {t.recipe.ingredients}
+            {servings > 1 ? ` ×${servings}` : ""}
+          </span>
+        </div>
         <div className="flex flex-col gap-1">
           {cocktail.ingredients.map((ing, i) => (
             <div key={i} className="flex items-baseline justify-between gap-3 text-sm">
               <span className="text-text">{ing.name}</span>
               <span className="shrink-0 tabular-nums text-text-dim">
-                {formatIngredient(ing, 1, units).split(" — ")[1] ?? ""}
+                {formatIngredient(ing, servings, units).split(" — ")[1] ?? ""}
               </span>
             </div>
           ))}

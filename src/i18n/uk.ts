@@ -19,7 +19,7 @@ export interface Strings {
     save: string;
     surprise: string;
   };
-  sort: { card: string; name: string; strength: string; ingredients: string };
+  sort: { card: string; name: string; strength: string; ingredients: string; rating: string };
   recipe: {
     ingredients: string;
     tools: string;
@@ -93,6 +93,7 @@ export const t: Strings = {
     name: "За назвою (А–Я)",
     strength: "За міцністю",
     ingredients: "За к-стю інгредієнтів",
+    rating: "За оцінкою",
   },
   recipe: {
     ingredients: "Інгредієнти",

@@ -15,6 +15,7 @@ export interface PrepEntry {
 export interface UserState {
   favourites: string[]; // cocktail ids
   ratings: Record<string, number>; // id -> 1..5
+  notes: Record<string, string>; // id -> personal note
   ownedIngredients: string[]; // free-text names for now (canonical ids later)
   ownedTools: string[];
   shopping: Record<string, number>; // cocktailId -> servings
@@ -35,6 +36,7 @@ export interface UserState {
   setFlexibleMatching: (v: boolean) => void;
   toggleFavourite: (id: string) => void;
   setRating: (id: string, stars: number) => void;
+  setNote: (id: string, text: string) => void;
   addOwnedIngredient: (name: string) => void;
   removeOwnedIngredient: (name: string) => void;
   toggleOwnedTool: (name: string) => void;
@@ -56,6 +58,7 @@ export type PersistedData = Pick<
   UserState,
   | "favourites"
   | "ratings"
+  | "notes"
   | "ownedIngredients"
   | "ownedTools"
   | "shopping"
@@ -74,6 +77,7 @@ export const useUserStore = create<UserState>()(
     (set) => ({
       favourites: [],
       ratings: {},
+      notes: {},
       ownedIngredients: [],
       ownedTools: [],
       shopping: {},
@@ -95,6 +99,13 @@ export const useUserStore = create<UserState>()(
           favourites: s.favourites.includes(id) ? s.favourites.filter((x) => x !== id) : [...s.favourites, id],
         })),
       setRating: (id, stars) => set((s) => ({ ratings: { ...s.ratings, [id]: stars } })),
+      setNote: (id, text) =>
+        set((s) => {
+          const notes = { ...s.notes };
+          if (text.trim()) notes[id] = text;
+          else delete notes[id];
+          return { notes };
+        }),
       addOwnedIngredient: (name) =>
         set((s) => (s.ownedIngredients.includes(name) ? s : { ownedIngredients: [...s.ownedIngredients, name] })),
       removeOwnedIngredient: (name) => set((s) => ({ ownedIngredients: s.ownedIngredients.filter((x) => x !== name) })),
@@ -127,6 +138,7 @@ export const useUserStore = create<UserState>()(
         set((s) => ({
           favourites: d.favourites ?? s.favourites,
           ratings: d.ratings ?? s.ratings,
+          notes: d.notes ?? s.notes,
           ownedIngredients: d.ownedIngredients ?? s.ownedIngredients,
           ownedTools: d.ownedTools ?? s.ownedTools,
           shopping: d.shopping ?? s.shopping,

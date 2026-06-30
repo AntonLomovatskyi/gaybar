@@ -3,6 +3,7 @@ import type { Cocktail, Ingredient } from "@/types/cocktail";
 import {
   applyFilters,
   baseSpiritOf,
+  estimateStrength,
   formatIngredient,
   formatQty,
   search,
@@ -158,5 +159,28 @@ describe("recommend.recommendForYou", () => {
     const recs = recommendForYou(all, { favourites: ["margarita"], ratings: {}, likedTags: [], dislikedTags: [] });
     expect(recs.map((c) => c.id)).not.toContain("margarita"); // excludes known
     expect(recs[0].id).toBe("daiquiri"); // shares міцні/цитрусові-ish with margarita's tags
+  });
+});
+
+describe("estimateStrength", () => {
+  it("rates a spirit-forward drink stronger than a diluted one", () => {
+    const martiniAbv = estimateStrength(martini).abv;
+    const margaritaAbv = estimateStrength(margarita).abv;
+    expect(martiniAbv).toBeGreaterThan(margaritaAbv);
+    expect(martiniAbv).toBeGreaterThan(20);
+    expect(estimateStrength(martini).standardDrinks).toBeGreaterThan(0);
+  });
+});
+
+describe("sortBy rating", () => {
+  it("orders by your rating, highest first", () => {
+    expect(sortBy([margarita, daiquiri], "rating", { daiquiri: 5, margarita: 2 })[0].id).toBe("daiquiri");
+  });
+});
+
+describe("search English synonyms", () => {
+  it("matches Ukrainian ingredients from latin terms", () => {
+    expect(search([daiquiri, martini], "rum").map((c) => c.id)).toEqual(["daiquiri"]); // rum → ром (Білий ром)
+    expect(search([daiquiri, martini], "gin").map((c) => c.id)).toEqual(["martini"]); // gin → джин
   });
 });

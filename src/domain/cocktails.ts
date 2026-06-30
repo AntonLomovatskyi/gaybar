@@ -3,10 +3,40 @@
  * These functions are unit-testable today and liftable into a future Node backend unchanged.
  */
 import type { Cocktail, CocktailTag, Ingredient } from "@/types/cocktail";
-import { TAG_TO_GROUP, strengthOf, type TagGroupKey } from "@/data/catalog/taxonomy";
-import { familyOf } from "@/data/catalog/ingredients";
+import { TAG_TO_GROUP, type TagGroupKey } from "@/data/catalog/taxonomy";
+import { abvOf, familyOf } from "@/data/catalog/ingredients";
 import { toolInfo } from "@/data/catalog/tools";
 import { compareUk, normalize } from "./text";
+
+export interface Strength {
+  abv: number; // estimated % ABV of the finished drink
+  alcoholMl: number; // pure alcohol per serving
+  standardDrinks: number; // ~10 g ethanol per unit
+  tier: string; // Ukrainian label
+}
+
+/** Estimate a cocktail's strength from its measured (мл) ingredients, with rough ice dilution. */
+export function estimateStrength(c: Cocktail): Strength {
+  let liquidMl = 0;
+  let alcoholMl = 0;
+  for (const i of c.ingredients) {
+    if (i.unit !== "мл" || i.amount == null) continue;
+    liquidMl += i.amount;
+    alcoholMl += (i.amount * abvOf(i.name)) / 100;
+  }
+  const hasIce = c.ingredients.some((i) => normalize(i.name).includes("лід"));
+  const totalMl = liquidMl + (hasIce ? liquidMl * 0.25 : 0); // ~25% dilution when shaken/stirred over ice
+  const abv = totalMl > 0 ? (alcoholMl / totalMl) * 100 : 0;
+  const standardDrinks = (alcoholMl * 0.789) / 10;
+  const tier =
+    abv < 1 ? "Безалкогольний" : abv < 12 ? "Легкий" : abv < 20 ? "Середній" : abv < 28 ? "Міцний" : "Дуже міцний";
+  return {
+    abv: Math.round(abv),
+    alcoholMl: Math.round(alcoholMl),
+    standardDrinks: Math.round(standardDrinks * 10) / 10,
+    tier,
+  };
+}
 
 /** Map an ingredient base family to the matching base tag. */
 const FAMILY_TO_BASE: Record<string, CocktailTag> = {
@@ -48,7 +78,7 @@ export interface CocktailFilter {
   query?: string;
 }
 
-export type SortMode = "card" | "name" | "strength" | "ingredients";
+export type SortMode = "card" | "name" | "strength" | "ingredients" | "rating";
 
 /** Common English ingredient/spirit words → Ukrainian (normalized) so latin queries match. */
 const EN_TO_UK: Record<string, string> = {
@@ -166,15 +196,17 @@ export function applyFilters(cocktails: Cocktail[], filter: CocktailFilter): Coc
   return out;
 }
 
-export function sortBy(cocktails: Cocktail[], mode: SortMode): Cocktail[] {
+export function sortBy(cocktails: Cocktail[], mode: SortMode, ratings: Record<string, number> = {}): Cocktail[] {
   const arr = [...cocktails];
   switch (mode) {
     case "name":
       return arr.sort((a, b) => compareUk(a.name, b.name));
     case "strength":
-      return arr.sort((a, b) => strengthOf(a.tags) - strengthOf(b.tags) || compareUk(a.name, b.name));
+      return arr.sort((a, b) => estimateStrength(b).abv - estimateStrength(a).abv || compareUk(a.name, b.name));
     case "ingredients":
       return arr.sort((a, b) => a.ingredients.length - b.ingredients.length || compareUk(a.name, b.name));
+    case "rating":
+      return arr.sort((a, b) => (ratings[b.id] ?? 0) - (ratings[a.id] ?? 0) || compareUk(a.name, b.name));
     case "card":
     default:
       return arr.sort((a, b) => a.cardNumber - b.cardNumber);

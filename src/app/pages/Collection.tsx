@@ -13,7 +13,9 @@ import { useT } from "@/i18n";
 import { useFilterStore } from "@/store/filterStore";
 import { useUserStore } from "@/store/userStore";
 
-const SORTS: SortMode[] = ["card", "name", "strength", "ingredients"];
+const SORTS: SortMode[] = ["card", "name", "strength", "ingredients", "rating"];
+const easyCount = (c: { ingredients: { name: string }[] }) =>
+  c.ingredients.filter((i) => !i.name.toLowerCase().includes("лід")).length;
 
 export default function Collection() {
   const t = useT();
@@ -27,17 +29,20 @@ export default function Collection() {
   const ownedIngredients = useUserStore((s) => s.ownedIngredients);
   const flexibleMatching = useUserStore((s) => s.flexibleMatching);
   const [onlyMakeable, setOnlyMakeable] = useState(false);
+  const [onlyEasy, setOnlyEasy] = useState(false);
 
   const makeableIds = useMemo(
     () => new Set(whatCanIMake(all, ownedIngredients, flexibleMatching).makeable.map((m) => m.cocktail.id)),
     [all, ownedIngredients, flexibleMatching],
   );
   const list = useMemo(() => {
-    const base = applyFilters(all, { tags, glasses, query });
-    return sortBy(onlyMakeable ? base.filter((c) => makeableIds.has(c.id)) : base, sort);
-  }, [all, tags, glasses, query, sort, onlyMakeable, makeableIds]);
+    let base = applyFilters(all, { tags, glasses, query });
+    if (onlyMakeable) base = base.filter((c) => makeableIds.has(c.id));
+    if (onlyEasy) base = base.filter((c) => easyCount(c) <= 3);
+    return sortBy(base, sort, ratings);
+  }, [all, tags, glasses, query, sort, onlyMakeable, onlyEasy, makeableIds, ratings]);
   const filterCount = tags.length + glasses.length;
-  const isHome = !query.trim() && filterCount === 0 && !onlyMakeable;
+  const isHome = !query.trim() && filterCount === 0 && !onlyMakeable && !onlyEasy;
   // Cocktail of the day prefers ones you can make now (falls back to the whole catalog).
   const cotd = useMemo(() => {
     const makeablePool = all.filter((c) => makeableIds.has(c.id));
@@ -51,7 +56,9 @@ export default function Collection() {
 
   const cycleSort = () => setSort(SORTS[(SORTS.indexOf(sort) + 1) % SORTS.length]);
   const surprise = () => {
-    const p = pickSurprise(list.length ? list : all, Date.now());
+    const fromBar = ownedIngredients.length ? all.filter((c) => makeableIds.has(c.id)) : [];
+    const pool = fromBar.length ? fromBar : list.length ? list : all;
+    const p = pickSurprise(pool, Date.now());
     if (p) nav(`/cocktail/${p.id}`);
   };
   const toggleMood = (m: Mood) => {
@@ -79,6 +86,15 @@ export default function Collection() {
           )}
         >
           <GlassWater size={15} /> Можу зараз
+        </button>
+        <button
+          onClick={() => setOnlyEasy((v) => !v)}
+          className={clsx(
+            "flex items-center gap-1 rounded-full border px-3 py-1.5 text-sm",
+            onlyEasy ? "border-gold bg-gold/15 text-gold" : "border-border text-text-dim",
+          )}
+        >
+          ⚡ Прості
         </button>
         <button
           onClick={() => nav("/filters")}

@@ -9,6 +9,7 @@ export function getSnapshot(): PersistedData {
   return {
     favourites: s.favourites,
     ratings: s.ratings,
+    notes: s.notes,
     ownedIngredients: s.ownedIngredients,
     ownedTools: s.ownedTools,
     shopping: s.shopping,

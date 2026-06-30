@@ -91,6 +91,52 @@ export function isAssumedAvailable(name: string): boolean {
   return r ? isAssumed(r) : false;
 }
 
+/** Rough ABV (% alcohol by volume) for strength estimates. Approximations by category + overrides. */
+const ABV_BY_CATEGORY: Record<string, number> = { spirit: 40, liqueur: 24, wine: 16, bitters: 40, beer: 5 };
+const ABV_BY_ID: Record<string, number> = {
+  absinthe: 60,
+  "overproof-rum": 63,
+  mezcal: 45,
+  grappa: 42,
+  galliano: 42,
+  "green-chartreuse": 55,
+  "yellow-chartreuse": 43,
+  "fernet-branca": 39,
+  becherovka: 38,
+  "triple-sec": 38,
+  "grand-marnier": 40,
+  drambuie: 40,
+  amaro: 30,
+  "amaro-nonino": 35,
+  campari: 25,
+  "blue-curacao": 25,
+  "dry-orange-curacao": 40,
+  aperol: 11,
+  cynar: 16,
+  amaretto: 24,
+  "irish-cream": 17,
+  sake: 15,
+  prosecco: 11,
+  champagne: 12,
+  "rose-wine": 12,
+  "red-wine": 13,
+  "white-wine": 12,
+  "dry-vermouth": 18,
+  "sweet-red-vermouth": 16,
+  "rose-vermouth": 16,
+  "cocchi-americano": 17,
+  lager: 5,
+  sherry: 17,
+  "sweet-sherry": 17,
+  "ginger-wine": 14,
+};
+/** Estimated ABV % for a single ingredient name (0 for non-alcohol). */
+export function abvOf(name: string): number {
+  const r = refOf(name);
+  if (!r) return isAlcoholic(name) ? 40 : 0;
+  return ABV_BY_ID[r.id] ?? ABV_BY_CATEGORY[r.category] ?? 0;
+}
+
 /** Fresh / perishable non-alcohol worth tracking (fruit, herbs, spices, dairy, eggs, special juices/syrups). */
 export function freshCanonicals(): CanonicalIngredient[] {
   return Object.values(CANONICAL)

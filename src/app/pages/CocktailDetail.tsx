@@ -1,4 +1,4 @@
-import { Heart, Pencil, Play, ShoppingCart, Trash2 } from "lucide-react";
+import { Heart, Pencil, Play, Share2, ShoppingCart, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import clsx from "clsx";
@@ -9,8 +9,9 @@ import { ToolIcon } from "@/components/ToolIcon";
 import { toolInfo } from "@/data/catalog/tools";
 import { getCardImages } from "@/data/cocktails";
 import { useCocktailById } from "@/data/useCocktails";
-import { formatIngredient } from "@/domain/cocktails";
+import { estimateStrength, formatIngredient } from "@/domain/cocktails";
 import { useT } from "@/i18n";
+import { shareLink } from "@/lib/share";
 import { useUserStore } from "@/store/userStore";
 
 export default function CocktailDetail() {
@@ -27,8 +28,10 @@ export default function CocktailDetail() {
   const ratings = useUserStore((s) => s.ratings);
   const shopping = useUserStore((s) => s.shopping);
   const userRecipes = useUserStore((s) => s.userRecipes);
+  const notes = useUserStore((s) => s.notes);
   const toggleFavourite = useUserStore((s) => s.toggleFavourite);
   const setRating = useUserStore((s) => s.setRating);
+  const setNote = useUserStore((s) => s.setNote);
   const setShoppingServings = useUserStore((s) => s.setShoppingServings);
   const removeUserRecipe = useUserStore((s) => s.removeUserRecipe);
 
@@ -39,6 +42,7 @@ export default function CocktailDetail() {
   const images = getCardImages(id);
   const isFav = favourites.includes(id);
   const isUserRecipe = userRecipes.some((r) => r.id === id);
+  const strength = estimateStrength(cocktail);
 
   return (
     <div className="px-4 py-4">
@@ -50,8 +54,19 @@ export default function CocktailDetail() {
         />
       )}
 
-      <h1 className="mt-4 font-display text-3xl text-text">{cocktail.name}</h1>
-      {cocktail.nameEn && <div className="mt-0.5 text-base text-text-dim">{cocktail.nameEn}</div>}
+      <div className="mt-4 flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h1 className="font-display text-3xl text-text">{cocktail.name}</h1>
+          {cocktail.nameEn && <div className="mt-0.5 text-base text-text-dim">{cocktail.nameEn}</div>}
+        </div>
+        <button
+          onClick={() => shareLink(cocktail.name, window.location.href)}
+          aria-label="Поділитися"
+          className="mt-1 grid h-9 w-9 shrink-0 place-items-center rounded-full border border-border text-text-dim hover:text-gold"
+        >
+          <Share2 size={17} />
+        </button>
+      </div>
 
       {cocktail.tags.length > 0 && (
         <div className="mt-3 flex flex-wrap gap-2">
@@ -61,11 +76,19 @@ export default function CocktailDetail() {
         </div>
       )}
 
-      {cocktail.glass && (
-        <div className="mt-3 text-sm text-text-dim">
-          <span className="text-gold font-bold">{t.recipe.glass}:</span> {cocktail.glass}
-        </div>
-      )}
+      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
+        {strength.abv > 0 && (
+          <span className="text-text-dim">
+            <span className="font-bold text-gold">≈ {strength.abv}%</span> · {strength.tier} · {strength.standardDrinks}{" "}
+            порц.
+          </span>
+        )}
+        {cocktail.glass && (
+          <span className="text-text-dim">
+            <span className="font-bold text-gold">{t.recipe.glass}:</span> {cocktail.glass}
+          </span>
+        )}
+      </div>
 
       <div className="mt-4 flex items-center gap-3">
         <button
@@ -152,6 +175,17 @@ export default function CocktailDetail() {
           </ol>
         </section>
       )}
+
+      <section className="mt-6">
+        <h2 className="text-gold font-bold">Нотатки</h2>
+        <textarea
+          value={notes[id] ?? ""}
+          onChange={(e) => setNote(id, e.target.value)}
+          placeholder="Твої думки: змінити пропорції, що смакувало…"
+          rows={2}
+          className="mt-3 w-full resize-y rounded-xl border border-border bg-surface-alt px-3 py-2.5 text-sm text-text outline-none placeholder:text-text-faint focus:border-gold"
+        />
+      </section>
 
       {(images?.front || images?.back) && (
         <section className="mt-6">

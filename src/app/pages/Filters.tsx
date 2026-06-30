@@ -8,7 +8,7 @@ import { glassOf, type SortMode } from "@/domain/cocktails";
 import { useT } from "@/i18n";
 import { useFilterStore } from "@/store/filterStore";
 
-const SORTS: SortMode[] = ["card", "name", "strength", "ingredients"];
+const SORTS: SortMode[] = ["card", "name", "strength", "ingredients", "rating"];
 
 export default function Filters() {
   const t = useT();

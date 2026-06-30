@@ -17,7 +17,13 @@ export const en: Strings = {
     save: "Save",
     surprise: "Surprise me",
   },
-  sort: { card: "By number", name: "By name (A–Z)", strength: "By strength", ingredients: "By # ingredients" },
+  sort: {
+    card: "By number",
+    name: "By name (A–Z)",
+    strength: "By strength",
+    ingredients: "By # ingredients",
+    rating: "By your rating",
+  },
   recipe: {
     ingredients: "Ingredients",
     tools: "Tools",
