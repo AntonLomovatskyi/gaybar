@@ -1,7 +1,7 @@
 import type { Strings } from "./uk";
 
 export const en: Strings = {
-  tabs: { collection: "Collection", bar: "My Bar", shopping: "Shopping", favourites: "Favourites" },
+  tabs: { collection: "Collection", bar: "My Bar", shopping: "Shopping", history: "Journal", favourites: "Favourites" },
   common: {
     search: "Search",
     searchPlaceholder: "Name, ingredient…",

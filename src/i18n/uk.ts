@@ -3,7 +3,7 @@
  * Plain typed object for now; can be moved behind i18next (already a dep) when EN is added.
  */
 export interface Strings {
-  tabs: { collection: string; bar: string; shopping: string; favourites: string };
+  tabs: { collection: string; bar: string; shopping: string; history: string; favourites: string };
   common: {
     search: string;
     searchPlaceholder: string;
@@ -71,6 +71,7 @@ export const t: Strings = {
     collection: "Колекція",
     bar: "Мій бар",
     shopping: "Покупки",
+    history: "Журнал",
     favourites: "Обране",
   },
   common: {

@@ -8,6 +8,7 @@ export function getSnapshot(): PersistedData {
   const s = useUserStore.getState();
   return {
     favourites: s.favourites,
+    wishlist: s.wishlist,
     ratings: s.ratings,
     notes: s.notes,
     ownedIngredients: s.ownedIngredients,

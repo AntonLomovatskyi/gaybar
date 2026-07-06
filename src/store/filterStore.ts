@@ -30,7 +30,7 @@ export const useFilterStore = create<FilterState>((set) => ({
   glasses: [],
   sort: "card",
   query: "",
-  onlyMakeable: false,
+  onlyMakeable: true,
   onlyEasy: false,
   strength: "all",
   toggleTag: (t) => set((s) => ({ tags: s.tags.includes(t) ? s.tags.filter((x) => x !== t) : [...s.tags, t] })),

@@ -1,4 +1,4 @@
-import { Check, ExternalLink, Heart, Pencil, Play, Share2, ShoppingCart, Trash2 } from "lucide-react";
+import { Bookmark, Check, ExternalLink, Heart, Pencil, Play, Share2, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import clsx from "clsx";
@@ -12,10 +12,15 @@ import { toolInfo } from "@/data/catalog/tools";
 import { getCardImages } from "@/data/cocktails";
 import { useAllCocktails, useCocktailById } from "@/data/useCocktails";
 import { estimateStrength, formatIngredient, similarCocktails } from "@/domain/cocktails";
+import { cocktailCalories, cocktailCost, ingredientCalories, ingredientCost } from "@/domain/economics";
 import { classifyIngredient } from "@/domain/inventory";
 import { useT } from "@/i18n";
 import { shareLink } from "@/lib/share";
 import { useUserStore } from "@/store/userStore";
+
+function formatDay(at: number): string {
+  return new Date(at).toLocaleDateString("uk-UA", { day: "numeric", month: "long", year: "numeric" });
+}
 
 export default function CocktailDetail() {
   const t = useT();
@@ -30,17 +35,17 @@ export default function CocktailDetail() {
 
   const units = useUserStore((s) => s.units);
   const favourites = useUserStore((s) => s.favourites);
+  const wishlist = useUserStore((s) => s.wishlist);
   const ratings = useUserStore((s) => s.ratings);
-  const shopping = useUserStore((s) => s.shopping);
   const userRecipes = useUserStore((s) => s.userRecipes);
   const notes = useUserStore((s) => s.notes);
+  const history = useUserStore((s) => s.history);
   const ownedIngredients = useUserStore((s) => s.ownedIngredients);
-  const ownedTools = useUserStore((s) => s.ownedTools);
   const flexibleMatching = useUserStore((s) => s.flexibleMatching);
   const toggleFavourite = useUserStore((s) => s.toggleFavourite);
+  const toggleWishlist = useUserStore((s) => s.toggleWishlist);
   const setRating = useUserStore((s) => s.setRating);
   const setNote = useUserStore((s) => s.setNote);
-  const setShoppingServings = useUserStore((s) => s.setShoppingServings);
   const removeUserRecipe = useUserStore((s) => s.removeUserRecipe);
   const logPreparation = useUserStore((s) => s.logPreparation);
   const pushRecentlyViewed = useUserStore((s) => s.pushRecentlyViewed);
@@ -55,18 +60,12 @@ export default function CocktailDetail() {
 
   const images = getCardImages(id);
   const isFav = favourites.includes(id);
+  const inWishlist = wishlist.includes(id);
   const isUserRecipe = userRecipes.some((r) => r.id === id);
   const strength = estimateStrength(cocktail);
   const similar = similarCocktails(cocktail, all, 12);
   const googleUrl = `https://www.google.com/search?q=${encodeURIComponent(`${cocktail.name} коктейль рецепт`)}`;
-  const hasTools = ownedTools.length > 0;
-  const ownedToolIds = new Set(ownedTools.map((tl) => toolInfo(tl).id));
-  const missingTools = hasTools
-    ? cocktail.tools.filter((tl) => {
-        const info = toolInfo(tl);
-        return info.kind === "tool" && !ownedToolIds.has(info.id);
-      })
-    : [];
+  const madeHistory = history.filter((h) => h.cocktailId === id);
 
   return (
     <div className="px-4 py-4">
@@ -111,6 +110,10 @@ export default function CocktailDetail() {
             <span className="font-bold text-gold">{t.recipe.glass}:</span> {cocktail.glass}
           </span>
         )}
+        <span className="text-text-dim">
+          <span className="font-bold text-gold">≈ {cocktailCost(cocktail, servings)} ₴</span> ·{" "}
+          {cocktailCalories(cocktail, servings)} ккал
+        </span>
       </div>
 
       <a
@@ -133,6 +136,16 @@ export default function CocktailDetail() {
         >
           <Heart size={20} fill={isFav ? "currentColor" : "none"} />
         </button>
+        <button
+          onClick={() => toggleWishlist(id)}
+          aria-label="Хочу спробувати"
+          className={clsx(
+            "grid h-11 w-11 place-items-center rounded-full border",
+            inWishlist ? "border-gold text-gold" : "border-border text-text-dim",
+          )}
+        >
+          <Bookmark size={20} fill={inWishlist ? "currentColor" : "none"} />
+        </button>
         <div>
           <div className="text-xs text-text-faint">{t.recipe.rate}</div>
           <StarRating value={ratings[id] ?? 0} onChange={(n) => setRating(id, n)} />
@@ -144,14 +157,6 @@ export default function CocktailDetail() {
         className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-gold px-4 py-3 text-center font-bold text-bg"
       >
         <Play size={18} /> {t.recipe.start}
-      </button>
-
-      <button
-        onClick={() => setShoppingServings(id, (shopping[id] ?? 0) + 1)}
-        className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-surface px-4 py-3 text-center font-bold text-text"
-      >
-        <ShoppingCart size={18} /> {t.recipe.addToShopping}
-        {shopping[id] ? ` (${shopping[id]})` : ""}
       </button>
 
       <button
@@ -186,6 +191,12 @@ export default function CocktailDetail() {
                   </Link>
                   {m.tier === "exact" && <span className="shrink-0 text-xs text-success">✓ є</span>}
                 </div>
+                {ingredientCost(ing) > 0 && (
+                  <div className="mt-0.5 text-xs text-text-faint">
+                    ≈ {Math.round(ingredientCost(ing) * servings)} ₴ · {Math.round(ingredientCalories(ing) * servings)}{" "}
+                    ккал
+                  </div>
+                )}
                 {m.tier === "substitute" && m.have && (
                   <div className="mt-0.5 text-xs text-gold">🔄 заміна: твій {m.have}</div>
                 )}
@@ -201,28 +212,18 @@ export default function CocktailDetail() {
           <div className="mt-3 flex flex-wrap gap-2">
             {cocktail.tools.map((tool, idx) => {
               const info = toolInfo(tool);
-              const owned = info.kind === "glass" || ownedToolIds.has(info.id);
               return (
                 <Link
                   key={`${tool}-${idx}`}
                   to={`/tool/${info.id}`}
-                  className={clsx(
-                    "flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm transition",
-                    hasTools && info.kind === "tool" && !owned
-                      ? "border-danger/50 text-danger"
-                      : "border-border bg-surface-alt text-text-dim hover:border-gold/60 hover:text-text",
-                  )}
+                  className="flex items-center gap-2 rounded-full border border-border bg-surface-alt px-3 py-1.5 text-sm text-text-dim transition hover:border-gold/60 hover:text-text"
                 >
                   <ToolIcon id={info.id} size={18} className="text-gold" />
                   {tool}
-                  {hasTools && info.kind === "tool" && owned && <Check size={14} className="text-success" />}
                 </Link>
               );
             })}
           </div>
-          {missingTools.length > 0 && (
-            <p className="mt-2 text-xs text-danger">Бракує інструментів: {missingTools.join(", ")}</p>
-          )}
         </section>
       )}
 
@@ -249,6 +250,23 @@ export default function CocktailDetail() {
             {similar.map((c) => (
               <div key={c.id} className="w-28 shrink-0">
                 <CocktailCard cocktail={c} />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {madeHistory.length > 0 && (
+        <section className="mt-6">
+          <h2 className="text-gold font-bold">Мої приготування ({madeHistory.length})</h2>
+          <div className="mt-3 space-y-2">
+            {madeHistory.map((h, i) => (
+              <div key={`${h.at}-${i}`} className="rounded-xl border border-border bg-surface p-3 text-sm">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-xs text-text-faint">{formatDay(h.at)}</span>
+                  {h.rating ? <span className="text-xs text-gold">{"★".repeat(h.rating)}</span> : null}
+                </div>
+                {h.note && <div className="mt-1 text-text">{h.note}</div>}
               </div>
             ))}
           </div>

@@ -1,20 +1,16 @@
-import { Plus, Wrench, X } from "lucide-react";
-import { useMemo, useState, type ReactNode } from "react";
+import { Plus, X } from "lucide-react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import clsx from "clsx";
-import { CocktailCard } from "@/components/CocktailCard";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { EssentialsSetup, type SetupKind } from "@/components/EssentialsSetup";
-import { ToolIcon } from "@/components/ToolIcon";
 import { canonicalIdOf, categoryGroupOf, trackableCanonicals } from "@/data/catalog/ingredients";
-import { TOOL_BY_ID } from "@/data/catalog/tools";
 import { useAllCocktails } from "@/data/useCocktails";
-import { hasAllTools, smartShoppingPlan, whatCanIMake, type MakeResult } from "@/domain/inventory";
+import { smartShoppingPlan } from "@/domain/inventory";
 import { normalize } from "@/domain/text";
 import { useT } from "@/i18n";
 import { useUserStore } from "@/store/userStore";
 
-const TOOLS = Object.values(TOOL_BY_ID).filter((tl) => tl.kind === "tool");
 const TRACKABLE = trackableCanonicals();
 const GROUP_ORDER = [
   "Алкоголь",
@@ -33,39 +29,16 @@ const GROUP_ORDER = [
   "Інше",
 ];
 
-function MakeCard({ r, showMissing }: { r: MakeResult; showMissing?: boolean }) {
-  const t = useT();
-  return (
-    <div>
-      <CocktailCard cocktail={r.cocktail} />
-      {showMissing && r.missing.length > 0 && (
-        <div className="mt-1 px-0.5 text-[11px] leading-tight text-danger">
-          {t.bar.missing}: {r.missing.map((m) => m.name).join(", ")}
-        </div>
-      )}
-      {!showMissing && r.substitutions.length > 0 && (
-        <div className="mt-1 px-0.5 text-[11px] leading-tight text-text-faint">
-          заміна: {r.substitutions.map((s) => `${s.required.name} → ${s.have}`).join(", ")}
-        </div>
-      )}
-    </div>
-  );
-}
-
 export default function Bar() {
   const t = useT();
   const all = useAllCocktails();
   const ownedIngredients = useUserStore((s) => s.ownedIngredients);
-  const ownedTools = useUserStore((s) => s.ownedTools);
   const flexibleMatching = useUserStore((s) => s.flexibleMatching);
   const addOwnedIngredient = useUserStore((s) => s.addOwnedIngredient);
   const removeOwnedIngredient = useUserStore((s) => s.removeOwnedIngredient);
-  const toggleOwnedTool = useUserStore((s) => s.toggleOwnedTool);
   const setFlexibleMatching = useUserStore((s) => s.setFlexibleMatching);
 
   const [draft, setDraft] = useState("");
-  const [onlyMyTools, setOnlyMyTools] = useState(false);
-  const [showTools, setShowTools] = useState(false);
   const [setup, setSetup] = useState<SetupKind | null>(null);
   const [confirmRemove, setConfirmRemove] = useState<string | null>(null);
 
@@ -85,18 +58,6 @@ export default function Bar() {
     return [...m.entries()].sort((a, b) => GROUP_ORDER.indexOf(a[0]) - GROUP_ORDER.indexOf(b[0]));
   }, [ownedIngredients]);
 
-  const { makeable, almost } = useMemo(
-    () => whatCanIMake(all, ownedIngredients, flexibleMatching),
-    [all, ownedIngredients, flexibleMatching],
-  );
-  const makeableList = useMemo(
-    () => (onlyMyTools ? makeable.filter((m) => hasAllTools(m.cocktail, ownedTools)) : makeable),
-    [makeable, onlyMyTools, ownedTools],
-  );
-  const almostList = useMemo(
-    () => (onlyMyTools ? almost.filter((m) => hasAllTools(m.cocktail, ownedTools)) : almost),
-    [almost, onlyMyTools, ownedTools],
-  );
   const plan = useMemo(
     () => smartShoppingPlan(all, ownedIngredients, flexibleMatching, 5),
     [all, ownedIngredients, flexibleMatching],
@@ -195,131 +156,63 @@ export default function Bar() {
         </div>
       )}
 
-      {/* Tools (collapsible) */}
       <button
-        onClick={() => setShowTools((v) => !v)}
-        className="mt-6 flex w-full items-center justify-between text-left font-bold text-gold"
+        type="button"
+        onClick={() => setFlexibleMatching(!flexibleMatching)}
+        className="mt-5 flex w-full items-center justify-between rounded-xl border border-border bg-surface p-3.5 text-left"
       >
-        <span>{t.bar.tools}</span>
-        <span className="text-xs text-text-faint">
-          {ownedTools.length ? `${ownedTools.length} ·` : ""} {showTools ? "сховати" : "показати"}
+        <span className="text-sm text-text">Гнучкий підбір (заміни схожим)</span>
+        <span
+          className={clsx(
+            "relative h-6 w-11 shrink-0 rounded-full transition",
+            flexibleMatching ? "bg-gold" : "bg-surface-alt",
+          )}
+        >
+          <span
+            className={clsx(
+              "absolute top-0.5 h-5 w-5 rounded-full bg-bg transition",
+              flexibleMatching ? "left-[22px]" : "left-0.5",
+            )}
+          />
         </span>
       </button>
-      {showTools && (
-        <div className="mt-3 flex flex-wrap gap-2">
-          {TOOLS.map((tl) => {
-            const owned = ownedTools.includes(tl.nameUk);
-            return (
-              <button
-                key={tl.id}
-                type="button"
-                onClick={() => toggleOwnedTool(tl.nameUk)}
-                className={clsx(
-                  "flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm transition",
-                  owned ? "border-gold bg-gold/15 text-text" : "border-border bg-surface-alt text-text-dim",
-                )}
-              >
-                <ToolIcon id={tl.id} size={18} className={owned ? "text-gold" : "text-text-faint"} />
-                {tl.nameUk}
-              </button>
-            );
-          })}
-        </div>
-      )}
-
-      {/* Toggles */}
-      <div className="mt-5 space-y-2">
-        <Toggle
-          label="Гнучкий підбір (заміни схожим)"
-          on={flexibleMatching}
-          onClick={() => setFlexibleMatching(!flexibleMatching)}
-        />
-        <Toggle
-          label="Лише з моїми інструментами"
-          icon={<Wrench size={15} className="text-text-dim" />}
-          on={onlyMyTools}
-          onClick={() => setOnlyMyTools(!onlyMyTools)}
-        />
-      </div>
 
       {ownedIngredients.length === 0 ? (
         <div className="mt-8 rounded-xl border border-border bg-surface p-6 text-center text-text-dim">
           {t.bar.empty}
-          <div className="mt-3 flex gap-2">
-            <button
-              onClick={() => setSetup("alcohol")}
-              className="flex-1 rounded-xl bg-gold px-4 py-3 font-bold text-bg"
-            >
-              🍸 Алкоголь
-            </button>
-            <button
-              onClick={() => setSetup("fresh")}
-              className="flex-1 rounded-xl border border-gold px-4 py-3 font-bold text-gold"
-            >
-              🍓 Свіже
-            </button>
-          </div>
         </div>
       ) : (
-        <>
-          <h2 className="mt-7 font-bold text-gold">
-            {t.bar.makeable} ({makeableList.length})
-          </h2>
-          {makeableList.length === 0 ? (
-            <div className="mt-2 text-sm text-text-faint">{t.common.none}</div>
-          ) : (
-            <div className="mt-3 grid gap-2 [grid-template-columns:repeat(auto-fill,minmax(108px,1fr))]">
-              {makeableList.map((m) => (
-                <MakeCard key={m.cocktail.id} r={m} />
-              ))}
-            </div>
-          )}
-
-          <h2 className="mt-7 font-bold text-gold">
-            {t.bar.almost} ({almostList.length})
-          </h2>
-          {almostList.length === 0 ? (
-            <div className="mt-2 text-sm text-text-faint">{t.common.none}</div>
-          ) : (
-            <div className="mt-3 grid gap-2 [grid-template-columns:repeat(auto-fill,minmax(108px,1fr))]">
-              {almostList.map((m) => (
-                <MakeCard key={m.cocktail.id} r={m} showMissing />
-              ))}
-            </div>
-          )}
-        </>
-      )}
-
-      {plan.length > 0 && (
-        <section className="mt-7">
-          <h2 className="font-bold text-gold">Розумний план покупок</h2>
-          <p className="mt-1 text-xs text-text-faint">
-            Купуй у такому порядку — кожен крок відкриває найбільше нового.
-          </p>
-          <div className="mt-3 space-y-2">
-            {plan.map((p, i) => (
-              <div
-                key={p.canonicalId}
-                className="flex items-center gap-3 rounded-xl border border-border bg-surface p-4"
-              >
-                <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-gold/15 text-sm font-bold text-gold">
-                  {i + 1}
-                </span>
-                <Link to={`/ingredient/${p.canonicalId}`} className="flex-1 text-text hover:text-gold">
-                  {p.name}
-                </Link>
-                <span className="shrink-0 rounded-full bg-gold/15 px-2.5 py-1 text-sm font-bold text-gold">
-                  +{p.cocktails.length}
-                </span>
-              </div>
-            ))}
-          </div>
-          {plan.length > 1 && (
-            <p className="mt-2 text-xs text-text-faint">
-              Разом ці {plan.length} відкриють {planTotal} нових коктейлів.
+        plan.length > 0 && (
+          <section className="mt-7">
+            <h2 className="font-bold text-gold">Що купити, щоб відкрити більше</h2>
+            <p className="mt-1 text-xs text-text-faint">
+              Купуй у такому порядку — кожен крок відкриває найбільше нового.
             </p>
-          )}
-        </section>
+            <div className="mt-3 space-y-2">
+              {plan.map((p, i) => (
+                <div
+                  key={p.canonicalId}
+                  className="flex items-center gap-3 rounded-xl border border-border bg-surface p-4"
+                >
+                  <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-gold/15 text-sm font-bold text-gold">
+                    {i + 1}
+                  </span>
+                  <Link to={`/ingredient/${p.canonicalId}`} className="flex-1 text-text hover:text-gold">
+                    {p.name}
+                  </Link>
+                  <span className="shrink-0 rounded-full bg-gold/15 px-2.5 py-1 text-sm font-bold text-gold">
+                    +{p.cocktails.length}
+                  </span>
+                </div>
+              ))}
+            </div>
+            {plan.length > 1 && (
+              <p className="mt-2 text-xs text-text-faint">
+                Разом ці {plan.length} відкриють {planTotal} нових коктейлів.
+              </p>
+            )}
+          </section>
+        )
       )}
 
       <ConfirmDialog
@@ -332,25 +225,5 @@ export default function Bar() {
         onCancel={() => setConfirmRemove(null)}
       />
     </div>
-  );
-}
-
-function Toggle({ label, on, onClick, icon }: { label: string; on: boolean; onClick: () => void; icon?: ReactNode }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="flex w-full items-center justify-between rounded-xl border border-border bg-surface p-3.5 text-left"
-    >
-      <span className="flex items-center gap-2 text-sm text-text">
-        {icon}
-        {label}
-      </span>
-      <span className={clsx("relative h-6 w-11 shrink-0 rounded-full transition", on ? "bg-gold" : "bg-surface-alt")}>
-        <span
-          className={clsx("absolute top-0.5 h-5 w-5 rounded-full bg-bg transition", on ? "left-[22px]" : "left-0.5")}
-        />
-      </span>
-    </button>
   );
 }

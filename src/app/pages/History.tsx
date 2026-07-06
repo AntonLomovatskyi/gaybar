@@ -44,6 +44,11 @@ export default function History() {
           </button>
         )}
       </div>
+      {history.length > 0 && (
+        <p className="mt-1 text-sm text-text-faint">
+          {history.length} приготувань · {new Set(history.map((h) => h.cocktailId)).size} різних
+        </p>
+      )}
 
       {history.length === 0 ? (
         <div className="py-16 text-center text-text-dim">

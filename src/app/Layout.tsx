@@ -1,9 +1,9 @@
-import { ChevronLeft, Heart, Martini, PartyPopper, Settings, ShoppingCart, Wine } from "lucide-react";
+import { ChevronLeft, Heart, Martini, NotebookPen, PartyPopper, Settings, Wine } from "lucide-react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import { useT } from "@/i18n";
 
-const TAB_ROOTS = ["/", "/sets", "/bar", "/shopping", "/favourites"];
+const TAB_ROOTS = ["/", "/sets", "/bar", "/history", "/favourites"];
 
 export function Layout() {
   const t = useT();
@@ -14,7 +14,7 @@ export function Layout() {
     { to: "/", label: t.tabs.collection, Icon: Martini, end: true },
     { to: "/sets", label: t.sets.tab, Icon: PartyPopper, end: false },
     { to: "/bar", label: t.tabs.bar, Icon: Wine, end: false },
-    { to: "/shopping", label: t.tabs.shopping, Icon: ShoppingCart, end: false },
+    { to: "/history", label: t.tabs.history, Icon: NotebookPen, end: false },
     { to: "/favourites", label: t.tabs.favourites, Icon: Heart, end: false },
   ];
   return (

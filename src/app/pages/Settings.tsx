@@ -1,8 +1,6 @@
 import clsx from "clsx";
 import { Link } from "react-router-dom";
-import { Chip } from "@/components/Chip";
 import { exportData, importDataFromFile } from "@/data/backup";
-import { TAG_GROUPS } from "@/data/catalog/taxonomy";
 import { firebaseEnabled } from "@/lib/firebase";
 import { pullNow, pushNow, signInWithGoogle, signOutNow, useAuthStore } from "@/lib/sync";
 import { useUserStore } from "@/store/userStore";
@@ -128,18 +126,11 @@ export default function Settings() {
   const setUnits = useUserStore((s) => s.setUnits);
   const theme = useUserStore((s) => s.theme);
   const setTheme = useUserStore((s) => s.setTheme);
-  const prefs = useUserStore((s) => s.prefs);
-  const setPrefs = useUserStore((s) => s.setPrefs);
   const favourites = useUserStore((s) => s.favourites);
   const history = useUserStore((s) => s.history);
   const ownedIngredients = useUserStore((s) => s.ownedIngredients);
   const clearHistory = useUserStore((s) => s.clearHistory);
   const clearFavourites = useUserStore((s) => s.clearFavourites);
-
-  const toggleLikedTag = (tag: string) => {
-    const liked = prefs.likedTags.includes(tag) ? prefs.likedTags.filter((x) => x !== tag) : [...prefs.likedTags, tag];
-    setPrefs({ likedTags: liked });
-  };
 
   const onImport = async () => {
     const r = await importDataFromFile();
@@ -217,26 +208,6 @@ export default function Settings() {
         </div>
       </Card>
 
-      <Card title="Смаки (для рекомендацій)">
-        <div className="flex flex-col gap-3">
-          {TAG_GROUPS.map((g) => (
-            <div key={g.key}>
-              <div className="mb-1.5 text-sm text-text-dim">{g.labelUk}</div>
-              <div className="flex flex-wrap gap-2">
-                {g.tags.map((tag) => (
-                  <Chip
-                    key={tag}
-                    label={tag}
-                    selected={prefs.likedTags.includes(tag)}
-                    onClick={() => toggleLikedTag(tag)}
-                  />
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </Card>
-
       <Card title="Розділи">
         <div className="flex flex-col gap-2">
           <Link
@@ -250,13 +221,6 @@ export default function Settings() {
             className="flex items-center justify-between rounded-xl border border-border bg-surface-alt px-4 py-3 text-text"
           >
             <span>🎯 Вікторина</span>
-          </Link>
-          <Link
-            to="/history"
-            className="flex items-center justify-between rounded-xl border border-border bg-surface-alt px-4 py-3 text-text"
-          >
-            <span>📓 Журнал дегустацій</span>
-            <span className="text-text-faint">{history.length}</span>
           </Link>
           <Link to="/recipe/new" className="rounded-xl border border-border bg-surface-alt px-4 py-3 text-text">
             ＋ Додати свій рецепт

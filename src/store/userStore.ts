@@ -16,6 +16,7 @@ export interface PrepEntry {
 
 export interface UserState {
   favourites: string[]; // cocktail ids
+  wishlist: string[]; // cocktail ids you want to try (separate from favourites)
   ratings: Record<string, number>; // id -> 1..5
   notes: Record<string, string>; // id -> personal note
   ownedIngredients: string[]; // free-text names for now (canonical ids later)
@@ -38,6 +39,7 @@ export interface UserState {
   setTheme: (t: "dark" | "light") => void;
   setFlexibleMatching: (v: boolean) => void;
   toggleFavourite: (id: string) => void;
+  toggleWishlist: (id: string) => void;
   setRating: (id: string, stars: number) => void;
   setNote: (id: string, text: string) => void;
   addOwnedIngredient: (name: string) => void;
@@ -63,6 +65,7 @@ export interface UserState {
 export type PersistedData = Pick<
   UserState,
   | "favourites"
+  | "wishlist"
   | "ratings"
   | "notes"
   | "ownedIngredients"
@@ -82,6 +85,7 @@ export const useUserStore = create<UserState>()(
   persist(
     (set) => ({
       favourites: [],
+      wishlist: [],
       ratings: {},
       notes: {},
       ownedIngredients: [],
@@ -104,6 +108,10 @@ export const useUserStore = create<UserState>()(
       toggleFavourite: (id) =>
         set((s) => ({
           favourites: s.favourites.includes(id) ? s.favourites.filter((x) => x !== id) : [...s.favourites, id],
+        })),
+      toggleWishlist: (id) =>
+        set((s) => ({
+          wishlist: s.wishlist.includes(id) ? s.wishlist.filter((x) => x !== id) : [...s.wishlist, id],
         })),
       setRating: (id, stars) => set((s) => ({ ratings: { ...s.ratings, [id]: stars } })),
       setNote: (id, text) =>
@@ -152,6 +160,7 @@ export const useUserStore = create<UserState>()(
       importData: (d) =>
         set((s) => ({
           favourites: d.favourites ?? s.favourites,
+          wishlist: d.wishlist ?? s.wishlist,
           ratings: d.ratings ?? s.ratings,
           notes: d.notes ?? s.notes,
           ownedIngredients: d.ownedIngredients ?? s.ownedIngredients,
