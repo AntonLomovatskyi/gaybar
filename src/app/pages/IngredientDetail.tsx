@@ -4,7 +4,7 @@ import { Link, useParams } from "react-router-dom";
 import { CocktailCard } from "@/components/CocktailCard";
 import { abvOf, canonicalById, canonicalIdOf, categoryGroupOf, familyMembers } from "@/data/catalog/ingredients";
 import { useAllCocktails } from "@/data/useCocktails";
-import { caloriesPer100, costPer100 } from "@/domain/economics";
+import { caloriesPer100, wholeItemPrice } from "@/domain/economics";
 import { useUserStore } from "@/store/userStore";
 
 export default function IngredientDetail() {
@@ -32,8 +32,9 @@ export default function IngredientDetail() {
         <span className="font-bold text-gold">{categoryGroupOf(ing.nameUk)}</span>
         {abv > 0 && <span>≈ {abv}%</span>}
         <span>
-          ≈ {costPer100(ing.nameUk)} ₴ · {caloriesPer100(ing.nameUk)} ккал / 100 мл
+          ≈ {wholeItemPrice(ing.nameUk).cost} ₴ / {wholeItemPrice(ing.nameUk).label}
         </span>
+        <span>{caloriesPer100(ing.nameUk)} ккал / 100 мл</span>
         {isOwned && <span className="text-success">✓ у барі</span>}
       </div>
 

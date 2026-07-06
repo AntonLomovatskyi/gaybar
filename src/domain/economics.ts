@@ -111,6 +111,30 @@ export function caloriesPer100(name: string): number {
   return per100(name).cal;
 }
 
+// Typical pack size sold at retail, by category, for a "whole item" price estimate.
+const PACK_BY_GROUP: Record<string, { size: number; label: string }> = {
+  Алкоголь: { size: 700, label: "0.7 л" },
+  Лікери: { size: 700, label: "0.7 л" },
+  "Вино та вермут": { size: 1000, label: "1 л" },
+  Бітери: { size: 200, label: "0.2 л" },
+  Пиво: { size: 500, label: "0.5 л" },
+  Соки: { size: 1000, label: "1 л" },
+  Сиропи: { size: 1000, label: "1 л" },
+  Напої: { size: 1000, label: "1 л" },
+  "Молочне та яйця": { size: 500, label: "0.5 л" },
+  "Фрукти та ягоди": { size: 1000, label: "1 кг" },
+  Трави: { size: 100, label: "100 г" },
+  Спеції: { size: 100, label: "100 г" },
+  Прикраси: { size: 100, label: "100 г" },
+  Інше: { size: 100, label: "100 мл" },
+};
+
+/** Estimated price of a whole retail item (a bottle / pack), with its size label. */
+export function wholeItemPrice(name: string): { cost: number; label: string } {
+  const p = PACK_BY_GROUP[categoryGroupOf(name)] ?? PACK_BY_GROUP.Інше;
+  return { cost: Math.round(costPer100(name) * (p.size / 100)), label: p.label };
+}
+
 export function cocktailCost(c: Cocktail, servings = 1): number {
   return Math.round(c.ingredients.reduce((sum, ing) => sum + ingredientCost(ing), 0) * servings);
 }
