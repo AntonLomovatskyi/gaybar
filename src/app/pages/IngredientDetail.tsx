@@ -23,7 +23,7 @@ export default function IngredientDetail() {
   const abv = abvOf(ing.nameUk);
   const isOwned = owned.some((o) => canonicalIdOf(o) === ing.id);
   const subs = familyMembers(ing.family, ing.id);
-  const googleUrl = `https://www.google.com/search?q=${encodeURIComponent(`${ing.nameUk} коктейль`)}`;
+  const googleUrl = `https://www.google.com/search?q=${encodeURIComponent(ing.nameUk)}`;
 
   return (
     <div className="px-4 py-4">
