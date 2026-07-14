@@ -211,6 +211,12 @@ export default function Settings() {
       <Card title="Розділи">
         <div className="flex flex-col gap-2">
           <Link
+            to="/taste"
+            className="flex items-center justify-between rounded-xl border border-border bg-surface-alt px-4 py-3 text-text"
+          >
+            <span>🥂 Дегустація — спробувати всі</span>
+          </Link>
+          <Link
             to="/stats"
             className="flex items-center justify-between rounded-xl border border-border bg-surface-alt px-4 py-3 text-text"
           >

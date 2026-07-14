@@ -15,6 +15,7 @@ import Sets from "./pages/Sets";
 import Quiz from "./pages/Quiz";
 import Settings from "./pages/Settings";
 import Stats from "./pages/Stats";
+import Taste from "./pages/Taste";
 import ToolDetail from "./pages/ToolDetail";
 
 const basename = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -35,6 +36,7 @@ export const router = createBrowserRouter(
         { path: "tool/:id", element: <ToolDetail /> },
         { path: "ingredient/:id", element: <IngredientDetail /> },
         { path: "stats", element: <Stats /> },
+        { path: "taste", element: <Taste /> },
         { path: "quiz", element: <Quiz /> },
         { path: "history", element: <History /> },
         { path: "settings", element: <Settings /> },
