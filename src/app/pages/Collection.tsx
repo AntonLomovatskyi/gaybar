@@ -10,7 +10,7 @@ import { applyFilters, pickSurprise, sortBy, strengthBucket, type SortMode } fro
 import { whatCanIMake } from "@/domain/inventory";
 import { recommendForYou } from "@/domain/recommend";
 import { useT } from "@/i18n";
-import { useFilterStore, type StrengthFilter } from "@/store/filterStore";
+import { useFilterStore, type StrengthFilter, type TastedFilter } from "@/store/filterStore";
 import { useUserStore } from "@/store/userStore";
 
 const SORTS: SortMode[] = ["card", "name", "strength", "ingredients", "rating"];
@@ -19,6 +19,12 @@ const STRENGTH_CHIPS: { key: Exclude<StrengthFilter, "all" | "medium">; label: s
   { key: "strong", label: "🔥 Міцні" },
   { key: "zero", label: "0%" },
 ];
+const TASTED_NEXT: Record<TastedFilter, TastedFilter> = { all: "untried", untried: "tried", tried: "all" };
+const TASTED_LABEL: Record<TastedFilter, string> = {
+  all: "🥂 Дегустація",
+  untried: "🆕 Не куштував",
+  tried: "★ Куштував",
+};
 const easyCount = (c: { ingredients: { name: string }[] }) =>
   c.ingredients.filter((i) => !i.name.toLowerCase().includes("лід")).length;
 
@@ -34,15 +40,18 @@ export default function Collection() {
     onlyMakeable,
     onlyEasy,
     strength,
+    tasted,
     setTags,
     setSort,
     setQuery,
     setOnlyMakeable,
     setOnlyEasy,
     setStrength,
+    setTasted,
   } = useFilterStore();
   const favourites = useUserStore((s) => s.favourites);
   const ratings = useUserStore((s) => s.ratings);
+  const history = useUserStore((s) => s.history);
   const prefs = useUserStore((s) => s.prefs);
   const ownedIngredients = useUserStore((s) => s.ownedIngredients);
   const flexibleMatching = useUserStore((s) => s.flexibleMatching);
@@ -52,15 +61,24 @@ export default function Collection() {
     () => new Set(whatCanIMake(all, ownedIngredients, flexibleMatching).makeable.map((m) => m.cocktail.id)),
     [all, ownedIngredients, flexibleMatching],
   );
+  // "Tried" = rated or logged as made at least once.
+  const triedIds = useMemo(() => {
+    const s = new Set(history.map((h) => h.cocktailId));
+    for (const [id, stars] of Object.entries(ratings)) if (stars > 0) s.add(id);
+    return s;
+  }, [history, ratings]);
   const list = useMemo(() => {
     let base = applyFilters(all, { tags, glasses, query });
     if (onlyMakeable) base = base.filter((c) => makeableIds.has(c.id));
     if (onlyEasy) base = base.filter((c) => easyCount(c) <= 3);
     if (strength !== "all") base = base.filter((c) => strengthBucket(c) === strength);
+    if (tasted === "tried") base = base.filter((c) => triedIds.has(c.id));
+    else if (tasted === "untried") base = base.filter((c) => !triedIds.has(c.id));
     return sortBy(base, sort, ratings);
-  }, [all, tags, glasses, query, sort, onlyMakeable, onlyEasy, strength, makeableIds, ratings]);
+  }, [all, tags, glasses, query, sort, onlyMakeable, onlyEasy, strength, tasted, triedIds, makeableIds, ratings]);
   const filterCount = tags.length + glasses.length;
-  const isHome = !query.trim() && filterCount === 0 && !onlyMakeable && !onlyEasy && strength === "all";
+  const isHome =
+    !query.trim() && filterCount === 0 && !onlyMakeable && !onlyEasy && strength === "all" && tasted === "all";
   const recent = useMemo(
     () => recentlyViewed.map((id) => all.find((c) => c.id === id)).filter((c): c is NonNullable<typeof c> => !!c),
     [recentlyViewed, all],
@@ -130,6 +148,15 @@ export default function Collection() {
             {sc.label}
           </button>
         ))}
+        <button
+          onClick={() => setTasted(TASTED_NEXT[tasted])}
+          className={clsx(
+            "rounded-full border px-3 py-1.5 text-sm",
+            tasted !== "all" ? "border-gold bg-gold/15 text-gold" : "border-border text-text-dim",
+          )}
+        >
+          {TASTED_LABEL[tasted]}
+        </button>
         <button
           onClick={() => nav("/filters")}
           className={clsx(

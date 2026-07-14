@@ -6,6 +6,9 @@ import type { SortMode, StrengthBucket } from "@/domain/cocktails";
 /** "all" = no strength filter; otherwise restrict to one bucket. */
 export type StrengthFilter = "all" | StrengthBucket;
 
+/** "all" = no filter; "tried" = rated/made; "untried" = not yet. */
+export type TastedFilter = "all" | "tried" | "untried";
+
 interface FilterState {
   tags: CocktailTag[];
   glasses: string[]; // canonical glass ids
@@ -14,6 +17,7 @@ interface FilterState {
   onlyMakeable: boolean;
   onlyEasy: boolean;
   strength: StrengthFilter;
+  tasted: TastedFilter;
   toggleTag: (t: CocktailTag) => void;
   setTags: (t: CocktailTag[]) => void;
   toggleGlass: (id: string) => void;
@@ -22,6 +26,7 @@ interface FilterState {
   setOnlyMakeable: (v: boolean) => void;
   setOnlyEasy: (v: boolean) => void;
   setStrength: (v: StrengthFilter) => void;
+  setTasted: (v: TastedFilter) => void;
   clear: () => void;
 }
 
@@ -33,6 +38,7 @@ export const useFilterStore = create<FilterState>((set) => ({
   onlyMakeable: true,
   onlyEasy: false,
   strength: "all",
+  tasted: "all",
   toggleTag: (t) => set((s) => ({ tags: s.tags.includes(t) ? s.tags.filter((x) => x !== t) : [...s.tags, t] })),
   setTags: (t) => set({ tags: t }),
   toggleGlass: (id) =>
@@ -42,5 +48,6 @@ export const useFilterStore = create<FilterState>((set) => ({
   setOnlyMakeable: (v) => set({ onlyMakeable: v }),
   setOnlyEasy: (v) => set({ onlyEasy: v }),
   setStrength: (v) => set({ strength: v }),
+  setTasted: (v) => set({ tasted: v }),
   clear: () => set({ tags: [], glasses: [] }),
 }));
