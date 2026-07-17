@@ -5,14 +5,18 @@
  */
 import type { Cocktail, CocktailTag } from "@/types/cocktail";
 import { cocktails as GENERATED } from "./generated/cocktails";
+import { importedCocktails as IMPORTED } from "./generated/importedCocktails";
 import { cardImages, type CardImages } from "./generated/images";
 
+// The physical deck first, then the localized TheCocktailDB imports.
+const ALL: Cocktail[] = [...GENERATED, ...IMPORTED];
+
 export function getAllCocktails(): Cocktail[] {
-  return GENERATED;
+  return ALL;
 }
 
 export function getCocktailById(id: string): Cocktail | undefined {
-  return GENERATED.find((c) => c.id === id);
+  return ALL.find((c) => c.id === id);
 }
 
 export function getCardImages(id: string): CardImages | undefined {
@@ -21,6 +25,6 @@ export function getCardImages(id: string): CardImages | undefined {
 
 export function getAllTags(): CocktailTag[] {
   const set = new Set<CocktailTag>();
-  for (const c of GENERATED) for (const t of c.tags) set.add(t);
+  for (const c of ALL) for (const t of c.tags) set.add(t);
   return [...set];
 }
