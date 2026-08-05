@@ -50,6 +50,8 @@ export const COCKTAIL_TAGS = [
   "бежеві",
   "коричневі",
   "прозорі",
+  // source / venue (where a recipe comes from)
+  "Шоти Там",
   // family / style
   "класичні",
   "десерти",
@@ -113,6 +115,8 @@ export const CocktailSchema = z.object({
   steps: z.array(z.string()),
   /** Glassware (usually the last tool). Convenience field for display/filtering. */
   glass: z.string().optional(),
+  /** Where an imported recipe came from (attribution link). Absent for the physical deck. */
+  sourceUrl: z.string().optional(),
   /** Cropped webp filenames, relative to the recipe folder. Absent for imported recipes. */
   images: z.object({
     front: z.string().optional(),

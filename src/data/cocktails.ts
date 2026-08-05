@@ -8,9 +8,10 @@ import { cocktails as GENERATED } from "./generated/cocktails";
 import { importedCocktails as IMPORTED } from "./generated/importedCocktails";
 import { importedCardImages } from "./generated/importedImages";
 import { cardImages, type CardImages } from "./generated/images";
+import { researchedCocktails as RESEARCHED } from "./generated/researchedCocktails";
 
-// The physical deck first, then the localized TheCocktailDB imports.
-const ALL: Cocktail[] = [...GENERATED, ...IMPORTED];
+// The physical deck first, then the localized TheCocktailDB imports, then web-researched recipes.
+const ALL: Cocktail[] = [...GENERATED, ...IMPORTED, ...RESEARCHED];
 
 export function getAllCocktails(): Cocktail[] {
   return ALL;

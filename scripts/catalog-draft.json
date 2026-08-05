@@ -3319,5 +3319,131 @@
     "family": "rum",
     "availability": "specialty",
     "isPantryStaple": false
+  },
+  {
+    "raw": "Лавандовий сироп",
+    "canonicalId": "lavender-syrup",
+    "canonicalNameUk": "Лавандовий сироп",
+    "category": "syrup",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Сироп лаванда",
+    "canonicalId": "lavender-syrup",
+    "canonicalNameUk": "Лавандовий сироп",
+    "category": "syrup",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Банановий сироп",
+    "canonicalId": "banana-syrup",
+    "canonicalNameUk": "Банановий сироп",
+    "category": "syrup",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Сироп зелений банан",
+    "canonicalId": "banana-syrup",
+    "canonicalNameUk": "Банановий сироп",
+    "category": "syrup",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Сироп банан",
+    "canonicalId": "banana-syrup",
+    "canonicalNameUk": "Банановий сироп",
+    "category": "syrup",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Яблучний сироп",
+    "canonicalId": "green-apple-syrup",
+    "canonicalNameUk": "Сироп зелене яблуко",
+    "category": "syrup",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Сироп зелене яблуко",
+    "canonicalId": "green-apple-syrup",
+    "canonicalNameUk": "Сироп зелене яблуко",
+    "category": "syrup",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Сироп зеленого яблука",
+    "canonicalId": "green-apple-syrup",
+    "canonicalNameUk": "Сироп зелене яблуко",
+    "category": "syrup",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Сироп попкорн",
+    "canonicalId": "popcorn-syrup",
+    "canonicalNameUk": "Сироп попкорн",
+    "category": "syrup",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Попкорновий сироп",
+    "canonicalId": "popcorn-syrup",
+    "canonicalNameUk": "Сироп попкорн",
+    "category": "syrup",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Сироп солона карамель",
+    "canonicalId": "salted-caramel-syrup",
+    "canonicalNameUk": "Сироп солона карамель",
+    "category": "syrup",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Сироп солоної карамелі",
+    "canonicalId": "salted-caramel-syrup",
+    "canonicalNameUk": "Сироп солона карамель",
+    "category": "syrup",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Солоно-карамельний сироп",
+    "canonicalId": "salted-caramel-syrup",
+    "canonicalNameUk": "Сироп солона карамель",
+    "category": "syrup",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Сироп полуниця",
+    "canonicalId": "strawberry-syrup",
+    "canonicalNameUk": "Полуничний сироп",
+    "category": "syrup",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
   }
 ]

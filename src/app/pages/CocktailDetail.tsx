@@ -116,14 +116,26 @@ export default function CocktailDetail() {
         </span>
       </div>
 
-      <a
-        href={googleUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="mt-2 inline-flex items-center gap-1.5 text-sm text-text-dim hover:text-gold"
-      >
-        <ExternalLink size={14} /> Шукати в Google
-      </a>
+      <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1">
+        <a
+          href={googleUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 text-sm text-text-dim hover:text-gold"
+        >
+          <ExternalLink size={14} /> Шукати в Google
+        </a>
+        {cocktail.sourceUrl && (
+          <a
+            href={cocktail.sourceUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-sm text-text-dim hover:text-gold"
+          >
+            <ExternalLink size={14} /> Джерело рецепта
+          </a>
+        )}
+      </div>
 
       <div className="mt-4 flex items-center gap-3">
         <button
