@@ -9,9 +9,13 @@ import { importedCocktails as IMPORTED } from "./generated/importedCocktails";
 import { importedCardImages } from "./generated/importedImages";
 import { cardImages, type CardImages } from "./generated/images";
 import { researchedCocktails as RESEARCHED } from "./generated/researchedCocktails";
+import { researchedImages } from "./generated/researchedImages";
 
 // The physical deck first, then the localized TheCocktailDB imports, then web-researched recipes.
 const ALL: Cocktail[] = [...GENERATED, ...IMPORTED, ...RESEARCHED];
+
+/** Bundled art lives under public/ — resolve it against the deploy base path. */
+const asUrl = (p: string): string => (/^https?:\/\//.test(p) ? p : import.meta.env.BASE_URL + p);
 
 export function getAllCocktails(): Cocktail[] {
   return ALL;
@@ -22,7 +26,10 @@ export function getCocktailById(id: string): Cocktail | undefined {
 }
 
 export function getCardImages(id: string): CardImages | undefined {
-  return cardImages[id] ?? importedCardImages[id];
+  if (cardImages[id]) return cardImages[id];
+  if (importedCardImages[id]) return importedCardImages[id];
+  const art = researchedImages[id];
+  return art ? { front: asUrl(art) } : undefined;
 }
 
 export function getAllTags(): CocktailTag[] {
