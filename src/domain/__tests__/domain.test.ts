@@ -21,7 +21,7 @@ import {
 } from "@/domain/inventory";
 import { recommendForYou } from "@/domain/recommend";
 import { buildShoppingList } from "@/domain/shopping";
-import { composeParty, distributeServings } from "@/domain/party";
+import { composeParty, distributeServings, filterKind, replaceWithSimilar, sortByStrength } from "@/domain/party";
 import { normalize } from "@/domain/text";
 
 const mk = (id: string, tags: string[], ingredients: Ingredient[], extra: Partial<Cocktail> = {}): Cocktail => ({
@@ -146,6 +146,33 @@ describe("inventory matching", () => {
   });
 });
 
+describe("party: kind filter, strength order, similar swap", () => {
+  const shot = mk("kamikaze-shot", ["шоти"], [ml("Горілка", 20), ml("Тріпл сек", 20)], { glass: "Чарка" });
+  const long = mk("long-drink", ["лонги"], [ml("Горілка", 40), ml("Апельсиновий сік", 120)], { glass: "Хайбол" });
+
+  it("filterKind keeps only shots (by tag or shot glass)", () => {
+    expect(filterKind([shot, long, martini], "shots").map((c) => c.id)).toEqual(["kamikaze-shot"]);
+    expect(filterKind([shot, long, martini], "cocktails").map((c) => c.id)).toEqual(["long-drink", "martini"]);
+    expect(filterKind([shot, long], "any")).toHaveLength(2);
+  });
+
+  it("sortByStrength orders lightest first", () => {
+    const items = [
+      { cocktail: martini, servings: 1 },
+      { cocktail: long, servings: 1 },
+    ];
+    expect(sortByStrength(items)[0].cocktail.id).toBe("long-drink"); // juice-heavy long drink is weaker
+  });
+
+  it("replaceWithSimilar swaps in a drink that is not already in the set", () => {
+    const items = [{ cocktail: daiquiri, servings: 2 }];
+    const out = replaceWithSimilar(items, "daiquiri", [daiquiri, margarita, martini], "any", 0);
+    expect(out).toHaveLength(1);
+    expect(out[0].cocktail.id).not.toBe("daiquiri");
+    expect(out[0].servings).toBe(2); // servings are preserved
+  });
+});
+
 describe("cocktails.strengthBucket", () => {
   it("buckets by estimated ABV", () => {
     expect(strengthBucket(mk("juice", [], [ml("Апельсиновий сік", 150)]))).toBe("zero");
@@ -174,6 +201,8 @@ describe("party", () => {
       drinksPerPerson: 2,
       useMyBar: false,
       everyoneTries: true,
+      kind: "any",
+      byStrength: false,
     });
     expect(items).toHaveLength(2);
   });

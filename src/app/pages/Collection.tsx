@@ -1,5 +1,5 @@
-import { ArrowDownUp, GlassWater, Shuffle, SlidersHorizontal } from "lucide-react";
-import { useMemo } from "react";
+import { ArrowDownUp, ChevronLeft, ChevronRight, GlassWater, Shuffle, SlidersHorizontal } from "lucide-react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import { Chip } from "@/components/Chip";
@@ -56,6 +56,7 @@ export default function Collection() {
   const ownedIngredients = useUserStore((s) => s.ownedIngredients);
   const flexibleMatching = useUserStore((s) => s.flexibleMatching);
   const recentlyViewed = useUserStore((s) => s.recentlyViewed);
+  const [cotdStep, setCotdStep] = useState(0);
 
   const makeableIds = useMemo(
     () => new Set(whatCanIMake(all, ownedIngredients, flexibleMatching).makeable.map((m) => m.cocktail.id)),
@@ -84,11 +85,12 @@ export default function Collection() {
     [recentlyViewed, all],
   );
   // Cocktail of the day prefers ones you can make now (falls back to the whole catalog).
+  // `cotdStep` lets you browse past today's pick with the ‹ › buttons.
   const cotd = useMemo(() => {
     const makeablePool = all.filter((c) => makeableIds.has(c.id));
     const pool = makeablePool.length >= 5 ? makeablePool : all;
-    return pickSurprise(pool, Math.floor(Date.now() / 86400000));
-  }, [all, makeableIds]);
+    return pickSurprise(pool, Math.floor(Date.now() / 86400000) + cotdStep);
+  }, [all, makeableIds, cotdStep]);
   const recs = useMemo(
     () => recommendForYou(all, { favourites, ratings, likedTags: prefs.likedTags, dislikedTags: prefs.dislikedTags }),
     [all, favourites, ratings, prefs],
@@ -189,13 +191,29 @@ export default function Collection() {
       </div>
 
       {isHome && cotd && (
-        <button
-          onClick={() => nav(`/cocktail/${cotd.id}`)}
-          className="mx-4 mt-4 block w-[calc(100%-2rem)] rounded-xl border border-gold bg-surface p-3 text-left"
-        >
-          <div className="text-[13px] font-bold text-gold">🍸 {t.home.cocktailOfDay}</div>
-          <div className="mt-0.5 text-base text-text">{cotd.name}</div>
-        </button>
+        <div className="mx-4 mt-4 flex items-center gap-2 rounded-xl border border-gold bg-surface p-3">
+          <button
+            onClick={() => setCotdStep((s) => s - 1)}
+            aria-label="Попередній"
+            className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-border text-text-dim hover:border-gold/60 hover:text-gold"
+          >
+            <ChevronLeft size={18} />
+          </button>
+          <button onClick={() => nav(`/cocktail/${cotd.id}`)} className="min-w-0 flex-1 text-left">
+            <div className="text-[13px] font-bold text-gold">
+              🍸 {t.home.cocktailOfDay}
+              {cotdStep !== 0 && <span className="ml-1 font-normal text-text-faint">· ще варіант</span>}
+            </div>
+            <div className="mt-0.5 truncate text-base text-text">{cotd.name}</div>
+          </button>
+          <button
+            onClick={() => setCotdStep((s) => s + 1)}
+            aria-label="Наступний"
+            className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-border text-text-dim hover:border-gold/60 hover:text-gold"
+          >
+            <ChevronRight size={18} />
+          </button>
+        </div>
       )}
 
       {isHome && recs.length > 0 && (

@@ -1,8 +1,10 @@
 import { useEffect, useMemo } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { Check, Share2, ShoppingCart } from "lucide-react";
+import { ArrowDownUp, Check, RefreshCw, Share2, ShoppingCart } from "lucide-react";
 import { Stepper } from "@/components/Stepper";
 import { useAllCocktails } from "@/data/useCocktails";
+import { estimateStrength } from "@/domain/cocktails";
+import { replaceWithSimilar, sortByStrength } from "@/domain/party";
 import { splitShoppingList, type ShoppingSelection } from "@/domain/shopping";
 import { useT } from "@/i18n";
 import { decodePlan, encodePlan, shareLink } from "@/lib/share";
@@ -15,6 +17,7 @@ export default function SetPlan() {
   const all = useAllCocktails();
   const title = usePartyStore((s) => s.title);
   const items = usePartyStore((s) => s.items);
+  const config = usePartyStore((s) => s.config);
   const bumpServings = usePartyStore((s) => s.bumpServings);
   const setPlan = usePartyStore((s) => s.setPlan);
   const ownedIngredients = useUserStore((s) => s.ownedIngredients);
@@ -42,6 +45,25 @@ export default function SetPlan() {
   );
 
   const totalDrinks = useMemo(() => planned.reduce((sum, p) => sum + p.item.servings, 0), [planned]);
+
+  /** Swap one pick for a similar drink that isn't already in the set. */
+  const swap = (id: string) => {
+    const current = planned.map((p) => ({ cocktail: p.cocktail, servings: p.item.servings }));
+    const next = replaceWithSimilar(current, id, all, config.kind, Date.now());
+    setPlan(
+      next.map((i) => ({ id: i.cocktail.id, servings: i.servings })),
+      title,
+    );
+  };
+
+  /** Re-order the current plan from lightest to strongest. */
+  const orderByStrength = () => {
+    const sorted = sortByStrength(planned.map((p) => ({ cocktail: p.cocktail, servings: p.item.servings })));
+    setPlan(
+      sorted.map((i) => ({ id: i.cocktail.id, servings: i.servings })),
+      title,
+    );
+  };
 
   const shopping = useMemo(() => {
     const selections: ShoppingSelection[] = planned.map((p) => ({ cocktail: p.cocktail, servings: p.item.servings }));
@@ -71,17 +93,37 @@ export default function SetPlan() {
           <Share2 size={17} />
         </button>
       </div>
-      <div className="mt-1 text-xs text-text-faint">
-        {t.sets.total}: {totalDrinks}
+      <div className="mt-1 flex items-center justify-between gap-3">
+        <span className="text-xs text-text-faint">
+          {t.sets.total}: {totalDrinks}
+        </span>
+        <button
+          onClick={orderByStrength}
+          className="flex items-center gap-1 rounded-full border border-border px-3 py-1.5 text-xs text-text-dim hover:border-gold/60 hover:text-gold"
+        >
+          <ArrowDownUp size={14} /> За градусом
+        </button>
       </div>
 
       <div className="mt-4 flex flex-col gap-2">
-        {planned.map(({ item, cocktail }) => (
+        {planned.map(({ item, cocktail }, i) => (
           <div key={item.id} className="rounded-xl border border-border bg-surface p-4">
             <div className="flex items-center justify-between gap-3">
+              <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-gold/15 text-xs font-bold text-gold">
+                {i + 1}
+              </span>
               <Link to={`/cocktail/${cocktail.id}`} className="min-w-0 flex-1 truncate text-base text-text">
                 {cocktail.name}
+                <span className="ml-2 text-xs text-text-faint">≈ {estimateStrength(cocktail).abv}%</span>
               </Link>
+              <button
+                onClick={() => swap(cocktail.id)}
+                aria-label="Замінити схожим"
+                title="Замінити схожим"
+                className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-border text-text-dim hover:border-gold/60 hover:text-gold"
+              >
+                <RefreshCw size={15} />
+              </button>
               <div className="shrink-0">
                 <Stepper
                   value={item.servings}

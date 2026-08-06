@@ -6,11 +6,18 @@ import { Stepper } from "@/components/Stepper";
 import { CURATED_SETS } from "@/data/sets";
 import { MOODS } from "@/data/catalog/moods";
 import { useAllCocktails } from "@/data/useCocktails";
-import { composeParty, MIN_PEOPLE, planFromSet } from "@/domain/party";
+import { composeParty, MIN_PEOPLE, planFromSet, type PartyKind } from "@/domain/party";
 import { useT } from "@/i18n";
 import type { CocktailTag } from "@/types/cocktail";
 import { usePartyStore } from "@/store/partyStore";
 import { useUserStore } from "@/store/userStore";
+
+const KINDS: { key: PartyKind; label: string }[] = [
+  { key: "any", label: "Усе" },
+  { key: "shots", label: "🥃 Лише шоти" },
+  { key: "cocktails", label: "🍸 Лише коктейлі" },
+  { key: "venue", label: "Шоти Там" },
+];
 
 export default function Sets() {
   const t = useT();
@@ -59,6 +66,25 @@ export default function Sets() {
       {/* Builder config */}
       <h2 className="font-display text-lg font-bold text-text">{t.sets.builder}</h2>
 
+      {/* What kind of drinks the set is built from */}
+      <div className="mt-3 flex flex-wrap gap-2">
+        {KINDS.map((k) => (
+          <button
+            key={k.key}
+            type="button"
+            onClick={() => setConfig({ kind: k.key })}
+            className={
+              "rounded-full border px-3 py-1.5 text-sm transition " +
+              (config.kind === k.key
+                ? "border-gold bg-gold/15 text-gold"
+                : "border-border text-text-dim hover:border-gold/60")
+            }
+          >
+            {k.label}
+          </button>
+        ))}
+      </div>
+
       <div className="mt-3 rounded-xl border border-border bg-surface p-4">
         <div className="flex items-center justify-between py-1.5">
           <span className="text-text">{t.sets.people}</span>
@@ -104,6 +130,32 @@ export default function Sets() {
               }
             >
               {config.everyoneTries && <Check size={11} strokeWidth={3} />}
+            </span>
+          </span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setConfig({ byStrength: !config.byStrength })}
+          className="flex w-full items-start justify-between gap-3 py-1.5 text-left"
+        >
+          <span className="min-w-0">
+            <span className="block text-text">За градусом</span>
+            <span className="block text-xs text-text-faint">Від найлегшого до найміцнішого</span>
+          </span>
+          <span
+            className={
+              "mt-0.5 relative h-6 w-11 shrink-0 rounded-full border transition " +
+              (config.byStrength ? "border-gold bg-gold/30" : "border-border bg-surface-alt")
+            }
+          >
+            <span
+              className={
+                "absolute top-0.5 grid h-4 w-4 place-items-center rounded-full transition-all " +
+                (config.byStrength ? "left-[22px] bg-gold text-bg" : "left-0.5 bg-text-faint")
+              }
+            >
+              {config.byStrength && <Check size={11} strokeWidth={3} />}
             </span>
           </span>
         </button>
