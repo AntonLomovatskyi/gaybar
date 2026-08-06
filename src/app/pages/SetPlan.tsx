@@ -4,6 +4,7 @@ import { ArrowDownUp, Check, RefreshCw, Share2, ShoppingCart } from "lucide-reac
 import { Stepper } from "@/components/Stepper";
 import { useAllCocktails } from "@/data/useCocktails";
 import { estimateStrength } from "@/domain/cocktails";
+import { classifyIngredient, isEssential } from "@/domain/inventory";
 import { replaceWithSimilar, sortByStrength } from "@/domain/party";
 import { splitShoppingList, type ShoppingSelection } from "@/domain/shopping";
 import { useT } from "@/i18n";
@@ -21,6 +22,7 @@ export default function SetPlan() {
   const bumpServings = usePartyStore((s) => s.bumpServings);
   const setPlan = usePartyStore((s) => s.setPlan);
   const ownedIngredients = useUserStore((s) => s.ownedIngredients);
+  const flexibleMatching = useUserStore((s) => s.flexibleMatching);
   const [params] = useSearchParams();
 
   // Load a shared plan from the URL (?s=id:qty,…) when there's no active plan.
@@ -49,7 +51,11 @@ export default function SetPlan() {
   /** Swap one pick for a similar drink that isn't already in the set. */
   const swap = (id: string) => {
     const current = planned.map((p) => ({ cocktail: p.cocktail, servings: p.item.servings }));
-    const next = replaceWithSimilar(current, id, all, config.kind, Date.now());
+    const next = replaceWithSimilar(current, id, all, config.kind, Date.now(), {
+      onlyMakeable: config.useMyBar,
+      owned: ownedIngredients,
+      flexible: flexibleMatching,
+    });
     setPlan(
       next.map((i) => ({ id: i.cocktail.id, servings: i.servings })),
       title,
@@ -69,6 +75,19 @@ export default function SetPlan() {
     const selections: ShoppingSelection[] = planned.map((p) => ({ cocktail: p.cocktail, servings: p.item.servings }));
     return splitShoppingList(selections, ownedIngredients);
   }, [planned, ownedIngredients]);
+
+  /** What each drink is still missing from your bar — shown per row so nothing hides. */
+  const missingByC = useMemo(() => {
+    const m = new Map<string, string[]>();
+    for (const p of planned) {
+      const req = p.cocktail.ingredients.filter(isEssential);
+      const miss = req
+        .filter((i) => classifyIngredient(i, ownedIngredients, flexibleMatching).tier === "missing")
+        .map((i) => i.name);
+      if (miss.length) m.set(p.cocktail.id, miss);
+    }
+    return m;
+  }, [planned, ownedIngredients, flexibleMatching]);
 
   if (planned.length === 0) {
     return (
@@ -133,6 +152,9 @@ export default function SetPlan() {
                 />
               </div>
             </div>
+            {missingByC.get(cocktail.id) && (
+              <div className="mt-1.5 pl-9 text-xs text-danger">бракує: {missingByC.get(cocktail.id)!.join(", ")}</div>
+            )}
           </div>
         ))}
       </div>

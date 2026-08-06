@@ -50,11 +50,19 @@ export function replaceWithSimilar(
   pool: Cocktail[],
   kind: PartyKind,
   seed: number,
+  opts: { onlyMakeable?: boolean; owned?: string[]; flexible?: boolean } = {},
 ): PartyItem[] {
   const idx = items.findIndex((i) => i.cocktail.id === id);
   if (idx === -1) return items;
   const used = new Set(items.map((i) => i.cocktail.id));
-  const candidates = filterKind(pool, kind);
+  let candidates = filterKind(pool, kind);
+  // Honour "from my bar": a swap must never bring in something you can't make.
+  if (opts.onlyMakeable) {
+    const makeable = new Set(
+      whatCanIMake(candidates, opts.owned ?? [], opts.flexible ?? true).makeable.map((m) => m.cocktail.id),
+    );
+    candidates = candidates.filter((c) => makeable.has(c.id));
+  }
   const similar = similarCocktails(items[idx].cocktail, candidates, 40).filter((c) => !used.has(c.id));
   const fallback = candidates.filter((c) => !used.has(c.id));
   const from = similar.length ? similar : fallback;
@@ -101,24 +109,27 @@ function planServings(picks: Cocktail[], config: PartyConfig): PartyItem[] {
   return distributeServings(picks, Math.max(picks.length, config.people * config.drinksPerPerson));
 }
 
-/** Auto-compose a party from the pool: optional mood, local-first ranking, even servings. */
+/** Auto-compose a party from the pool: optional mood, bar filtering, even servings. */
 export function composeParty(
   pool: Cocktail[],
   config: PartyConfig,
   moodTags: CocktailTag[] = [],
   owned: string[] = [],
+  flexible = true,
 ): PartyItem[] {
   const kindPool = filterKind(pool, config.kind);
   const base = kindPool.length ? kindPool : pool;
   const candidates = moodTags.length ? recommendByMood(base, moodTags) : [...base];
   let chosen = candidates.length >= config.varieties ? candidates : [...base];
-  // Prioritize cocktails you can make from your bar. Always soft-prefer them; when "useMyBar"
-  // is on, restrict to only-makeable (unless that leaves too few to fill the set).
-  if (owned.length) {
-    const makeable = new Set(whatCanIMake(chosen, owned, true).makeable.map((m) => m.cocktail.id));
-    const yes = chosen.filter((c) => makeable.has(c.id));
-    const no = chosen.filter((c) => !makeable.has(c.id));
-    chosen = config.useMyBar && yes.length >= config.varieties ? yes : [...yes, ...no];
+  if (config.useMyBar) {
+    // Strict: only drinks you can actually make right now. If that yields fewer than the
+    // requested varieties we return a SHORTER set — never pad it with ones you can't make.
+    const makeable = new Set(whatCanIMake(chosen, owned, flexible).makeable.map((m) => m.cocktail.id));
+    chosen = chosen.filter((c) => makeable.has(c.id));
+  } else if (owned.length) {
+    // Soft preference: makeable first, the rest after.
+    const makeable = new Set(whatCanIMake(chosen, owned, flexible).makeable.map((m) => m.cocktail.id));
+    chosen = [...chosen.filter((c) => makeable.has(c.id)), ...chosen.filter((c) => !makeable.has(c.id))];
   }
   const picks = chosen.slice(0, Math.max(1, config.varieties));
   const items = planServings(picks, config);

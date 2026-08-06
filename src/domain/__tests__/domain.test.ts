@@ -164,6 +164,33 @@ describe("party: kind filter, strength order, similar swap", () => {
     expect(sortByStrength(items)[0].cocktail.id).toBe("long-drink"); // juice-heavy long drink is weaker
   });
 
+  it("useMyBar returns a SHORTER set rather than padding with drinks you cannot make", () => {
+    // own only what daiquiri needs; asking for 3 varieties must not pull in the others
+    const owned = ["Білий ром", "Лаймовий сік", "Цукровий сироп"];
+    const cfg = {
+      people: 2,
+      varieties: 3,
+      drinksPerPerson: 2,
+      useMyBar: true,
+      everyoneTries: true,
+      kind: "any" as const,
+      byStrength: false,
+    };
+    const items = composeParty([daiquiri, margarita, martini], cfg, [], owned, true);
+    expect(items.map((i) => i.cocktail.id)).toEqual(["daiquiri"]);
+  });
+
+  it("replaceWithSimilar honours onlyMakeable", () => {
+    const owned = ["Білий ром", "Лаймовий сік", "Цукровий сироп"];
+    const items = [{ cocktail: margarita, servings: 1 }];
+    const out = replaceWithSimilar(items, "margarita", [margarita, daiquiri, martini], "any", 0, {
+      onlyMakeable: true,
+      owned,
+      flexible: true,
+    });
+    expect(out[0].cocktail.id).toBe("daiquiri"); // the only one the bar can actually make
+  });
+
   it("replaceWithSimilar swaps in a drink that is not already in the set", () => {
     const items = [{ cocktail: daiquiri, servings: 2 }];
     const out = replaceWithSimilar(items, "daiquiri", [daiquiri, margarita, martini], "any", 0);

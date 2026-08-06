@@ -27,8 +27,10 @@ export default function Sets() {
   const setConfig = usePartyStore((s) => s.setConfig);
   const setPlan = usePartyStore((s) => s.setPlan);
   const ownedIngredients = useUserStore((s) => s.ownedIngredients);
+  const flexibleMatching = useUserStore((s) => s.flexibleMatching);
 
   const [moods, setMoods] = useState<string[]>([]);
+  const [shortSet, setShortSet] = useState<number | null>(null);
 
   const total = config.everyoneTries
     ? config.varieties * Math.max(config.people, MIN_PEOPLE)
@@ -41,7 +43,13 @@ export default function Sets() {
 
   const generate = () => {
     const moodTags: CocktailTag[] = selectedMoods.flatMap((m) => m.tags);
-    const items = composeParty(all, config, moodTags, ownedIngredients);
+    const items = composeParty(all, config, moodTags, ownedIngredients, flexibleMatching);
+    // With "З мого бару" on we never pad the set with drinks you can't make — say so instead.
+    if (items.length === 0) {
+      setShortSet(0);
+      return;
+    }
+    setShortSet(items.length < config.varieties ? items.length : null);
     const title = selectedMoods.length ? selectedMoods.map((m) => m.labelUk).join(", ") : "Згенерований сет";
     setPlan(
       items.map((i) => ({ id: i.cocktail.id, servings: i.servings })),
@@ -207,6 +215,13 @@ export default function Sets() {
       >
         <Sparkles size={18} /> {t.sets.generate}
       </button>
+
+      {shortSet === 0 && (
+        <p className="mt-2 rounded-xl border border-danger/50 bg-danger/10 p-3 text-sm text-danger">
+          З твого бару зараз нічого не виходить{config.kind !== "any" ? " для цього типу напоїв" : ""}. Додай
+          інгредієнти в «Мій бар» або вимкни «З мого бару».
+        </p>
+      )}
 
       {/* Curated sets */}
       <h2 className="mt-8 font-display text-lg font-bold text-text">{t.sets.curated}</h2>
