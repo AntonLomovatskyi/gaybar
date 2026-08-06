@@ -114,6 +114,11 @@ export default function CocktailDetail() {
           <span className="font-bold text-gold">≈ {cocktailCost(cocktail, servings)} ₴</span> ·{" "}
           {cocktailCalories(cocktail, servings)} ккал
         </span>
+        {cocktail.venuePriceUah && (
+          <span className="text-text-dim">
+            <span className="font-bold text-gold">у барі:</span> {cocktail.venuePriceUah} ₴
+          </span>
+        )}
       </div>
 
       <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1">

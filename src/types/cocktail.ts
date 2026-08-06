@@ -117,6 +117,8 @@ export const CocktailSchema = z.object({
   glass: z.string().optional(),
   /** Where an imported recipe came from (attribution link). Absent for the physical deck. */
   sourceUrl: z.string().optional(),
+  /** Menu price (₴) at the venue this recipe came from, e.g. the "Шоти Там" shot menu. */
+  venuePriceUah: z.number().optional(),
   /** Cropped webp filenames, relative to the recipe folder. Absent for imported recipes. */
   images: z.object({
     front: z.string().optional(),
