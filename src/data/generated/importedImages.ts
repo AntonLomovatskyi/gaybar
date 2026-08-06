@@ -2,7 +2,6 @@
 import type { CardImages } from "./images";
 
 export const importedCardImages: Record<string, CardImages> = {
-  "gin-tonic": { front: "https://www.thecocktaildb.com/images/media/drink/qcgz0t1643821443.jpg/medium" },
   "gin-toddy": { front: "https://www.thecocktaildb.com/images/media/drink/jxstwf1582582101.jpg/medium" },
   "gin-smash": { front: "https://www.thecocktaildb.com/images/media/drink/iprva61606768774.jpg/medium" },
   "gin-daisy": { front: "https://www.thecocktaildb.com/images/media/drink/z6e22f1582581155.jpg/medium" },
@@ -101,7 +100,6 @@ export const importedCardImages: Record<string, CardImages> = {
   "japanese-fizz": { front: "https://www.thecocktaildb.com/images/media/drink/37vzv11504884831.jpg/medium" },
   "jamaican-coffee": { front: "https://www.thecocktaildb.com/images/media/drink/xqptps1441247257.jpg/medium" },
   "jewel-of-the-nile": { front: "https://www.thecocktaildb.com/images/media/drink/hx4nrb1504884947.jpg/medium" },
-  "jack-rose-cocktail": { front: "https://www.thecocktaildb.com/images/media/drink/uuqqrv1439907068.jpg/medium" },
   "jacks-vanilla-coke": { front: "https://www.thecocktaildb.com/images/media/drink/kjnt7z1504793319.jpg/medium" },
   "kir": { front: "https://www.thecocktaildb.com/images/media/drink/apneom1504370294.jpg/medium" },
   "karsk": { front: "https://www.thecocktaildb.com/images/media/drink/808mxk1487602471.jpg/medium" },
@@ -146,7 +144,6 @@ export const importedCardImages: Record<string, CardImages> = {
   "gluehwein": { front: "https://www.thecocktaildb.com/images/media/drink/vuxwvt1468875418.jpg/medium" },
   "mauresque": { front: "https://www.thecocktaildb.com/images/media/drink/duwfa11686236556.jpg/medium" },
   "mudslinger": { front: "https://www.thecocktaildb.com/images/media/drink/hepk6h1504885554.jpg/medium" },
-  "martinez-2": { front: "https://www.thecocktaildb.com/images/media/drink/fs6kiq1513708455.jpg/medium" },
   "moranguito": { front: "https://www.thecocktaildb.com/images/media/drink/urpsyq1475667335.jpg/medium" },
   "miami-vice": { front: "https://www.thecocktaildb.com/images/media/drink/qvuyqw1441208955.jpg/medium" },
   "munich-mule": { front: "https://www.thecocktaildb.com/images/media/drink/rj55pl1582476101.jpg/medium" },
