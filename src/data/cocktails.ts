@@ -8,14 +8,16 @@ import { cocktails as GENERATED } from "./generated/cocktails";
 import { importedCocktails as IMPORTED } from "./generated/importedCocktails";
 import { importedCardImages } from "./generated/importedImages";
 import { cardImages, type CardImages } from "./generated/images";
+import { mocktailCocktails as MOCKTAILS } from "./generated/mocktailCocktails";
+import { mocktailImages } from "./generated/mocktailImages";
 import { researchedCocktails as RESEARCHED } from "./generated/researchedCocktails";
 import { researchedImages } from "./generated/researchedImages";
 import { shotCocktails as SHOTS } from "./generated/shotCocktails";
 import { shotImages } from "./generated/shotImages";
 
-// The physical deck first, then TheCocktailDB imports, web-researched recipes, and the
-// "Шоти Там" bar menu.
-const ALL: Cocktail[] = [...GENERATED, ...IMPORTED, ...RESEARCHED, ...SHOTS];
+// The physical deck first, then TheCocktailDB imports, web-researched recipes, the
+// "Шоти Там" bar menu, and non-alcoholic recipes.
+const ALL: Cocktail[] = [...GENERATED, ...IMPORTED, ...RESEARCHED, ...SHOTS, ...MOCKTAILS];
 
 /** Bundled art lives under public/ — resolve it against the deploy base path. */
 const asUrl = (p: string): string => (/^https?:\/\//.test(p) ? p : import.meta.env.BASE_URL + p);
@@ -31,7 +33,7 @@ export function getCocktailById(id: string): Cocktail | undefined {
 export function getCardImages(id: string): CardImages | undefined {
   if (cardImages[id]) return cardImages[id];
   if (importedCardImages[id]) return importedCardImages[id];
-  const art = researchedImages[id] ?? shotImages[id];
+  const art = researchedImages[id] ?? shotImages[id] ?? mocktailImages[id];
   return art ? { front: asUrl(art) } : undefined;
 }
 
