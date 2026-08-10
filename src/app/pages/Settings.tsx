@@ -216,7 +216,8 @@ export default function Settings() {
       <Card title="Claude (питання про коктейлі)">
         <div className="flex flex-col gap-3">
           <div className="text-sm text-text-dim">
-            Ключ зберігається лише на цьому пристрої — він не потрапляє ні в резервну копію, ні в хмарну синхронізацію.
+            Ключ синхронізується з твоїм Google-акаунтом, тож на іншому пристрої вводити його не треба. У файл резервної
+            копії він не потрапляє.
           </div>
           <input
             type="password"

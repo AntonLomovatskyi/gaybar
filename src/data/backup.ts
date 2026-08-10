@@ -1,6 +1,12 @@
 /**
- * Backup & restore all on-device user data (favourites, ratings, bar, shopping, history,
- * prefs, your recipes) as a JSON file. The "sync substitute" until a backend exists.
+ * Backup & restore all user data (favourites, ratings, bar, shopping, history, prefs,
+ * your recipes). Two snapshots, deliberately different:
+ *
+ * - `getSnapshot()`      → backup FILE export — excludes the Anthropic key so a backup you
+ *                          save to disk or share never leaks it.
+ * - `getCloudSnapshot()` → Firestore sync — includes the Anthropic key, so signing in with the
+ *                          same Google account on another device brings the key along. The
+ *                          users/{uid} doc is readable only by the signed-in owner (rules).
  */
 import { useUserStore, type PersistedData } from "@/store/userStore";
 
@@ -23,6 +29,12 @@ export function getSnapshot(): PersistedData {
     units: s.units,
     theme: s.theme,
   };
+}
+
+/** Snapshot for cloud sync — same data plus the Anthropic key and model choice. */
+export function getCloudSnapshot(): PersistedData {
+  const s = useUserStore.getState();
+  return { ...getSnapshot(), anthropicApiKey: s.anthropicApiKey, aiModel: s.aiModel };
 }
 
 /** Download the full user-data snapshot as a JSON file. */

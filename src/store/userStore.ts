@@ -34,8 +34,9 @@ export interface UserState {
   units: "ml" | "oz";
   theme: "dark" | "light";
   /**
-   * Anthropic API key for the "ask about this cocktail" feature. Deliberately NOT in
-   * PersistedData — it must never be exported in a backup or synced to Firestore.
+   * Anthropic API key for the "ask about this cocktail" feature. Cloud-synced (so the same
+   * Google account carries it to another device) but kept OUT of the backup file — see
+   * `getSnapshot` vs `getCloudSnapshot` in data/backup.ts.
    */
   anthropicApiKey: string;
   aiModel: string;
@@ -69,7 +70,11 @@ export interface UserState {
   importData: (d: Partial<PersistedData>) => void;
 }
 
-/** The user-data fields that are exported/imported (backup & restore). */
+/**
+ * The user-data fields that are exported/imported and cloud-synced. `anthropicApiKey` and
+ * `aiModel` are optional: the Firestore snapshot carries them (so the same Google account
+ * restores the key on another device), the downloadable backup file does not.
+ */
 export type PersistedData = Pick<
   UserState,
   | "favourites"
@@ -87,7 +92,7 @@ export type PersistedData = Pick<
   | "language"
   | "units"
   | "theme"
->;
+> & { anthropicApiKey?: string; aiModel?: string };
 
 export const useUserStore = create<UserState>()(
   persist(
@@ -186,6 +191,9 @@ export const useUserStore = create<UserState>()(
           language: d.language ?? s.language,
           units: d.units ?? s.units,
           theme: d.theme ?? s.theme,
+          // Only present in a cloud snapshot; never clear a local key with an absent one.
+          anthropicApiKey: d.anthropicApiKey || s.anthropicApiKey,
+          aiModel: d.aiModel || s.aiModel,
         })),
     }),
     {

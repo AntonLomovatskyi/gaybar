@@ -6,7 +6,7 @@
 import { onAuthStateChanged, signInWithPopup, signOut, type User } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { create } from "zustand";
-import { getSnapshot } from "@/data/backup";
+import { getCloudSnapshot } from "@/data/backup";
 import { useUserStore, type PersistedData } from "@/store/userStore";
 import { auth, db, firebaseEnabled, googleProvider } from "./firebase";
 
@@ -34,7 +34,7 @@ export async function pushNow(uid?: string): Promise<void> {
   if (!db || !u) return;
   try {
     setStatus("syncing");
-    await setDoc(doc(db, "users", u), { data: getSnapshot(), updatedAt: Date.now() });
+    await setDoc(doc(db, "users", u), { data: getCloudSnapshot(), updatedAt: Date.now() });
     setStatus("saved");
   } catch {
     setStatus("error");
