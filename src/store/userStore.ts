@@ -33,10 +33,18 @@ export interface UserState {
   language: "uk" | "en";
   units: "ml" | "oz";
   theme: "dark" | "light";
+  /**
+   * Anthropic API key for the "ask about this cocktail" feature. Deliberately NOT in
+   * PersistedData — it must never be exported in a backup or synced to Firestore.
+   */
+  anthropicApiKey: string;
+  aiModel: string;
 
   setLanguage: (l: "uk" | "en") => void;
   setUnits: (u: "ml" | "oz") => void;
   setTheme: (t: "dark" | "light") => void;
+  setAnthropicApiKey: (k: string) => void;
+  setAiModel: (m: string) => void;
   setFlexibleMatching: (v: boolean) => void;
   toggleFavourite: (id: string) => void;
   toggleWishlist: (id: string) => void;
@@ -100,10 +108,14 @@ export const useUserStore = create<UserState>()(
       language: "uk",
       units: "ml",
       theme: "dark",
+      anthropicApiKey: "",
+      aiModel: "claude-opus-5",
 
       setLanguage: (l) => set({ language: l }),
       setUnits: (u) => set({ units: u }),
       setTheme: (t) => set({ theme: t }),
+      setAnthropicApiKey: (k) => set({ anthropicApiKey: k.trim() }),
+      setAiModel: (m) => set({ aiModel: m }),
       setFlexibleMatching: (v) => set({ flexibleMatching: v }),
       toggleFavourite: (id) =>
         set((s) => ({

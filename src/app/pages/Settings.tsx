@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import { Link } from "react-router-dom";
 import { exportData, importDataFromFile } from "@/data/backup";
+import { MODELS } from "@/lib/ai";
 import { firebaseEnabled } from "@/lib/firebase";
 import { pullNow, pushNow, signInWithGoogle, signOutNow, useAuthStore } from "@/lib/sync";
 import { useUserStore } from "@/store/userStore";
@@ -126,6 +127,10 @@ export default function Settings() {
   const setUnits = useUserStore((s) => s.setUnits);
   const theme = useUserStore((s) => s.theme);
   const setTheme = useUserStore((s) => s.setTheme);
+  const anthropicApiKey = useUserStore((s) => s.anthropicApiKey);
+  const setAnthropicApiKey = useUserStore((s) => s.setAnthropicApiKey);
+  const aiModel = useUserStore((s) => s.aiModel);
+  const setAiModel = useUserStore((s) => s.setAiModel);
   const favourites = useUserStore((s) => s.favourites);
   const history = useUserStore((s) => s.history);
   const ownedIngredients = useUserStore((s) => s.ownedIngredients);
@@ -205,6 +210,39 @@ export default function Settings() {
               ]}
             />
           </div>
+        </div>
+      </Card>
+
+      <Card title="Claude (питання про коктейлі)">
+        <div className="flex flex-col gap-3">
+          <div className="text-sm text-text-dim">
+            Ключ зберігається лише на цьому пристрої — він не потрапляє ні в резервну копію, ні в хмарну синхронізацію.
+          </div>
+          <input
+            type="password"
+            value={anthropicApiKey}
+            onChange={(e) => setAnthropicApiKey(e.target.value)}
+            placeholder="sk-ant-..."
+            autoComplete="off"
+            spellCheck={false}
+            className="w-full rounded-xl border border-border bg-surface-alt px-4 py-2.5 text-text outline-none placeholder:text-text-faint focus:border-gold"
+          />
+          <div>
+            <div className="mb-1.5 text-sm text-text-dim">Модель</div>
+            <Seg
+              value={aiModel}
+              onChange={setAiModel}
+              options={MODELS.map((m) => ({ value: m.id, label: m.label.split(" — ")[0] }))}
+            />
+          </div>
+          <a
+            href="https://console.anthropic.com/settings/keys"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-gold underline"
+          >
+            Отримати ключ у Anthropic Console
+          </a>
         </div>
       </Card>
 

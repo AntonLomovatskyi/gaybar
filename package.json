@@ -23,6 +23,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.116.0",
     "clsx": "^2.1.1",
     "firebase": "^12.15.0",
     "lucide-react": "^0.469.0",

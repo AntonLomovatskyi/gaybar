@@ -2,6 +2,7 @@ import { Bookmark, Check, ExternalLink, Heart, Pencil, Play, Share2, Trash2 } fr
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import clsx from "clsx";
+import { AskClaude } from "@/components/AskClaude";
 import { Chip } from "@/components/Chip";
 import { CocktailCard } from "@/components/CocktailCard";
 import { StarRating } from "@/components/StarRating";
@@ -259,6 +260,8 @@ export default function CocktailDetail() {
           </ol>
         </section>
       )}
+
+      <AskClaude cocktail={cocktail} />
 
       {similar.length > 0 && (
         <section className="mt-6">
