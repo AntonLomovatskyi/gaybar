@@ -1222,7 +1222,7 @@ export const CANONICAL: Record<string, CanonicalIngredient> = {
     id: "jagermeister",
     nameUk: "Єгермейстер",
     category: "liqueur",
-    family: null,
+    family: "amaro",
     availability: "specialty",
     isPantryStaple: false,
   },
@@ -2274,6 +2274,14 @@ export const CANONICAL: Record<string, CanonicalIngredient> = {
     availability: "specialty",
     isPantryStaple: false,
   },
+  "melon-syrup": {
+    id: "melon-syrup",
+    nameUk: "Динний сироп",
+    category: "syrup",
+    family: null,
+    availability: "specialty",
+    isPantryStaple: false,
+  },
 };
 
 export const RAW_TO_ID: Record<string, string> = {
@@ -2660,6 +2668,9 @@ export const RAW_TO_ID: Record<string, string> = {
   "Сироп солоної карамелі": "salted-caramel-syrup",
   "Солоно-карамельний сироп": "salted-caramel-syrup",
   "Сироп полуниця": "strawberry-syrup",
+  "Динний сироп": "melon-syrup",
+  "Сироп диня": "melon-syrup",
+  "Сироп Диня": "melon-syrup",
   Імбир: "ginger-root",
   "Ірландський крем-лікер": "irish-cream",
   "Лікер із квіток бузини": "elderflower-liqueur",
@@ -3090,6 +3101,8 @@ export const NORM_TO_ID: Record<string, string> = {
   "сироп солоної карамелі": "salted-caramel-syrup",
   "солоно карамельний сироп": "salted-caramel-syrup",
   "сироп полуниця": "strawberry-syrup",
+  "динний сироп": "melon-syrup",
+  "сироп диня": "melon-syrup",
   "ice-cubes": "ice-cubes",
   "lemon-juice": "lemon-juice",
   "lime-juice": "lime-juice",
@@ -3418,4 +3431,5 @@ export const NORM_TO_ID: Record<string, string> = {
   "green-apple-syrup": "green-apple-syrup",
   "popcorn-syrup": "popcorn-syrup",
   "salted-caramel-syrup": "salted-caramel-syrup",
+  "melon-syrup": "melon-syrup",
 };

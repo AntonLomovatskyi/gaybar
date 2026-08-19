@@ -1,16 +1,17 @@
 /**
  * Ask Claude about a cocktail, with the recipe AND your bar as context.
  *
- * Called straight from the browser with the user's own API key (Settings → localStorage). The key
- * is deliberately NOT part of `PersistedData`, so it is never exported in a backup or synced to
- * Firestore — it stays on the device that typed it. This mirrors the cookingmonsta setup and is
- * what lets a static GitHub Pages build talk to the API with no backend.
+ * Called straight from the browser with the user's own API key (Settings → localStorage), which
+ * is what lets a static GitHub Pages build talk to the API with no backend. The key rides the
+ * Firestore sync (same Google account = same key on another device) but is kept out of the
+ * downloadable backup file — see getSnapshot vs getCloudSnapshot in data/backup.ts.
  */
 import Anthropic from "@anthropic-ai/sdk";
 import type { Cocktail } from "@/types/cocktail";
 import { estimateStrength, formatIngredient } from "@/domain/cocktails";
 import { cocktailCalories, cocktailCost } from "@/domain/economics";
 import { classifyIngredient, isEssential } from "@/domain/inventory";
+import { flavourSwapFor, formatSwap } from "@/domain/substitutes";
 
 export const DEFAULT_MODEL = "claude-opus-5";
 export const MODELS = [
@@ -67,6 +68,13 @@ export function buildContext(cocktail: Cocktail, owned: string[], flexible: bool
   lines.push(`Гнучкий підбір (заміни схожим): ${flexible ? "увімкнено" : "вимкнено"}`);
   lines.push(missing.length ? `БРАКУЄ ДЛЯ ЦЬОГО КОКТЕЙЛЮ: ${missing.join(", ")}` : "Усе для цього коктейлю є.");
   if (subs.length) lines.push(`МОЖЛИВІ ЗАМІНИ З БАРУ: ${subs.join("; ")}`);
+
+  // Syrup <-> liqueur swaps we can already compute — hand them over rather than making the model guess.
+  const swaps = cocktail.ingredients
+    .map((i) => flavourSwapFor(i, owned))
+    .filter((s): s is NonNullable<typeof s> => !!s)
+    .map((s) => `${s.needName} → ${formatSwap(s)}`);
+  if (swaps.length) lines.push(`ЗАМІНИ СИРОПОМ/ЛІКЕРОМ (пропорції вже перераховані): ${swaps.join("; ")}`);
 
   return lines.filter((l) => l !== "").join("\n");
 }

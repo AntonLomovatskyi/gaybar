@@ -1651,7 +1651,7 @@
     "canonicalId": "jagermeister",
     "canonicalNameUk": "Єгермейстер",
     "category": "liqueur",
-    "family": null,
+    "family": "amaro",
     "availability": "specialty",
     "isPantryStaple": false
   },
@@ -3441,6 +3441,33 @@
     "raw": "Сироп полуниця",
     "canonicalId": "strawberry-syrup",
     "canonicalNameUk": "Полуничний сироп",
+    "category": "syrup",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Динний сироп",
+    "canonicalId": "melon-syrup",
+    "canonicalNameUk": "Динний сироп",
+    "category": "syrup",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Сироп диня",
+    "canonicalId": "melon-syrup",
+    "canonicalNameUk": "Динний сироп",
+    "category": "syrup",
+    "family": null,
+    "availability": "specialty",
+    "isPantryStaple": false
+  },
+  {
+    "raw": "Сироп Диня",
+    "canonicalId": "melon-syrup",
+    "canonicalNameUk": "Динний сироп",
     "category": "syrup",
     "family": null,
     "availability": "specialty",
