@@ -1,13 +1,13 @@
 import { ArrowDownUp, ChevronLeft, ChevronRight, GlassWater, Shuffle, SlidersHorizontal } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import { Chip } from "@/components/Chip";
 import { CocktailCard } from "@/components/CocktailCard";
 import { MOODS, type Mood } from "@/data/catalog/moods";
-import { useAllCocktails } from "@/data/useCocktails";
-import { applyFilters, pickSurprise, sortBy, strengthBucket, type SortMode } from "@/domain/cocktails";
-import { whatCanIMake } from "@/domain/inventory";
+import { useFilteredCocktails } from "@/data/useFilteredCocktails";
+import { useRandomWalk } from "@/data/useRandomWalk";
+import { type SortMode } from "@/domain/cocktails";
 import { recommendForYou } from "@/domain/recommend";
 import { useT } from "@/i18n";
 import { useFilterStore, type StrengthFilter, type TastedFilter } from "@/store/filterStore";
@@ -25,16 +25,15 @@ const TASTED_LABEL: Record<TastedFilter, string> = {
   untried: "🆕 Не куштував",
   tried: "★ Куштував",
 };
-const easyCount = (c: { ingredients: { name: string }[] }) =>
-  c.ingredients.filter((i) => !i.name.toLowerCase().includes("лід")).length;
 
 export default function Collection() {
   const t = useT();
   const nav = useNavigate();
-  const all = useAllCocktails();
+  const filtered = useFilteredCocktails();
+  const { all, list, isHome, filterCount } = filtered;
+  const walk = useRandomWalk(filtered);
   const {
     tags,
-    glasses,
     sort,
     query,
     onlyMakeable,
@@ -51,50 +50,12 @@ export default function Collection() {
   } = useFilterStore();
   const favourites = useUserStore((s) => s.favourites);
   const ratings = useUserStore((s) => s.ratings);
-  const history = useUserStore((s) => s.history);
   const prefs = useUserStore((s) => s.prefs);
-  const ownedIngredients = useUserStore((s) => s.ownedIngredients);
-  const flexibleMatching = useUserStore((s) => s.flexibleMatching);
   const recentlyViewed = useUserStore((s) => s.recentlyViewed);
-  const [cotdStep, setCotdStep] = useState(0);
 
-  const makeableIds = useMemo(
-    () => new Set(whatCanIMake(all, ownedIngredients, flexibleMatching).makeable.map((m) => m.cocktail.id)),
-    [all, ownedIngredients, flexibleMatching],
-  );
-  // "Tried" = rated or logged as made at least once.
-  const triedIds = useMemo(() => {
-    const s = new Set(history.map((h) => h.cocktailId));
-    for (const [id, stars] of Object.entries(ratings)) if (stars > 0) s.add(id);
-    return s;
-  }, [history, ratings]);
-  const list = useMemo(() => {
-    let base = applyFilters(all, { tags, glasses, query });
-    if (onlyMakeable) base = base.filter((c) => makeableIds.has(c.id));
-    if (onlyEasy) base = base.filter((c) => easyCount(c) <= 3);
-    if (strength !== "all") base = base.filter((c) => strengthBucket(c) === strength);
-    if (tasted === "tried") base = base.filter((c) => triedIds.has(c.id));
-    else if (tasted === "untried") base = base.filter((c) => !triedIds.has(c.id));
-    return sortBy(base, sort, ratings);
-  }, [all, tags, glasses, query, sort, onlyMakeable, onlyEasy, strength, tasted, triedIds, makeableIds, ratings]);
-  const filterCount = tags.length + glasses.length;
-  const isHome =
-    !query.trim() && filterCount === 0 && !onlyMakeable && !onlyEasy && strength === "all" && tasted === "all";
   const recent = useMemo(
     () => recentlyViewed.map((id) => all.find((c) => c.id === id)).filter((c): c is NonNullable<typeof c> => !!c),
     [recentlyViewed, all],
-  );
-  // Cocktail of the day is drawn from whatever the current filters leave on screen — pick
-  // "Хайбол" and it stops offering you shots. With no filters it prefers what you can make now.
-  // `cotdStep` walks through further picks with the ‹ › buttons.
-  const cotdPool = useMemo(() => {
-    if (!isHome) return list; // respect the active filters
-    const makeablePool = all.filter((c) => makeableIds.has(c.id));
-    return makeablePool.length >= 5 ? makeablePool : all;
-  }, [isHome, list, all, makeableIds]);
-  const cotd = useMemo(
-    () => pickSurprise(cotdPool, Math.floor(Date.now() / 86400000) + cotdStep),
-    [cotdPool, cotdStep],
   );
   const recs = useMemo(
     () => recommendForYou(all, { favourites, ratings, likedTags: prefs.likedTags, dislikedTags: prefs.dislikedTags }),
@@ -102,12 +63,15 @@ export default function Collection() {
   );
 
   const cycleSort = () => setSort(SORTS[(SORTS.indexOf(sort) + 1) % SORTS.length]);
-  const surprise = () => {
-    const fromBar = ownedIngredients.length ? all.filter((c) => makeableIds.has(c.id)) : [];
-    const pool = fromBar.length ? fromBar : list.length ? list : all;
-    const p = pickSurprise(pool, Date.now());
-    if (p) nav(`/cocktail/${p.id}`);
+  /** Open a pick and stay in the walk — the recipe page carries its own ‹ › from here. */
+  const openWalk = (step: number) => {
+    const c = walk.at(step);
+    if (!c) return;
+    walk.setStep(step);
+    nav(`/cocktail/${c.id}?rnd=${step}`);
   };
+  // "Здивуй мене" jumps somewhere unrelated in the same filtered walk.
+  const surprise = () => openWalk(walk.step + 1 + Math.floor(Math.random() * Math.max(1, walk.poolSize - 1)));
   const toggleMood = (m: Mood) => {
     const active = m.tags.every((x) => tags.includes(x));
     setTags(active ? tags.filter((x) => !m.tags.includes(x)) : [...new Set([...tags, ...m.tags])]);
@@ -195,27 +159,27 @@ export default function Collection() {
         })}
       </div>
 
-      {cotd && (
+      {walk.pick && (
         <div className="mx-4 mt-4 flex items-center gap-2 rounded-xl border border-gold bg-surface p-3">
           <button
-            onClick={() => setCotdStep((s) => s - 1)}
+            onClick={() => walk.setStep(walk.step - 1)}
             aria-label="Попередній"
             className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-border text-text-dim hover:border-gold/60 hover:text-gold"
           >
             <ChevronLeft size={18} />
           </button>
-          <button onClick={() => nav(`/cocktail/${cotd.id}`)} className="min-w-0 flex-1 text-left">
+          <button onClick={() => openWalk(walk.step)} className="min-w-0 flex-1 text-left">
             <div className="text-[13px] font-bold text-gold">
               🍸 {isHome ? t.home.cocktailOfDay : "Випадковий з відфільтрованих"}
               <span className="ml-1 font-normal text-text-faint">
                 {!isHome && `· з ${list.length}`}
-                {cotdStep !== 0 && " · ще варіант"}
+                {walk.step !== 0 && " · ще варіант"}
               </span>
             </div>
-            <div className="mt-0.5 truncate text-base text-text">{cotd.name}</div>
+            <div className="mt-0.5 truncate text-base text-text">{walk.pick.name}</div>
           </button>
           <button
-            onClick={() => setCotdStep((s) => s + 1)}
+            onClick={() => walk.setStep(walk.step + 1)}
             aria-label="Наступний"
             className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-border text-text-dim hover:border-gold/60 hover:text-gold"
           >

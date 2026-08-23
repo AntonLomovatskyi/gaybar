@@ -18,6 +18,11 @@ interface FilterState {
   onlyEasy: boolean;
   strength: StrengthFilter;
   tasted: TastedFilter;
+  /**
+   * Position in the shuffled random walk. Shared so the home card and the recipe page step
+   * through the same sequence — walk forward on a recipe, go back, and the card is in sync.
+   */
+  randomStep: number;
   toggleTag: (t: CocktailTag) => void;
   setTags: (t: CocktailTag[]) => void;
   toggleGlass: (id: string) => void;
@@ -27,6 +32,7 @@ interface FilterState {
   setOnlyEasy: (v: boolean) => void;
   setStrength: (v: StrengthFilter) => void;
   setTasted: (v: TastedFilter) => void;
+  setRandomStep: (n: number) => void;
   clear: () => void;
 }
 
@@ -39,6 +45,7 @@ export const useFilterStore = create<FilterState>((set) => ({
   onlyEasy: false,
   strength: "all",
   tasted: "all",
+  randomStep: 0,
   toggleTag: (t) => set((s) => ({ tags: s.tags.includes(t) ? s.tags.filter((x) => x !== t) : [...s.tags, t] })),
   setTags: (t) => set({ tags: t }),
   toggleGlass: (id) =>
@@ -49,5 +56,6 @@ export const useFilterStore = create<FilterState>((set) => ({
   setOnlyEasy: (v) => set({ onlyEasy: v }),
   setStrength: (v) => set({ strength: v }),
   setTasted: (v) => set({ tasted: v }),
+  setRandomStep: (n) => set({ randomStep: n }),
   clear: () => set({ tags: [], glasses: [] }),
 }));

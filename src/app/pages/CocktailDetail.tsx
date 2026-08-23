@@ -1,6 +1,17 @@
-import { Bookmark, Check, ExternalLink, Heart, Pencil, Play, Share2, Trash2 } from "lucide-react";
+import {
+  Bookmark,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  ExternalLink,
+  Heart,
+  Pencil,
+  Play,
+  Share2,
+  Trash2,
+} from "lucide-react";
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import clsx from "clsx";
 import { AskClaude } from "@/components/AskClaude";
 import { Chip } from "@/components/Chip";
@@ -12,6 +23,8 @@ import { canonicalIdOf } from "@/data/catalog/ingredients";
 import { toolInfo } from "@/data/catalog/tools";
 import { getCardImages } from "@/data/cocktails";
 import { useAllCocktails, useCocktailById } from "@/data/useCocktails";
+import { useFilteredCocktails } from "@/data/useFilteredCocktails";
+import { useRandomWalk } from "@/data/useRandomWalk";
 import { estimateStrength, formatIngredient, similarCocktails } from "@/domain/cocktails";
 import { cocktailCalories, cocktailCost, ingredientCalories, ingredientCost } from "@/domain/economics";
 import { classifyIngredient } from "@/domain/inventory";
@@ -28,8 +41,17 @@ export default function CocktailDetail() {
   const t = useT();
   const nav = useNavigate();
   const { id } = useParams();
+  const [params] = useSearchParams();
   const cocktail = useCocktailById(id);
   const all = useAllCocktails();
+
+  // `?rnd=<step>` means we got here from the random pick, so keep the walk going right here
+  // instead of making you go back to the list for every next drink. The step lives in the URL
+  // so back/forward and a reload land on the same spot in the sequence.
+  const walk = useRandomWalk(useFilteredCocktails());
+  const rnd = params.get("rnd");
+  const inWalk = rnd !== null;
+  const walkStep = Number.parseInt(rnd ?? "", 10) || 0;
 
   const [servings, setServings] = useState(1);
   const [showCard, setShowCard] = useState(false);
@@ -56,9 +78,27 @@ export default function CocktailDetail() {
     if (id) pushRecentlyViewed(id);
   }, [id, pushRecentlyViewed]);
 
+  // Stepping through the walk swaps the recipe under a scrolled page — start each one at the top.
+  useEffect(() => {
+    if (inWalk) document.querySelector("main")?.scrollTo({ top: 0 });
+  }, [id, inWalk]);
+
   if (!id || !cocktail) {
     return <div className="px-6 py-16 text-center text-text-dim">Коктейль не знайдено</div>;
   }
+
+  /** Move along the walk in place: back still returns to the list, not through every pick. */
+  const goWalk = (delta: number) => {
+    const step = walkStep + delta;
+    const next = walk.at(step);
+    if (!next) return;
+    walk.setStep(step); // keep the home card on the same spot in the sequence
+    nav(`/cocktail/${next.id}?rnd=${step}`, { replace: true });
+  };
+  const showWalk = inWalk && walk.poolSize > 1;
+  const walkLabel = walk.isHome
+    ? `🎲 Випадковий · з ${walk.poolSize}`
+    : `🎲 Випадковий з відфільтрованих · з ${walk.poolSize}`;
 
   const images = getCardImages(id);
   const isFav = favourites.includes(id);
@@ -71,6 +111,25 @@ export default function CocktailDetail() {
 
   return (
     <div className="px-4 py-4">
+      {showWalk && (
+        <div className="mb-3 flex items-center gap-2 rounded-xl border border-gold bg-surface p-2">
+          <button
+            onClick={() => goWalk(-1)}
+            aria-label="Попередній випадковий"
+            className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-border text-text-dim transition hover:border-gold/60 hover:text-gold"
+          >
+            <ChevronLeft size={18} />
+          </button>
+          <div className="min-w-0 flex-1 truncate text-center text-[13px] text-text-dim">{walkLabel}</div>
+          <button
+            onClick={() => goWalk(1)}
+            className="flex shrink-0 items-center gap-1 rounded-full border border-gold px-3 py-1.5 text-sm font-bold text-gold transition hover:bg-gold/15"
+          >
+            Наступний <ChevronRight size={16} />
+          </button>
+        </div>
+      )}
+
       {images?.front && (
         <img
           src={images.front}
@@ -85,7 +144,7 @@ export default function CocktailDetail() {
           {cocktail.nameEn && <div className="mt-0.5 text-base text-text-dim">{cocktail.nameEn}</div>}
         </div>
         <button
-          onClick={() => shareLink(cocktail.name, window.location.href)}
+          onClick={() => shareLink(cocktail.name, `${window.location.origin}${window.location.pathname}`)}
           aria-label="Поділитися"
           className="mt-1 grid h-9 w-9 shrink-0 place-items-center rounded-full border border-border text-text-dim hover:text-gold"
         >
@@ -352,6 +411,15 @@ export default function CocktailDetail() {
             </div>
           )}
         </section>
+      )}
+
+      {showWalk && (
+        <button
+          onClick={() => goWalk(1)}
+          className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-gold bg-surface px-4 py-3 font-bold text-gold"
+        >
+          🎲 Наступний випадковий <ChevronRight size={18} />
+        </button>
       )}
 
       {isUserRecipe && (
