@@ -15,7 +15,7 @@ import { useAllCocktails, useCocktailById } from "@/data/useCocktails";
 import { estimateStrength, formatIngredient, similarCocktails } from "@/domain/cocktails";
 import { cocktailCalories, cocktailCost, ingredientCalories, ingredientCost } from "@/domain/economics";
 import { classifyIngredient } from "@/domain/inventory";
-import { flavourSwapFor, formatSwap } from "@/domain/substitutes";
+import { flavourSwapFor, formatSwap, swapRateFor } from "@/domain/substitutes";
 import { useT } from "@/i18n";
 import { shareLink } from "@/lib/share";
 import { useUserStore } from "@/store/userStore";
@@ -221,12 +221,21 @@ export default function CocktailDetail() {
                 )}
                 {m.tier === "missing" &&
                   (() => {
+                    // Own the flavour twin -> a concrete swap. Don't own it -> still show the rate.
                     const swap = flavourSwapFor(ing, ownedIngredients);
-                    if (!swap) return null;
+                    if (swap) {
+                      return (
+                        <div className="mt-0.5 text-xs text-gold">
+                          🍯 заміна: {formatSwap(swap)}
+                          {swap.note && <span className="text-text-faint"> — {swap.note}</span>}
+                        </div>
+                      );
+                    }
+                    const rate = swapRateFor(ing);
+                    if (!rate) return null;
                     return (
-                      <div className="mt-0.5 text-xs text-gold">
-                        🍯 заміна: {formatSwap(swap)}
-                        {swap.note && <span className="text-text-faint"> — {swap.note}</span>}
+                      <div className="mt-0.5 text-xs text-text-faint">
+                        🍯 можна замінити на {formatSwap(rate)} — але цього в барі теж немає
                       </div>
                     );
                   })()}

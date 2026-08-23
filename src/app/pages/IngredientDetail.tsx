@@ -5,6 +5,7 @@ import { CocktailCard } from "@/components/CocktailCard";
 import { abvOf, canonicalById, canonicalIdOf, categoryGroupOf, familyMembers } from "@/data/catalog/ingredients";
 import { useAllCocktails } from "@/data/useCocktails";
 import { caloriesPer100, wholeItemPrice } from "@/domain/economics";
+import { formatSwap, swapRateFor } from "@/domain/substitutes";
 import { useUserStore } from "@/store/userStore";
 
 export default function IngredientDetail() {
@@ -46,6 +47,25 @@ export default function IngredientDetail() {
       >
         <ExternalLink size={14} /> Шукати в Google
       </a>
+
+      {(() => {
+        // Liqueur <-> syrup conversion, shown on both sides of the pair.
+        const rate = swapRateFor({ name: ing.nameUk, amount: 30, unit: "мл" });
+        if (!rate) return null;
+        return (
+          <section className="mt-6">
+            <h2 className="font-bold text-gold">Заміна сиропом</h2>
+            <div className="mt-2 rounded-xl border border-border bg-surface p-4 text-sm text-text">
+              30 мл {ing.nameUk} ≈ {formatSwap(rate)}
+            </div>
+            <p className="mt-1 text-xs text-text-faint">
+              {rate.kind === "syrup-for-liqueur"
+                ? "Сироп удвічі солодший за лікер і без алкоголю — тому вдвічі менше сиропу, а міцність повертає нейтральний алкоголь."
+                : "Лікер менш солодкий за сироп — тому вдвічі більше; напій стане трохи міцнішим."}
+            </p>
+          </section>
+        );
+      })()}
 
       {subs.length > 0 && (
         <section className="mt-6">

@@ -250,6 +250,18 @@ export default function Settings() {
       <Card title="Розділи">
         <div className="flex flex-col gap-2">
           <Link
+            to="/ask"
+            className="flex items-center justify-between rounded-xl border border-border bg-surface-alt px-4 py-3 text-text"
+          >
+            <span>✨ Спитати бармена (Claude)</span>
+          </Link>
+          <Link
+            to="/guests"
+            className="flex items-center justify-between rounded-xl border border-border bg-surface-alt px-4 py-3 text-text"
+          >
+            <span>🥂 Меню для гостей</span>
+          </Link>
+          <Link
             to="/taste"
             className="flex items-center justify-between rounded-xl border border-border bg-surface-alt px-4 py-3 text-text"
           >

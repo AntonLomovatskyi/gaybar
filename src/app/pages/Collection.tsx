@@ -84,13 +84,18 @@ export default function Collection() {
     () => recentlyViewed.map((id) => all.find((c) => c.id === id)).filter((c): c is NonNullable<typeof c> => !!c),
     [recentlyViewed, all],
   );
-  // Cocktail of the day prefers ones you can make now (falls back to the whole catalog).
-  // `cotdStep` lets you browse past today's pick with the ‹ › buttons.
-  const cotd = useMemo(() => {
+  // Cocktail of the day is drawn from whatever the current filters leave on screen — pick
+  // "Хайбол" and it stops offering you shots. With no filters it prefers what you can make now.
+  // `cotdStep` walks through further picks with the ‹ › buttons.
+  const cotdPool = useMemo(() => {
+    if (!isHome) return list; // respect the active filters
     const makeablePool = all.filter((c) => makeableIds.has(c.id));
-    const pool = makeablePool.length >= 5 ? makeablePool : all;
-    return pickSurprise(pool, Math.floor(Date.now() / 86400000) + cotdStep);
-  }, [all, makeableIds, cotdStep]);
+    return makeablePool.length >= 5 ? makeablePool : all;
+  }, [isHome, list, all, makeableIds]);
+  const cotd = useMemo(
+    () => pickSurprise(cotdPool, Math.floor(Date.now() / 86400000) + cotdStep),
+    [cotdPool, cotdStep],
+  );
   const recs = useMemo(
     () => recommendForYou(all, { favourites, ratings, likedTags: prefs.likedTags, dislikedTags: prefs.dislikedTags }),
     [all, favourites, ratings, prefs],
@@ -190,7 +195,7 @@ export default function Collection() {
         })}
       </div>
 
-      {isHome && cotd && (
+      {cotd && (
         <div className="mx-4 mt-4 flex items-center gap-2 rounded-xl border border-gold bg-surface p-3">
           <button
             onClick={() => setCotdStep((s) => s - 1)}
@@ -201,8 +206,11 @@ export default function Collection() {
           </button>
           <button onClick={() => nav(`/cocktail/${cotd.id}`)} className="min-w-0 flex-1 text-left">
             <div className="text-[13px] font-bold text-gold">
-              🍸 {t.home.cocktailOfDay}
-              {cotdStep !== 0 && <span className="ml-1 font-normal text-text-faint">· ще варіант</span>}
+              🍸 {isHome ? t.home.cocktailOfDay : "Випадковий з відфільтрованих"}
+              <span className="ml-1 font-normal text-text-faint">
+                {!isHome && `· з ${list.length}`}
+                {cotdStep !== 0 && " · ще варіант"}
+              </span>
             </div>
             <div className="mt-0.5 truncate text-base text-text">{cotd.name}</div>
           </button>

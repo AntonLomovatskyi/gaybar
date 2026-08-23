@@ -1,10 +1,12 @@
 import { createBrowserRouter } from "react-router-dom";
 import { Layout } from "./Layout";
+import Ask from "./pages/Ask";
 import Bar from "./pages/Bar";
 import CocktailDetail from "./pages/CocktailDetail";
 import Collection from "./pages/Collection";
 import Favourites from "./pages/Favourites";
 import Filters from "./pages/Filters";
+import Guests from "./pages/Guests";
 import History from "./pages/History";
 import IngredientDetail from "./pages/IngredientDetail";
 import Make from "./pages/Make";
@@ -35,6 +37,8 @@ export const router = createBrowserRouter(
         { path: "favourites", element: <Favourites /> },
         { path: "tool/:id", element: <ToolDetail /> },
         { path: "ingredient/:id", element: <IngredientDetail /> },
+        { path: "ask", element: <Ask /> },
+        { path: "guests", element: <Guests /> },
         { path: "stats", element: <Stats /> },
         { path: "taste", element: <Taste /> },
         { path: "quiz", element: <Quiz /> },

@@ -107,6 +107,51 @@ export function flavourSwapFor(required: Ingredient, owned: string[]): FlavourSw
   return undefined;
 }
 
+/**
+ * The conversion on its own, regardless of what you own — "what would this liqueur become".
+ * Used to show the rate on any liqueur/syrup that has a flavour twin, so you can see the trade
+ * before buying the bottle.
+ */
+export function swapRateFor(required: Ingredient): FlavourSwap | undefined {
+  const needId = canonicalIdOf(required.name);
+  const ml = required.unit === "мл" ? required.amount : undefined;
+
+  const syrupId = SYRUP_FOR_LIQUEUR.get(needId);
+  if (syrupId) {
+    const parts: SwapPart[] = [];
+    if (ml) {
+      parts.push({ name: nameOf(syrupId), amount: Math.max(5, Math.round(ml / SWEETNESS_RATIO)), unit: "мл" });
+      const spiritMl = Math.round((ml * (abvOf(required.name) || 24)) / NEUTRAL_ABV);
+      if (spiritMl >= 5) parts.push({ name: "Горілка", amount: spiritMl, unit: "мл" });
+    } else {
+      parts.push({ name: nameOf(syrupId) });
+    }
+    return { needName: required.name, kind: "syrup-for-liqueur", parts };
+  }
+
+  const liqId = LIQUEUR_FOR_SYRUP.get(needId);
+  if (liqId) {
+    return {
+      needName: required.name,
+      kind: "liqueur-for-syrup",
+      parts: ml
+        ? [{ name: nameOf(liqId), amount: Math.round(ml * SWEETNESS_RATIO), unit: "мл" }]
+        : [{ name: nameOf(liqId) }],
+    };
+  }
+  return undefined;
+}
+
+/** The syrup that stands in for a liqueur (or vice versa), if there is one. */
+export function flavourTwinOf(name: string): { id: string; name: string; kind: "syrup" | "liqueur" } | undefined {
+  const id = canonicalIdOf(name);
+  const syrupId = SYRUP_FOR_LIQUEUR.get(id);
+  if (syrupId) return { id: syrupId, name: nameOf(syrupId), kind: "syrup" };
+  const liqId = LIQUEUR_FOR_SYRUP.get(id);
+  if (liqId) return { id: liqId, name: nameOf(liqId), kind: "liqueur" };
+  return undefined;
+}
+
 /** One-line rendering: "15 мл Динний сироп + 18 мл Горілка". */
 export function formatSwap(swap: FlavourSwap): string {
   return swap.parts.map((p) => (p.amount ? `${p.amount} ${p.unit} ${p.name}` : p.name)).join(" + ");
