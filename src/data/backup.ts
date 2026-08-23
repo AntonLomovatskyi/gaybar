@@ -28,6 +28,7 @@ export function getSnapshot(): PersistedData {
     language: s.language,
     units: s.units,
     theme: s.theme,
+    guestMenuId: s.guestMenuId,
   };
 }
 

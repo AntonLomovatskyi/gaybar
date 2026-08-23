@@ -40,11 +40,14 @@ export interface UserState {
    */
   anthropicApiKey: string;
   aiModel: string;
+  /** Stable id of the published guest menu, so a shared link keeps working after updates. */
+  guestMenuId: string;
 
   setLanguage: (l: "uk" | "en") => void;
   setUnits: (u: "ml" | "oz") => void;
   setTheme: (t: "dark" | "light") => void;
   setAnthropicApiKey: (k: string) => void;
+  setGuestMenuId: (id: string) => void;
   setAiModel: (m: string) => void;
   setFlexibleMatching: (v: boolean) => void;
   toggleFavourite: (id: string) => void;
@@ -92,6 +95,7 @@ export type PersistedData = Pick<
   | "language"
   | "units"
   | "theme"
+  | "guestMenuId"
 > & { anthropicApiKey?: string; aiModel?: string };
 
 export const useUserStore = create<UserState>()(
@@ -115,11 +119,13 @@ export const useUserStore = create<UserState>()(
       theme: "dark",
       anthropicApiKey: "",
       aiModel: "claude-opus-5",
+      guestMenuId: "",
 
       setLanguage: (l) => set({ language: l }),
       setUnits: (u) => set({ units: u }),
       setTheme: (t) => set({ theme: t }),
       setAnthropicApiKey: (k) => set({ anthropicApiKey: k.trim() }),
+      setGuestMenuId: (id) => set({ guestMenuId: id }),
       setAiModel: (m) => set({ aiModel: m }),
       setFlexibleMatching: (v) => set({ flexibleMatching: v }),
       toggleFavourite: (id) =>
@@ -191,6 +197,7 @@ export const useUserStore = create<UserState>()(
           language: d.language ?? s.language,
           units: d.units ?? s.units,
           theme: d.theme ?? s.theme,
+          guestMenuId: d.guestMenuId ?? s.guestMenuId,
           // Only present in a cloud snapshot; never clear a local key with an absent one.
           anthropicApiKey: d.anthropicApiKey || s.anthropicApiKey,
           aiModel: d.aiModel || s.aiModel,

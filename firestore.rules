@@ -1,0 +1,15 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Full user snapshot — includes the Anthropic API key. Owner-only, always.
+    match /users/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+    // Guest menus — cocktail ids and a title, nothing else. Public read so a guest can open
+    // the short share link with no account; only signed-in users can publish one.
+    match /menus/{menuId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+  }
+}
