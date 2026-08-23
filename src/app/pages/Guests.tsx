@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Share2 } from "lucide-react";
+import { Check, Copy, Share2 } from "lucide-react";
 import { getCardImages } from "@/data/cocktails";
 import { useAllCocktails } from "@/data/useCocktails";
 import { estimateStrength, formatIngredient } from "@/domain/cocktails";
@@ -20,6 +20,8 @@ export default function Guests() {
   const flexible = useUserStore((s) => s.flexibleMatching);
   const [params] = useSearchParams();
   const [open, setOpen] = useState<string | null>(null);
+  const [link, setLink] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const shared = params.get("m");
   const list: Cocktail[] = useMemo(() => {
@@ -30,9 +32,25 @@ export default function Guests() {
     return whatCanIMake(all, owned, flexible).makeable.map((m) => m.cocktail);
   }, [shared, all, owned, flexible]);
 
+  /** The menu link carries the drink ids, so a guest needs no account and no app data. */
+  const menuUrl = () =>
+    `${window.location.origin}${import.meta.env.BASE_URL}guests?m=${list.map((c) => c.id).join("~")}`;
+
   const share = () => {
-    const url = `${window.location.origin}${import.meta.env.BASE_URL}guests?m=${list.map((c) => c.id).join("~")}`;
-    shareLink("Що будемо пити?", url);
+    const url = menuUrl();
+    setLink(url);
+    setCopied(false);
+    void shareLink("Що будемо пити?", url);
+  };
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(link ?? menuUrl());
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      /* clipboard blocked — the link is on screen to copy by hand */
+    }
   };
 
   return (
@@ -46,16 +64,41 @@ export default function Guests() {
               : "Зараз нічого не виходить — додай інгредієнти в «Мій бар»"}
           </p>
         </div>
-        {!shared && list.length > 0 && (
+      </div>
+
+      {!shared && list.length > 0 && (
+        <div className="mt-4 rounded-xl border border-border bg-surface p-4">
           <button
             onClick={share}
-            aria-label="Поділитися меню"
-            className="mt-1 grid h-9 w-9 shrink-0 place-items-center rounded-full border border-border text-text-dim hover:text-gold"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-gold px-4 py-3 font-bold text-bg"
           >
-            <Share2 size={17} />
+            <Share2 size={18} /> Поділитися меню з гостями
           </button>
-        )}
-      </div>
+          <p className="mt-2 text-xs text-text-faint">
+            Гостям не треба ні заходити в акаунт, ні щось встановлювати — меню зашите просто в посилання. Це знімок:
+            якщо зміниш бар, надішли нове.
+          </p>
+          {link && (
+            <div className="mt-3 flex gap-2">
+              <input
+                readOnly
+                value={link}
+                onFocus={(e) => e.currentTarget.select()}
+                className="min-w-0 flex-1 rounded-xl border border-border bg-surface-alt px-3 py-2 text-xs text-text-dim outline-none"
+              />
+              <button
+                onClick={copy}
+                aria-label="Скопіювати"
+                className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-border text-text-dim hover:text-gold"
+              >
+                {copied ? <Check size={16} className="text-success" /> : <Copy size={16} />}
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {shared && <p className="mt-3 text-xs text-text-faint">Меню від господаря — вибирай, що наливати 🍸</p>}
 
       <div className="mt-4 grid gap-3 [grid-template-columns:repeat(auto-fill,minmax(150px,1fr))]">
         {list.map((c) => {
