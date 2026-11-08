@@ -4,6 +4,8 @@
  * from `@/data/cocktails` never change. This is the one file that knows where recipes come from.
  */
 import type { Cocktail, CocktailTag } from "@/types/cocktail";
+import { barflyCocktails as BARFLY } from "./generated/barflyCocktails";
+import { barflyImages } from "./generated/barflyImages";
 import { cocktails as GENERATED } from "./generated/cocktails";
 import { importedCocktails as IMPORTED } from "./generated/importedCocktails";
 import { importedCardImages } from "./generated/importedImages";
@@ -16,8 +18,8 @@ import { shotCocktails as SHOTS } from "./generated/shotCocktails";
 import { shotImages } from "./generated/shotImages";
 
 // The physical deck first, then TheCocktailDB imports, web-researched recipes, the
-// "Шоти Там" bar menu, and non-alcoholic recipes.
-const ALL: Cocktail[] = [...GENERATED, ...IMPORTED, ...RESEARCHED, ...SHOTS, ...MOCKTAILS];
+// "Шоти Там" bar menu, non-alcoholic recipes, and The Educated Barfly.
+const ALL: Cocktail[] = [...GENERATED, ...IMPORTED, ...RESEARCHED, ...SHOTS, ...MOCKTAILS, ...BARFLY];
 
 /** Bundled art lives under public/ — resolve it against the deploy base path. */
 const asUrl = (p: string): string => (/^https?:\/\//.test(p) ? p : import.meta.env.BASE_URL + p);
@@ -33,7 +35,7 @@ export function getCocktailById(id: string): Cocktail | undefined {
 export function getCardImages(id: string): CardImages | undefined {
   if (cardImages[id]) return cardImages[id];
   if (importedCardImages[id]) return importedCardImages[id];
-  const art = researchedImages[id] ?? shotImages[id] ?? mocktailImages[id];
+  const art = researchedImages[id] ?? shotImages[id] ?? mocktailImages[id] ?? barflyImages[id];
   return art ? { front: asUrl(art) } : undefined;
 }
 

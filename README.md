@@ -43,6 +43,7 @@ deck photos and the friend's raw data have been removed, so everything regenerat
 pnpm gen:app-data     # recipes/*/recipe.json -> src/data/generated (run after editing recipes)
 pnpm gen:catalog      # scripts/catalog-draft.json -> ingredient catalog + Chernivtsi availability
 pnpm gen:card-image   # generate a card image for a recipe missing front.webp
+pnpm gen:glass-art    # glass-silhouette art for a generated recipe module (e.g. public/barfly)
 pnpm gen:icons        # app icon / splash / favicon
 pnpm validate         # schema-check every recipe.json
 ```

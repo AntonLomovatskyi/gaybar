@@ -19,6 +19,7 @@
     "gen:app-data": "tsx scripts/gen-app-data.ts",
     "gen:catalog": "tsx scripts/gen-catalog.ts",
     "gen:card-image": "tsx scripts/gen-card-image.ts",
+    "gen:glass-art": "tsx scripts/gen-glass-art.ts",
     "gen:icons": "tsx scripts/gen-app-icons.ts",
     "prepare": "husky"
   },
