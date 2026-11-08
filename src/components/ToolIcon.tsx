@@ -57,6 +57,18 @@ const ICONS: Record<string, ReactNode> = {
       <path d="M9 11h6l-.6 9h-4.8Z" />
     </>
   ),
+  "glass-mug": (
+    <>
+      <path d="M6 7h10v11a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2Z" />
+      <path d="M16 10h1.5a2.5 2.5 0 0 1 0 5H16" />
+    </>
+  ),
+  "glass-julep": (
+    <>
+      <path d="M6.5 5h11l-1.5 15h-8Z" />
+      <path d="M6.9 9h10.2" />
+    </>
+  ),
   // ---- tools ----
   shaker: (
     <>
