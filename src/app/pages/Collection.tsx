@@ -10,7 +10,7 @@ import { useRandomWalk } from "@/data/useRandomWalk";
 import { type SortMode } from "@/domain/cocktails";
 import { recommendForYou } from "@/domain/recommend";
 import { useT } from "@/i18n";
-import { useFilterStore, type StrengthFilter, type TastedFilter } from "@/store/filterStore";
+import { useFilterStore, type DrinkKindFilter, type StrengthFilter, type TastedFilter } from "@/store/filterStore";
 import { useUserStore } from "@/store/userStore";
 
 const SORTS: SortMode[] = ["card", "name", "strength", "ingredients", "rating"];
@@ -19,6 +19,12 @@ const STRENGTH_CHIPS: { key: Exclude<StrengthFilter, "all" | "medium">; label: s
   { key: "strong", label: "🔥 Міцні" },
   { key: "zero", label: "0%" },
 ];
+const KIND_NEXT: Record<DrinkKindFilter, DrinkKindFilter> = { all: "cocktails", cocktails: "shots", shots: "all" };
+const KIND_LABEL: Record<DrinkKindFilter, string> = {
+  all: "🍸 Коктейлі й шоти",
+  cocktails: "🍸 Без шотів",
+  shots: "🥃 Лише шоти",
+};
 const TASTED_NEXT: Record<TastedFilter, TastedFilter> = { all: "untried", untried: "tried", tried: "all" };
 const TASTED_LABEL: Record<TastedFilter, string> = {
   all: "🥂 Дегустація",
@@ -40,6 +46,7 @@ export default function Collection() {
     onlyEasy,
     strength,
     tasted,
+    kind,
     setTags,
     setSort,
     setQuery,
@@ -47,6 +54,7 @@ export default function Collection() {
     setOnlyEasy,
     setStrength,
     setTasted,
+    setKind,
   } = useFilterStore();
   const favourites = useUserStore((s) => s.favourites);
   const ratings = useUserStore((s) => s.ratings);
@@ -106,6 +114,15 @@ export default function Collection() {
           )}
         >
           ⚡ Прості
+        </button>
+        <button
+          onClick={() => setKind(KIND_NEXT[kind])}
+          className={clsx(
+            "rounded-full border px-3 py-1.5 text-sm",
+            kind !== "all" ? "border-gold bg-gold/15 text-gold" : "border-border text-text-dim",
+          )}
+        >
+          {KIND_LABEL[kind]}
         </button>
         {STRENGTH_CHIPS.map((sc) => (
           <button
@@ -214,7 +231,9 @@ export default function Collection() {
         </div>
       )}
 
-      <div className="px-4 py-3 text-xs text-text-faint">{list.length} коктейлів</div>
+      <div className="px-4 py-3 text-xs text-text-faint">
+        {list.length} {kind === "shots" ? "шотів" : "коктейлів"}
+      </div>
       <div className="grid gap-2 px-4 [grid-template-columns:repeat(auto-fill,minmax(108px,1fr))]">
         {list.map((c) => (
           <CocktailCard key={c.id} cocktail={c} />

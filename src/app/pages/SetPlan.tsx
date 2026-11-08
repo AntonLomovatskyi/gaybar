@@ -2,8 +2,10 @@ import { useEffect, useMemo } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowDownUp, Check, RefreshCw, Share2, ShoppingCart } from "lucide-react";
 import { Stepper } from "@/components/Stepper";
+import { canonicalById } from "@/data/catalog/ingredients";
 import { useAllCocktails } from "@/data/useCocktails";
-import { estimateStrength } from "@/domain/cocktails";
+import { useTriedIds } from "@/data/useFilteredCocktails";
+import { estimateStrength, usesIngredient } from "@/domain/cocktails";
 import { classifyIngredient, isEssential } from "@/domain/inventory";
 import { replaceWithSimilar, sortByStrength } from "@/domain/party";
 import { splitShoppingList, type ShoppingSelection } from "@/domain/shopping";
@@ -19,10 +21,12 @@ export default function SetPlan() {
   const title = usePartyStore((s) => s.title);
   const items = usePartyStore((s) => s.items);
   const config = usePartyStore((s) => s.config);
+  const notice = usePartyStore((s) => s.notice);
   const bumpServings = usePartyStore((s) => s.bumpServings);
   const setPlan = usePartyStore((s) => s.setPlan);
   const ownedIngredients = useUserStore((s) => s.ownedIngredients);
   const flexibleMatching = useUserStore((s) => s.flexibleMatching);
+  const triedIds = useTriedIds();
   const [params] = useSearchParams();
 
   // Load a shared plan from the URL (?s=id:qty,…) when there's no active plan.
@@ -55,10 +59,14 @@ export default function SetPlan() {
       onlyMakeable: config.useMyBar,
       owned: ownedIngredients,
       flexible: flexibleMatching,
+      tasted: config.tasted,
+      triedIds,
+      mustUse: config.mustUse,
     });
     setPlan(
       next.map((i) => ({ id: i.cocktail.id, servings: i.servings })),
       title,
+      notice,
     );
   };
 
@@ -68,8 +76,21 @@ export default function SetPlan() {
     setPlan(
       sorted.map((i) => ({ id: i.cocktail.id, servings: i.servings })),
       title,
+      notice,
     );
   };
+
+  /** Which must-use products each drink brings, so the guarantee is visible on the plan. */
+  const usedByC = useMemo(() => {
+    const m = new Map<string, string[]>();
+    for (const p of planned) {
+      const names = (config.mustUse ?? [])
+        .filter((id) => usesIngredient(p.cocktail, id))
+        .map((id) => canonicalById(id)?.nameUk ?? id);
+      if (names.length) m.set(p.cocktail.id, names);
+    }
+    return m;
+  }, [planned, config.mustUse]);
 
   const shopping = useMemo(() => {
     const selections: ShoppingSelection[] = planned.map((p) => ({ cocktail: p.cocktail, servings: p.item.servings }));
@@ -103,6 +124,7 @@ export default function SetPlan() {
         <div>
           <h1 className="font-display text-2xl text-text">{t.sets.plan}</h1>
           {title && <div className="mt-0.5 text-sm text-gold">{title}</div>}
+          {notice && <p className="mt-1 text-xs text-danger">{notice}</p>}
         </div>
         <button
           onClick={sharePlan}
@@ -152,6 +174,9 @@ export default function SetPlan() {
                 />
               </div>
             </div>
+            {usedByC.get(cocktail.id) && (
+              <div className="mt-1.5 pl-9 text-xs text-gold">✓ {usedByC.get(cocktail.id)!.join(", ")}</div>
+            )}
             {missingByC.get(cocktail.id) && (
               <div className="mt-1.5 pl-9 text-xs text-danger">бракує: {missingByC.get(cocktail.id)!.join(", ")}</div>
             )}

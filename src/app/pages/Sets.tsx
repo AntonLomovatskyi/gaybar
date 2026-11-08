@@ -1,12 +1,17 @@
-import { Check, Sparkles, Wine } from "lucide-react";
-import { useState } from "react";
+import { Check, Plus, Sparkles, Wine, X } from "lucide-react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import clsx from "clsx";
 import { Chip } from "@/components/Chip";
 import { Stepper } from "@/components/Stepper";
 import { CURATED_SETS } from "@/data/sets";
+import { canonicalIdOf, isAlcoholic, isAssumedAvailable } from "@/data/catalog/ingredients";
 import { MOODS } from "@/data/catalog/moods";
 import { useAllCocktails } from "@/data/useCocktails";
-import { composeParty, MIN_PEOPLE, planFromSet, type PartyKind } from "@/domain/party";
+import { useTriedIds } from "@/data/useFilteredCocktails";
+import { ingredientUsage, type TastedFilter } from "@/domain/cocktails";
+import { composePartyPlan, MIN_PEOPLE, planFromSet, type PartyKind } from "@/domain/party";
+import { normalize } from "@/domain/text";
 import { useT } from "@/i18n";
 import type { CocktailTag } from "@/types/cocktail";
 import { usePartyStore } from "@/store/partyStore";
@@ -18,6 +23,19 @@ const KINDS: { key: PartyKind; label: string }[] = [
   { key: "cocktails", label: "🍸 Лише коктейлі" },
   { key: "venue", label: "Шоти Там" },
 ];
+const TASTED: { key: TastedFilter; label: string }[] = [
+  { key: "all", label: "Усі" },
+  { key: "untried", label: "🆕 Ще не куштував" },
+  { key: "tried", label: "★ Вже куштував" },
+];
+const chipClass = (on: boolean) =>
+  clsx(
+    "rounded-full border px-3 py-1.5 text-sm transition",
+    on ? "border-gold bg-gold/15 text-gold" : "border-border text-text-dim hover:border-gold/60",
+  );
+/** "A, B і C" for the plan notice. */
+const joinUk = (names: string[]) =>
+  names.length <= 1 ? (names[0] ?? "") : `${names.slice(0, -1).join(", ")} і ${names[names.length - 1]}`;
 
 export default function Sets() {
   const t = useT();
@@ -28,9 +46,44 @@ export default function Sets() {
   const setPlan = usePartyStore((s) => s.setPlan);
   const ownedIngredients = useUserStore((s) => s.ownedIngredients);
   const flexibleMatching = useUserStore((s) => s.flexibleMatching);
+  const triedIds = useTriedIds();
 
   const [moods, setMoods] = useState<string[]>([]);
   const [shortSet, setShortSet] = useState<number | null>(null);
+  const [productQuery, setProductQuery] = useState("");
+
+  const tasted = config.tasted ?? "all";
+  const mustUse = useMemo(() => config.mustUse ?? [], [config.mustUse]);
+
+  // Every ingredient some recipe uses, most-used first — the "must use" picker's vocabulary.
+  const usage = useMemo(() => ingredientUsage(all), [all]);
+  const usageById = useMemo(() => new Map(usage.map((u) => [u.id, u])), [usage]);
+  const productName = (id: string) => usageById.get(id)?.name ?? id;
+  const productHits = useMemo(() => {
+    const q = normalize(productQuery);
+    if (!q) return [];
+    const starts = (name: string) => (normalize(name).startsWith(q) ? 1 : 0);
+    return usage
+      .filter((u) => !mustUse.includes(u.id) && normalize(u.name).includes(q))
+      .sort((a, b) => starts(b.name) - starts(a.name) || b.count - a.count)
+      .slice(0, 8);
+  }, [productQuery, usage, mustUse]);
+  // One tap for the fresh things already open in your bar (juice, cream, fruit) — the usual
+  // reason to want a drink that uses something up.
+  const barPicks = useMemo(() => {
+    const ids = new Set<string>();
+    for (const name of ownedIngredients) {
+      if (isAlcoholic(name) || isAssumedAvailable(name)) continue;
+      const id = canonicalIdOf(name);
+      if (usageById.has(id) && !mustUse.includes(id)) ids.add(id);
+    }
+    return [...ids].slice(0, 10).map((id) => usageById.get(id)!);
+  }, [ownedIngredients, usageById, mustUse]);
+  const addProduct = (id: string) => {
+    setConfig({ mustUse: [...mustUse, id] });
+    setProductQuery("");
+  };
+  const removeProduct = (id: string) => setConfig({ mustUse: mustUse.filter((x) => x !== id) });
 
   const total = config.everyoneTries
     ? config.varieties * Math.max(config.people, MIN_PEOPLE)
@@ -43,17 +96,33 @@ export default function Sets() {
 
   const generate = () => {
     const moodTags: CocktailTag[] = selectedMoods.flatMap((m) => m.tags);
-    const items = composeParty(all, config, moodTags, ownedIngredients, flexibleMatching);
-    // With "З мого бару" on we never pad the set with drinks you can't make — say so instead.
+    const { items, unavailable, didNotFit } = composePartyPlan(all, config, {
+      moodTags,
+      owned: ownedIngredients,
+      flexible: flexibleMatching,
+      triedIds,
+    });
+    // Strict filters ("З мого бару", tasting) never pad the set with drinks that don't qualify —
+    // say so instead.
     if (items.length === 0) {
       setShortSet(0);
       return;
     }
     setShortSet(items.length < config.varieties ? items.length : null);
     const title = selectedMoods.length ? selectedMoods.map((m) => m.labelUk).join(", ") : "Згенерований сет";
+    const notes: string[] = [];
+    if (unavailable.length)
+      notes.push(
+        `Немає коктейлів з: ${joinUk(unavailable.map(productName))} — під вибрані фільтри нічого не підійшло.`,
+      );
+    if (didNotFit.length)
+      notes.push(`Не вмістилося: ${joinUk(didNotFit.map(productName))} — збільш кількість різних коктейлів.`);
+    if (items.length < config.varieties)
+      notes.push(`Вийшло ${items.length} з ${config.varieties} — більше під ці фільтри не знайшлося.`);
     setPlan(
       items.map((i) => ({ id: i.cocktail.id, servings: i.servings })),
       title,
+      notes.join(" ") || null,
     );
     nav("/set/plan");
   };
@@ -81,16 +150,29 @@ export default function Sets() {
             key={k.key}
             type="button"
             onClick={() => setConfig({ kind: k.key })}
-            className={
-              "rounded-full border px-3 py-1.5 text-sm transition " +
-              (config.kind === k.key
-                ? "border-gold bg-gold/15 text-gold"
-                : "border-border text-text-dim hover:border-gold/60")
-            }
+            className={chipClass(config.kind === k.key)}
           >
             {k.label}
           </button>
         ))}
+      </div>
+
+      {/* Tasting: build the set from drinks you haven't tried yet, or only from ones you know */}
+      <div className="mt-3">
+        <div className="text-xs text-text-faint">Дегустація</div>
+        <div className="mt-1.5 flex flex-wrap gap-2">
+          {TASTED.map((o) => (
+            <button
+              key={o.key}
+              type="button"
+              onClick={() => setConfig({ tasted: o.key })}
+              className={chipClass(tasted === o.key)}
+            >
+              {o.label}
+              {o.key === "tried" && <span className="ml-1 opacity-70">· {triedIds.size}</span>}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="mt-3 rounded-xl border border-border bg-surface p-4">
@@ -208,6 +290,81 @@ export default function Sets() {
         ))}
       </div>
 
+      {/* Must-use products: each one lands in at least one drink of the set */}
+      <div className="mt-4 rounded-xl border border-border bg-surface p-4">
+        <div className="text-text">Обов'язково використати</div>
+        <div className="text-xs text-text-faint">Кожен продукт буде хоча б в одному коктейлі сету.</div>
+
+        {mustUse.length > 0 && (
+          <div className="mt-3 flex flex-wrap gap-2">
+            {mustUse.map((id) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => removeProduct(id)}
+                aria-label={`Прибрати ${productName(id)}`}
+                className="flex items-center gap-1 rounded-full border border-gold bg-gold/15 px-3 py-1.5 text-sm text-gold"
+              >
+                {productName(id)} <X size={14} />
+              </button>
+            ))}
+          </div>
+        )}
+
+        <div className="relative mt-3">
+          <input
+            value={productQuery}
+            onChange={(e) => setProductQuery(e.target.value)}
+            placeholder="Апельсиновий сік, збиті вершки…"
+            className="w-full rounded-xl border border-border bg-surface-alt px-4 py-2.5 text-text outline-none placeholder:text-text-faint focus:border-gold"
+          />
+          {productQuery && (
+            <button
+              type="button"
+              onClick={() => setProductQuery("")}
+              className="absolute top-1/2 right-3 -translate-y-1/2 text-text-faint"
+              aria-label="Очистити"
+            >
+              <X size={18} />
+            </button>
+          )}
+          {productHits.length > 0 && (
+            <div className="absolute top-full right-0 left-0 z-10 mt-1 overflow-hidden rounded-xl border border-border bg-surface shadow-lg">
+              {productHits.map((u) => (
+                <button
+                  key={u.id}
+                  type="button"
+                  onClick={() => addProduct(u.id)}
+                  className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm text-text hover:bg-surface-alt"
+                >
+                  <Plus size={15} className="text-gold" />
+                  {u.name}
+                  <span className="ml-auto text-xs text-text-faint tabular-nums">{u.count} рец.</span>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {barPicks.length > 0 && (
+          <div className="mt-3">
+            <div className="text-xs text-text-faint">Свіже з твого бару</div>
+            <div className="mt-1.5 flex flex-wrap gap-2">
+              {barPicks.map((u) => (
+                <button
+                  key={u.id}
+                  type="button"
+                  onClick={() => addProduct(u.id)}
+                  className="flex items-center gap-1 rounded-full border border-border px-3 py-1.5 text-sm text-text-dim hover:border-gold/60"
+                >
+                  <Plus size={13} /> {u.name}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
       <button
         type="button"
         onClick={generate}
@@ -218,8 +375,18 @@ export default function Sets() {
 
       {shortSet === 0 && (
         <p className="mt-2 rounded-xl border border-danger/50 bg-danger/10 p-3 text-sm text-danger">
-          З твого бару зараз нічого не виходить{config.kind !== "any" ? " для цього типу напоїв" : ""}. Додай
-          інгредієнти в «Мій бар» або вимкни «З мого бару».
+          {config.useMyBar && tasted === "all" ? (
+            <>
+              З твого бару зараз нічого не виходить{config.kind !== "any" ? " для цього типу напоїв" : ""}. Додай
+              інгредієнти в «Мій бар» або вимкни «З мого бару».
+            </>
+          ) : (
+            <>
+              Під ці фільтри нічого не знайшлося.
+              {tasted === "tried" && " «Вже куштував» — це коктейлі з оцінкою або позначкою «Я приготував(-ла)»."}
+              {config.useMyBar && " Спробуй вимкнути «З мого бару»."}
+            </>
+          )}
         </p>
       )}
 

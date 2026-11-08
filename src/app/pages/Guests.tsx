@@ -10,9 +10,12 @@ import {
   applyFilters,
   baseSpiritOf,
   estimateStrength,
+  filterDrinkKind,
   formatIngredient,
+  isShot,
   sortBy,
   strengthBucket,
+  type DrinkKindFilter,
   type SortMode,
 } from "@/domain/cocktails";
 import { whatCanIMake } from "@/domain/inventory";
@@ -45,6 +48,12 @@ const STRENGTH_CHIPS: { key: Exclude<StrengthFilter, "all" | "medium">; label: s
   { key: "strong", label: "🔥 Міцні" },
   { key: "zero", label: "0%" },
 ];
+const KIND_NEXT: Record<DrinkKindFilter, DrinkKindFilter> = { all: "cocktails", cocktails: "shots", shots: "all" };
+const KIND_LABEL: Record<DrinkKindFilter, string> = {
+  all: "🍸 Коктейлі й шоти",
+  cocktails: "🍸 Без шотів",
+  shots: "🥃 Лише шоти",
+};
 const SORTS: { key: SortMode; label: string }[] = [
   { key: "card", label: "За порядком" },
   { key: "name", label: "За назвою" },
@@ -103,6 +112,7 @@ export default function Guests() {
 
   const [query, setQuery] = useState("");
   const [strength, setStrength] = useState<StrengthFilter>("all");
+  const [kind, setKind] = useState<DrinkKindFilter>("all");
   const [tags, setTags] = useState<CocktailTag[]>([]);
   const [sort, setSort] = useState<SortMode>("card");
   const [showMore, setShowMore] = useState(false);
@@ -120,21 +130,24 @@ export default function Guests() {
       .map((g) => ({ ...g, tags: g.tags.filter((t) => present.has(t)) }))
       .filter((g) => g.tags.length > 1);
   }, [menu]);
+  // The shots/cocktails switch only makes sense when the menu actually has both.
+  const mixedKinds = useMemo(() => menu.some(isShot) && menu.some((c) => !isShot(c)), [menu]);
   const baseAxis = axes.find((a) => a.key === "base");
   const moreAxes = axes.filter((a) => a.key !== "base");
 
   const list = useMemo(() => {
-    let out = applyFilters(menu, { tags, query });
+    let out = filterDrinkKind(applyFilters(menu, { tags, query }), kind);
     if (strength !== "all") out = out.filter((c) => strengthBucket(c) === strength);
     return sortBy(out, sort);
-  }, [menu, tags, query, strength, sort]);
+  }, [menu, tags, query, kind, strength, sort]);
 
-  const filtering = Boolean(query.trim()) || strength !== "all" || tags.length > 0;
+  const filtering = Boolean(query.trim()) || strength !== "all" || kind !== "all" || tags.length > 0;
   const showControls = menu.length >= MIN_FOR_FILTERS;
   const toggleTag = (t: CocktailTag) => setTags((cur) => (cur.includes(t) ? cur.filter((x) => x !== t) : [...cur, t]));
   const resetFilters = () => {
     setQuery("");
     setStrength("all");
+    setKind("all");
     setTags([]);
   };
 
@@ -257,6 +270,17 @@ export default function Guests() {
           />
 
           <div className="mt-3 flex flex-wrap gap-2">
+            {mixedKinds && (
+              <button
+                onClick={() => setKind(KIND_NEXT[kind])}
+                className={clsx(
+                  "rounded-full border px-3 py-1.5 text-sm",
+                  kind !== "all" ? "border-gold bg-gold/15 text-gold" : "border-border text-text-dim",
+                )}
+              >
+                {KIND_LABEL[kind]}
+              </button>
+            )}
             {STRENGTH_CHIPS.map((sc) => (
               <button
                 key={sc.key}

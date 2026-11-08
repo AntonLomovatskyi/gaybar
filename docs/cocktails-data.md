@@ -52,6 +52,8 @@ typed unions _and_ runtime validation of the hand-curated JSON.
 | `tools`       | `string[]`          | ІНСТРУМЕНТИ, printed order.                                |
 | `steps`       | `string[]`          | ПРИГОТУВАННЯ, ordered.                                     |
 | `glass`       | `string?`           | Glassware (usually the last tool).                         |
+| `sourceUrl`   | `string?`           | Page an imported recipe came from (shown as its source).   |
+| `videoUrl`    | `string?`           | YouTube video of the drink, when the source has one.       |
 | `images`      | `{ front, back? }`  | webp filenames, relative to the recipe folder.             |
 | `source`      | `{ front?, back? }` | Original HEIC filenames, for traceability.                 |
 

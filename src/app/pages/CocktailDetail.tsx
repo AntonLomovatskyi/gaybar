@@ -9,6 +9,7 @@ import {
   Play,
   Share2,
   Trash2,
+  Youtube,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
@@ -183,6 +184,16 @@ export default function CocktailDetail() {
       </div>
 
       <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1">
+        {cocktail.videoUrl && (
+          <a
+            href={cocktail.videoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-sm font-bold text-gold hover:underline"
+          >
+            <Youtube size={16} /> Відео-рецепт
+          </a>
+        )}
         <a
           href={googleUrl}
           target="_blank"
@@ -362,10 +373,7 @@ export default function CocktailDetail() {
           <div className="mt-3 space-y-2">
             {madeHistory.map((h, i) => (
               <div key={`${h.at}-${i}`} className="rounded-xl border border-border bg-surface p-3 text-sm">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-xs text-text-faint">{formatDay(h.at)}</span>
-                  {h.rating ? <span className="text-xs text-gold">{"★".repeat(h.rating)}</span> : null}
-                </div>
+                <div className="text-xs text-text-faint">{formatDay(h.at)}</div>
                 {h.note && <div className="mt-1 text-text">{h.note}</div>}
               </div>
             ))}

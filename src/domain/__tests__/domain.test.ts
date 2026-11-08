@@ -4,12 +4,17 @@ import {
   applyFilters,
   baseSpiritOf,
   estimateStrength,
+  filterDrinkKind,
+  filterTasted,
   formatIngredient,
   formatQty,
+  ingredientUsage,
+  isShot,
   search,
   sortBy,
   stepProgress,
   strengthBucket,
+  usesIngredient,
 } from "@/domain/cocktails";
 import {
   classifyIngredient,
@@ -21,7 +26,15 @@ import {
 } from "@/domain/inventory";
 import { recommendForYou } from "@/domain/recommend";
 import { buildShoppingList } from "@/domain/shopping";
-import { composeParty, distributeServings, filterKind, replaceWithSimilar, sortByStrength } from "@/domain/party";
+import {
+  composeParty,
+  composePartyPlan,
+  distributeServings,
+  filterKind,
+  replaceWithSimilar,
+  sortByStrength,
+  type PartyConfig,
+} from "@/domain/party";
 import { normalize } from "@/domain/text";
 
 const mk = (id: string, tags: string[], ingredients: Ingredient[], extra: Partial<Cocktail> = {}): Cocktail => ({
@@ -265,5 +278,123 @@ describe("search English synonyms", () => {
   it("matches Ukrainian ingredients from latin terms", () => {
     expect(search([daiquiri, martini], "rum").map((c) => c.id)).toEqual(["daiquiri"]); // rum → ром (Білий ром)
     expect(search([daiquiri, martini], "gin").map((c) => c.id)).toEqual(["martini"]); // gin → джин
+  });
+});
+
+describe("drink kind and tasting filters", () => {
+  const shot = mk("b-52", ["шоти"], [ml("Кавовий лікер", 15)], { glass: "Чарка" });
+  const shotByGlass = mk("sangrita", [], [ml("Томатний сік", 30)], { glass: "Чарка 2 шт." });
+  const longDrink = mk("screwdriver", ["лонги"], [ml("Горілка", 50), ml("Апельсиновий сік", 150)], {
+    glass: "Хайбол",
+  });
+
+  it("isShot catches the tag and any shot-glass spelling", () => {
+    expect(isShot(shot)).toBe(true);
+    expect(isShot(shotByGlass)).toBe(true);
+    expect(isShot(longDrink)).toBe(false);
+  });
+
+  it("filterDrinkKind splits shots from cocktails", () => {
+    const all = [shot, shotByGlass, longDrink, martini];
+    expect(filterDrinkKind(all, "shots").map((c) => c.id)).toEqual(["b-52", "sangrita"]);
+    expect(filterDrinkKind(all, "cocktails").map((c) => c.id)).toEqual(["screwdriver", "martini"]);
+    expect(filterDrinkKind(all, "all")).toHaveLength(4);
+  });
+
+  it("filterTasted keeps tried or untried drinks", () => {
+    const tried = new Set(["martini"]);
+    expect(filterTasted([martini, daiquiri], "tried", tried).map((c) => c.id)).toEqual(["martini"]);
+    expect(filterTasted([martini, daiquiri], "untried", tried).map((c) => c.id)).toEqual(["daiquiri"]);
+    expect(filterTasted([martini, daiquiri], "all", tried)).toHaveLength(2);
+  });
+
+  it("usesIngredient matches on the canonical ingredient, not the spelling", () => {
+    const fresh = mk("fresh", [], [ml("Апельсиновий фреш", 100)]);
+    expect(usesIngredient(fresh, "orange-juice")).toBe(true);
+    expect(usesIngredient(martini, "orange-juice")).toBe(false);
+  });
+
+  it("ingredientUsage counts drinks per ingredient and skips ice", () => {
+    const usage = ingredientUsage([margarita, daiquiri, martini]);
+    expect(usage.find((u) => u.id === "lime-juice")?.count).toBe(2);
+    expect(usage.some((u) => u.name === "Лід в кубиках")).toBe(false);
+  });
+});
+
+describe("composePartyPlan: tasting and must-use products", () => {
+  const cfg = (extra: Partial<PartyConfig> = {}): PartyConfig => ({
+    people: 2,
+    varieties: 2,
+    drinksPerPerson: 2,
+    useMyBar: false,
+    everyoneTries: true,
+    kind: "any",
+    byStrength: false,
+    ...extra,
+  });
+  const screwdriver = mk("screwdriver", ["лонги"], [ml("Горілка", 50), ml("Апельсиновий сік", 150)]);
+  const creamy = mk("creamy", ["десерти"], [ml("Кавовий лікер", 30), { name: "Збиті вершки", note: "шапка" }]);
+  const both = mk("orange-cream", ["десерти"], [ml("Апельсиновий сік", 60), { name: "Збиті вершки", note: "шапка" }]);
+  const pool = [margarita, daiquiri, martini, screwdriver, creamy];
+
+  it("puts a drink with each must-use product into the set", () => {
+    const { items, unavailable, didNotFit } = composePartyPlan(pool, cfg({ mustUse: ["orange-juice"] }));
+    const ids = items.map((i) => i.cocktail.id);
+    expect(ids).toContain("screwdriver"); // last in the pool, but it's the only one with orange juice
+    expect(ids).toHaveLength(2);
+    expect(unavailable).toEqual([]);
+    expect(didNotFit).toEqual([]);
+  });
+
+  it("covers two products with one drink when that is what makes them fit", () => {
+    const { items, didNotFit } = composePartyPlan(
+      [...pool, both],
+      cfg({ varieties: 1, mustUse: ["orange-juice", "whipped-cream"] }),
+    );
+    expect(items.map((i) => i.cocktail.id)).toEqual(["orange-cream"]);
+    expect(didNotFit).toEqual([]);
+  });
+
+  it("reports products nothing contains, and ones that don't fit the set size", () => {
+    const missing = composePartyPlan(pool, cfg({ mustUse: ["whipped-cream", "tomato-juice"] }));
+    expect(missing.unavailable).toEqual(["tomato-juice"]);
+    expect(missing.items.map((i) => i.cocktail.id)).toContain("creamy");
+
+    const tooSmall = composePartyPlan(pool, cfg({ varieties: 1, mustUse: ["orange-juice", "whipped-cream"] }));
+    expect(tooSmall.items).toHaveLength(1);
+    expect(tooSmall.didNotFit).toHaveLength(1);
+  });
+
+  it("the tasting filter is strict: untried only, or a shorter set of tried ones", () => {
+    const triedIds = new Set(["margarita"]);
+    const untried = composePartyPlan(pool, cfg({ tasted: "untried" }), { triedIds });
+    expect(untried.items.map((i) => i.cocktail.id)).not.toContain("margarita");
+    const tried = composePartyPlan(pool, cfg({ tasted: "tried", varieties: 3 }), { triedIds });
+    expect(tried.items.map((i) => i.cocktail.id)).toEqual(["margarita"]);
+  });
+
+  it("a must-use product respects the tasting filter", () => {
+    const triedIds = new Set(["screwdriver"]);
+    const { items, unavailable } = composePartyPlan(pool, cfg({ tasted: "untried", mustUse: ["orange-juice"] }), {
+      triedIds,
+    });
+    expect(items.map((i) => i.cocktail.id)).not.toContain("screwdriver");
+    expect(unavailable).toEqual(["orange-juice"]);
+  });
+
+  it("moods still lead the ranking, then the rest fills the set", () => {
+    const { items } = composePartyPlan(pool, cfg({ varieties: 2 }), { moodTags: ["десерти"] });
+    expect(items[0].cocktail.id).toBe("creamy");
+    expect(items).toHaveLength(2);
+  });
+
+  it("a swap keeps the only drink with a must-use product replaced by another one with it", () => {
+    const juicy = mk("juicy", ["лонги"], [ml("Білий ром", 40), ml("Апельсиновий сік", 120)]);
+    const items = [
+      { cocktail: screwdriver, servings: 2 },
+      { cocktail: martini, servings: 2 },
+    ];
+    const out = replaceWithSimilar(items, "screwdriver", [...pool, juicy], "any", 0, { mustUse: ["orange-juice"] });
+    expect(out[0].cocktail.id).toBe("juicy");
   });
 });

@@ -6,12 +6,17 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import type { Cocktail } from "@/types/cocktail";
+import { foldMakeRatings } from "@/domain/journal";
 
 export interface PrepEntry {
   cocktailId: string;
   at: number; // epoch ms
   note?: string; // tasting-journal note for this specific make
-  rating?: number; // 1..5 stars for this specific make
+  /**
+   * @deprecated Ratings live on the cocktail (`ratings[id]`), not on a make. Old saved data may
+   * still carry it; it's folded into `ratings` on load and on import, then dropped.
+   */
+  rating?: number;
 }
 
 export interface UserState {
@@ -63,7 +68,6 @@ export interface UserState {
   clearBought: () => void;
   logPreparation: (id: string, at: number) => void;
   setPrepNote: (at: number, note: string) => void;
-  setPrepRating: (at: number, rating: number) => void;
   pushRecentlyViewed: (id: string) => void;
   setPrefs: (p: Partial<UserState["prefs"]>) => void;
   clearHistory: () => void;
@@ -171,8 +175,6 @@ export const useUserStore = create<UserState>()(
         set((s) => ({
           history: s.history.map((e) => (e.at === at ? { ...e, note: note.trim() || undefined } : e)),
         })),
-      setPrepRating: (at, rating) =>
-        set((s) => ({ history: s.history.map((e) => (e.at === at ? { ...e, rating } : e)) })),
       pushRecentlyViewed: (id) =>
         set((s) => ({ recentlyViewed: [id, ...s.recentlyViewed.filter((x) => x !== id)].slice(0, 12) })),
       setPrefs: (p) => set((s) => ({ prefs: { ...s.prefs, ...p } })),
@@ -184,13 +186,13 @@ export const useUserStore = create<UserState>()(
         set((s) => ({
           favourites: d.favourites ?? s.favourites,
           wishlist: d.wishlist ?? s.wishlist,
-          ratings: d.ratings ?? s.ratings,
+          // An older backup may still rate individual makes — move those onto the cocktails.
+          ...foldMakeRatings(d.history ?? s.history, d.ratings ?? s.ratings),
           notes: d.notes ?? s.notes,
           ownedIngredients: d.ownedIngredients ?? s.ownedIngredients,
           ownedTools: d.ownedTools ?? s.ownedTools,
           shopping: d.shopping ?? s.shopping,
           boughtIngredients: d.boughtIngredients ?? s.boughtIngredients,
-          history: d.history ?? s.history,
           prefs: d.prefs ?? s.prefs,
           userRecipes: d.userRecipes ?? s.userRecipes,
           flexibleMatching: d.flexibleMatching ?? s.flexibleMatching,
@@ -205,8 +207,16 @@ export const useUserStore = create<UserState>()(
     }),
     {
       name: "gaybar/v1/user",
-      version: 1,
+      // v2: ratings moved from journal entries onto the cocktail.
+      version: 2,
       storage: createJSONStorage(() => localStorage),
+      migrate: (persisted, version) => {
+        const state = persisted as UserState;
+        if (version < 2 && state && Array.isArray(state.history)) {
+          return { ...state, ...foldMakeRatings(state.history, state.ratings ?? {}) };
+        }
+        return state;
+      },
     },
   ),
 );

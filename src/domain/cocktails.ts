@@ -4,7 +4,7 @@
  */
 import type { Cocktail, CocktailTag, Ingredient } from "@/types/cocktail";
 import { TAG_TO_GROUP, type TagGroupKey } from "@/data/catalog/taxonomy";
-import { abvOf, familyOf } from "@/data/catalog/ingredients";
+import { abvOf, canonicalById, canonicalIdOf, categoryOf, familyOf } from "@/data/catalog/ingredients";
 import { toolInfo } from "@/data/catalog/tools";
 import { compareUk, normalize } from "./text";
 
@@ -77,6 +77,61 @@ export function glassOf(c: Cocktail): { id: string; nameUk: string } | null {
   if (!raw) return null;
   const info = toolInfo(raw);
   return info.kind === "glass" ? { id: info.id, nameUk: info.nameUk } : null;
+}
+
+/** A shot: tagged "шоти" or served in a shot glass (any spelling of чарка/шот/стопка). */
+export function isShot(c: Cocktail): boolean {
+  return c.tags.includes("шоти") || glassOf(c)?.id === "glass-shot";
+}
+
+/** Drink type on the main list: everything, cocktails without the shots, or only shots. */
+export type DrinkKindFilter = "all" | "cocktails" | "shots";
+
+export function filterDrinkKind(cocktails: Cocktail[], kind: DrinkKindFilter): Cocktail[] {
+  if (kind === "shots") return cocktails.filter(isShot);
+  if (kind === "cocktails") return cocktails.filter((c) => !isShot(c));
+  return cocktails;
+}
+
+/** "all" = no filter; "tried" = rated or made at least once; "untried" = not yet. */
+export type TastedFilter = "all" | "tried" | "untried";
+
+export function filterTasted(cocktails: Cocktail[], tasted: TastedFilter, triedIds: ReadonlySet<string>): Cocktail[] {
+  if (tasted === "tried") return cocktails.filter((c) => triedIds.has(c.id));
+  if (tasted === "untried") return cocktails.filter((c) => !triedIds.has(c.id));
+  return cocktails;
+}
+
+/** True if the cocktail has this canonical ingredient anywhere in its list (garnish included). */
+export function usesIngredient(c: Cocktail, canonicalId: string): boolean {
+  return c.ingredients.some((i) => canonicalIdOf(i.name) === canonicalId);
+}
+
+export interface IngredientUsage {
+  id: string; // canonical id
+  name: string; // canonical display name
+  count: number; // cocktails that use it
+}
+
+/**
+ * Every ingredient the catalog actually uses, with how many cocktails use it — the menu
+ * builder's "must use" picker. Ice is left out: it's in nearly everything and never the point.
+ */
+export function ingredientUsage(cocktails: Cocktail[]): IngredientUsage[] {
+  const byId = new Map<string, IngredientUsage>();
+  for (const c of cocktails) {
+    const seen = new Set<string>();
+    for (const i of c.ingredients) {
+      if (categoryOf(i.name) === "ice") continue;
+      const id = canonicalIdOf(i.name);
+      if (seen.has(id)) continue;
+      seen.add(id);
+      const u = byId.get(id) ?? { id, name: canonicalById(id)?.nameUk ?? i.name, count: 0 };
+      u.count += 1;
+      byId.set(id, u);
+    }
+  }
+  return [...byId.values()].sort((a, b) => b.count - a.count || compareUk(a.name, b.name));
 }
 
 export interface CocktailFilter {
